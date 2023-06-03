@@ -2,11 +2,23 @@
 
 import React, { ChangeEvent, useState } from "react"
 import Image from "next/image"
-import { ImageIcon } from "lucide-react"
+import Link from "next/link"
+import { ImageIcon, Menu, MoreHorizontal, Plus } from "lucide-react"
 
 import { Listing } from "@/types/payload-types"
+import { Badge } from "@/components/ui/badge"
+import { Button, buttonVariants } from "@/components/ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
+import { ListingFooter } from "@/components/listing-footer"
 
 type FileObject = File & { preview: string }
 
@@ -41,29 +53,53 @@ export const MediaForm = ({
   }
 
   const swapImage = (index: number) => {
-    if (index === 0) return // Skip if it's already the first image
+    if (index === 0) return
 
     setFiles((prevFiles) => {
       const updatedFiles = [...prevFiles]
       ;[updatedFiles[0], updatedFiles[index]] = [
         updatedFiles[index],
         updatedFiles[0],
-      ] // Swap first and clicked images
+      ]
       return updatedFiles
     })
   }
 
   return (
     <div>
-      {files.length < 5 && (
+      {files.length === 0 ? (
+        <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed text-center transition-colors hover:border-foreground hover:bg-muted-foreground/5">
+          <input
+            type="file"
+            className="hidden"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+          />
+          <ImageIcon size={128} />
+          <Title className="font-semibold" level={5}>
+            Click here to add photos
+          </Title>
+          <Paragraph className="text-muted-foreground">
+            Choose at least 5 photos
+          </Paragraph>
+        </label>
+      ) : null}
+      <label
+        className={buttonVariants({
+          variant: "outline",
+          className: "mb-6 flex w-full gap-5 cursor-pointer",
+        })}
+      >
         <input
+          className="hidden"
           type="file"
           accept="image/*"
           multiple
           onChange={handleFileChange}
         />
-      )}
-
+        <Plus /> Add More
+      </label>
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {files.map((file, index) => (
           <div
@@ -80,24 +116,40 @@ export const MediaForm = ({
               alt="house primary image"
               src={file.preview}
             />
-            {index > 0 && (
-              <button
-                className="absolute top-2 left-2 text-gray-500 bg-white rounded-full hover:text-blue-500 hover:bg-gray-200"
-                onClick={() => swapImage(index)}
-              >
-                Swap
-              </button>
-            )}
-            <button
-              className="absolute right-2 top-2 rounded-full bg-white text-gray-500 hover:bg-gray-200 hover:text-red-500"
-              onClick={() => removeImage(index)}
-            >
-              X
-            </button>
+
+            <div className="absolute inset-x-0 top-0 flex items-center justify-between px-5 pt-4">
+              {index === 0 ? (
+                <Badge className="invisible" color={"dark"}>
+                  Cover Image
+                </Badge>
+              ) : (
+                <div />
+              )}
+
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <Button size={"sm"} variant={"secondary"} rounded={"full"}>
+                    <MoreHorizontal size={12} />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>Media Options</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={() => removeImage(index)}>
+                    Delete
+                  </DropdownMenuItem>
+                  {index > 0 && (
+                    <DropdownMenuItem onClick={() => swapImage(index)}>
+                      Make Cover Image
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         ))}
         {files.length < 5 && files?.length > 0 ? (
-          <label className="flex aspect-square w-full flex-col items-center justify-center gap-4 rounded-xl border border-dashed text-center">
+          <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border border-dashed text-center transition-colors hover:border-foreground hover:bg-muted-foreground/5">
             <input
               className="hidden"
               type="file"
@@ -113,6 +165,18 @@ export const MediaForm = ({
           </label>
         ) : null}
       </div>
+      <ListingFooter progress={22}>
+        <Link
+          href={`/listings/${listing.id}/offerings`}
+          className={buttonVariants({ variant: "link" })}
+        >
+          Back
+        </Link>
+        {/* <Link href={"/listings/1/title"} className={buttonVariants({})}>
+          Next
+        </Link> */}
+        <Button type="submit">{"Next"}</Button>
+      </ListingFooter>
     </div>
   )
 }
