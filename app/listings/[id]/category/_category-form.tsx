@@ -69,7 +69,7 @@ export const CategoryForm = ({
           />
           <label
             id="grid-item"
-            className="bg-background flex cursor-pointer flex-col gap-2 rounded-lg border p-4 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600"
+            className="flex cursor-pointer flex-col gap-2 rounded-lg border bg-background p-4 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600"
             htmlFor={label}
           >
             {/* @ts-ignore */}

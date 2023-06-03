@@ -1,23 +1,53 @@
-"use client"
-
 import { useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { redirect } from "next/navigation"
 import { Image as ImageIcon } from "lucide-react"
 
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Listing } from "@/types/payload-types"
+import { buttonVariants } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { ListingFooter } from "@/components/listing-footer"
 import { ListingHeader } from "@/components/listings-header"
 
-export default function TypePage({
+import { MediaForm } from "./_media-form"
+
+async function getListing(id: string): Promise<Listing> {
+  const res = await fetch(
+    `http://localhost:8000/api/listings/${id}?draft=true`,
+    {
+      cache: "no-cache",
+    }
+  )
+  if (!res.ok) {
+    throw new Error("Failed to fetch data")
+  }
+
+  return res.json()
+}
+
+export default async function TypePage({
   params: { id },
 }: {
   params: { id: string }
 }) {
-  const [files, setFiles] = useState<any[] | null>(null)
+  const listing = await getListing(id)
+  console.log("listing::: ", listing)
+  // const [files, setFiles] = useState<any[] | null>(null)
+
+  async function update(payload: Pick<Listing, "featureImage" | "images">) {
+    "use server"
+
+    await fetch(`http://localhost:8000/api/listings/${id}?draft=true`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+    redirect(`/listings/${id}/title`)
+  }
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">
       <ListingHeader />
@@ -26,10 +56,15 @@ export default function TypePage({
           Add some photos of your guesthouse
         </Title>
         <Paragraph className="text-muted-foreground">
-          You'll need 5 photos to get started. You can add more or make changes
-          later.
+          {
+            "You'll need 5 photos to get started. You can add more or make changes later."
+          }
         </Paragraph>
-        {files?.length ? (
+        <MediaForm
+          update={update}
+          listing={JSON.parse(JSON.stringify(listing))}
+        />
+        {/* {files?.length ? (
           <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
             {files?.map((file, i) => (
               <>
@@ -77,9 +112,9 @@ export default function TypePage({
               Choose at least 5 photos
             </Paragraph>
           </label>
-        )}
+        )} */}
       </section>
-      <ListingFooter progress={22}>
+      {/* <ListingFooter progress={22}>
         <Link
           href={`/listings/${id}/offerings`}
           className={buttonVariants({ variant: "link" })}
@@ -89,7 +124,7 @@ export default function TypePage({
         <Link href={"/listings/1/title"} className={buttonVariants({})}>
           Next
         </Link>
-      </ListingFooter>
+      </ListingFooter> */}
     </div>
   )
 }

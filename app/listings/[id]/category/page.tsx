@@ -7,8 +7,9 @@ import { Title } from "@/components/ui/title"
 import { ListingHeader } from "@/components/listings-header"
 
 import { CategoryForm } from "./_category-form"
+import { CategoryLoading } from "./_category-loading"
 
-export type CategoryLabel = (typeof CategoriesList)[number]["label"]
+export type CategoryLabel = typeof CategoriesList[number]["label"]
 
 async function getCategories() {
   const res = await fetch("http://localhost:8000/api/categories")
@@ -65,7 +66,7 @@ export default async function ListingCreate({
         <Title showAs={2} className="font-semibold">
           Which of these best describes your place?
         </Title>
-        <Suspense fallback={"Fetching categories..."}>
+        <Suspense fallback={<CategoryLoading />}>
           <CategoryForm
             categories={categories}
             update={update}
