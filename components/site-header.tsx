@@ -11,7 +11,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 export function SiteHeader() {
   const path = usePathname()
-  if (path?.includes("/listings/")) return null
+  if (path?.includes("/listings/create")) return null
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
       <div className="gutter flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">

@@ -15,7 +15,6 @@ type Props = {
 }
 
 export const ListingCard: React.FC<Props> = ({ listing }) => {
-  console.log("listing::: ", listing)
   return (
     <div className="w-full grid-cols-1">
       <div className="relative aspect-square overflow-hidden rounded-lg">
