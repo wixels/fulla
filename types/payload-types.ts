@@ -51,6 +51,7 @@ export interface Listing {
    */
   location?: [number, number]
   featureImage?: string | Media
+  price: number
   images: {
     image: string | Media
     id?: string

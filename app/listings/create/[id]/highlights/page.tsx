@@ -54,7 +54,7 @@ export default async function HighlightsPage({
       },
       body: JSON.stringify(payload),
     })
-    redirect(`/listings/${id}/description`)
+    redirect(`/listings/create/${id}/description`)
   }
 
   console.log("listing::: ", listing)
@@ -77,17 +77,6 @@ export default async function HighlightsPage({
           update={update}
         />
       </section>
-      <ListingFooter progress={22}>
-        <Link
-          href={"/listings/1/title"}
-          className={buttonVariants({ variant: "link" })}
-        >
-          Back
-        </Link>
-        <Link href={"/listings/1/description"} className={buttonVariants({})}>
-          Next
-        </Link>
-      </ListingFooter>
     </div>
   )
 }

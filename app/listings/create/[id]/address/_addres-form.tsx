@@ -73,7 +73,7 @@ export const AddressForm = ({
   })
   async function onSubmit(values: z.infer<typeof formSchema>) {
     compareObjects(listing, values)
-      ? router.push(`/listings/${listing.id}/basics`)
+      ? router.push(`/listings/create/${listing.id}/basics`)
       : startTransition(async () => await update(values))
   }
 
@@ -196,7 +196,7 @@ export const AddressForm = ({
         </div>
         <ListingFooter progress={22}>
           <Link
-            href={`/listings/${listing.id}/type`}
+            href={`/listings/create/${listing.id}/type`}
             className={buttonVariants({ variant: "link" })}
           >
             Back

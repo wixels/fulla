@@ -54,7 +54,7 @@ export default async function ListingCreate({
         _status: "draft",
       }),
     })
-    redirect(`listings/${id}/type`)
+    redirect(`listings/create/${id}/type`)
   }
 
   console.log("listing::: ", listing)

@@ -98,7 +98,7 @@ export const BasicsForm = ({
   async function onSubmit() {
     if (areAllCountsGreaterThanZero(state)) {
       if (compareObjects(listing, state)) {
-        router.push(`/listings/${id}/offerings`)
+        router.push(`/listings/create/${id}/offerings`)
       } else {
         startTransition(async () => await update(state))
       }
@@ -158,7 +158,7 @@ export const BasicsForm = ({
       ))}
       <ListingFooter progress={22}>
         <Link
-          href={`/listings/${id}/address`}
+          href={`/listings/create/${id}/address`}
           className={buttonVariants({ variant: "link" })}
         >
           Back

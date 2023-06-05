@@ -1,11 +1,15 @@
 import { redirect } from "next/navigation"
 
 import { Listing } from "@/types/payload-types"
-import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { ListingHeader } from "@/components/listings-header"
 
-import { TitleForm } from "./_title-form"
+import { BasicsForm } from "./_basics-form"
+
+export type BasicsType = Pick<
+  Listing,
+  "bathroomCount" | "bedCount" | "roomCount" | "guestCount"
+>
 
 async function getListing(id: string): Promise<Listing> {
   const res = await fetch(
@@ -21,14 +25,14 @@ async function getListing(id: string): Promise<Listing> {
   return res.json()
 }
 
-export default async function ListingTitle({
+export default async function TypePage({
   params: { id },
 }: {
   params: { id: string }
 }) {
   const listing = await getListing(id)
 
-  async function update(payload: { title: string }) {
+  async function update(payload: BasicsType) {
     "use server"
 
     await fetch(`http://localhost:8000/api/listings/${id}?draft=true`, {
@@ -38,21 +42,17 @@ export default async function ListingTitle({
       },
       body: JSON.stringify(payload),
     })
-    redirect(`/listings/${id}/highlights`)
+    redirect(`/listings/create/${id}/offerings`)
   }
-
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start lg:justify-center">
       <ListingHeader />
-      <section className="mx-auto -mt-11 w-full max-w-xl">
-        <Title style={{ marginBottom: 0 }} showAs={2} className="font-semibold">
-          {"Now, let's give your home a title"}
+      <section className="mx-auto -mt-11 flex w-full max-w-xl flex-col gap-8">
+        <Title showAs={2} className="font-semibold">
+          Share some basics about your place
         </Title>
-        <Paragraph className="mt-2 text-muted-foreground">
-          Short titles work best. Have fun with it—you can always change it
-          later.
-        </Paragraph>
-        <TitleForm
+        <BasicsForm
+          id={id}
           update={update}
           listing={JSON.parse(JSON.stringify(listing))}
         />

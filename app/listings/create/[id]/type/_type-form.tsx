@@ -40,7 +40,7 @@ export const TypeForm = ({
   async function onSubmit({ typeId }: z.infer<typeof formSchema>) {
     if (typeId) {
       if (listing.type && typeId === listing.type.id) {
-        router.push(`/listings/${listing.id}/address`)
+        router.push(`/listings/create/${listing.id}/address`)
       } else {
         startTransition(async () => await update(typeId))
       }
@@ -66,7 +66,7 @@ export const TypeForm = ({
             value={type.id}
             {...form.register("typeId")}
           />
-          <div className="bg-background flex cursor-pointer gap-2 rounded-lg border p-6 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
+          <div className="flex cursor-pointer gap-2 rounded-lg border bg-background p-6 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
             <div className="grow">
               <Paragraph>{type.label}</Paragraph>
               <Paragraph className="text-muted-foreground" size={"sm"}>
@@ -80,7 +80,7 @@ export const TypeForm = ({
       ))}
       <ListingFooter progress={22}>
         <Link
-          href={`/listings/${id}/category`}
+          href={`/listings/create/${id}/category`}
           className={buttonVariants({ variant: "link" })}
         >
           Back

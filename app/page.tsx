@@ -29,7 +29,7 @@ export default function IndexPage() {
               className="ml-2 border-none"
               placeholder="Find your next home"
             />
-            <button className="bg-primary text-background flex aspect-square h-full items-center justify-center rounded-full">
+            <button className="flex aspect-square h-full items-center justify-center rounded-full bg-primary text-background">
               <Search size={14} />
             </button>
           </div>
@@ -44,7 +44,7 @@ export default function IndexPage() {
               Revolutionize your renting
             </button>
           </div>
-          <div className="bg-foreground text-background flex h-16 items-center justify-between rounded-full px-8">
+          <div className="flex h-16 items-center justify-between rounded-full bg-foreground px-8 text-background">
             <Title className="font-semibold" level={5}>
               2,000+
             </Title>
@@ -61,13 +61,13 @@ export default function IndexPage() {
         >
           Discover your Home
         </Title>
-        <Paragraph size={"sm"} className="text-muted-foreground pb-6">
+        <Paragraph size={"sm"} className="pb-6 text-muted-foreground">
           This will be some subtext
         </Paragraph>
         <div className="relative">
           {/* eslint-disable-next-line tailwindcss/no-contradicting-classname */}
-          <div className="from-background absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center gap-2 bg-gradient-to-l from-[35%] pl-24">
-            <button className="bg-background text-foreground rounded-full border p-2 shadow-lg">
+          <div className="absolute right-0 top-1/2 flex h-full -translate-y-1/2 items-center gap-2 bg-gradient-to-l from-background from-[35%] pl-24">
+            <button className="rounded-full border bg-background p-2 text-foreground shadow-lg">
               <Icons.arrowRight size={10} />
             </button>
             <FiltersModal>

@@ -11,7 +11,7 @@ export const siteConfig = {
     },
     {
       title: "Create Listing",
-      href: "/listings/home",
+      href: "/listings/create/pre",
     },
   ],
   links: {

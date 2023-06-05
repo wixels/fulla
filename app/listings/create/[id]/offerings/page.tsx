@@ -61,7 +61,7 @@ export default async function OfferingsPage({
       },
       body: JSON.stringify(payload),
     })
-    redirect(`/listings/${id}/media`)
+    redirect(`/listings/create/${id}/media`)
   }
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">

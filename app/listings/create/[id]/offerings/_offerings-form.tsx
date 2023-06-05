@@ -55,7 +55,7 @@ export const OfferingsForm = ({
         data
       )
     ) {
-      router.push(`/listings/${listing.id}/media`)
+      router.push(`/listings/create/${listing.id}/media`)
     } else {
       startTransition(async () => await update(data))
     }
@@ -106,7 +106,7 @@ export const OfferingsForm = ({
       </div>
       <ListingFooter progress={22}>
         <Link
-          href={`/listings/${listing.id}/basics`}
+          href={`/listings/create/${listing.id}/basics`}
           className={buttonVariants({ variant: "link" })}
         >
           Back

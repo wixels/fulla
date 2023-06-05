@@ -56,7 +56,7 @@ export default async function TypePage({
       },
       body: JSON.stringify(payload),
     })
-    redirect(`/listings/${id}/basics`)
+    redirect(`/listings/create/${id}/basics`)
   }
 
   return (

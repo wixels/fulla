@@ -48,7 +48,7 @@ export default async function TypePage({
     //   },
     //   body: JSON.stringify(payload),
     // })
-    // redirect(`/listings/${id}/title`)
+    // redirect(`/listings/create/${id}/title`)
   }
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">

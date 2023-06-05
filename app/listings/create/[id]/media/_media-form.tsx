@@ -180,7 +180,7 @@ export const MediaForm = ({
       </div>
       <ListingFooter progress={22}>
         <Link
-          href={`/listings/${listing.id}/offerings`}
+          href={`/listings/create/${listing.id}/offerings`}
           className={buttonVariants({ variant: "link" })}
         >
           Back
@@ -189,7 +189,7 @@ export const MediaForm = ({
           <Tooltip>
             <TooltipTrigger>
               <Link
-                href={`/listings/${listing.id}/title`}
+                href={`/listings/create/${listing.id}/title`}
                 className={buttonVariants({})}
               >
                 Next

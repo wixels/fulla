@@ -46,7 +46,7 @@ export const CategoryForm = ({
   async function onSubmit({ categoryId }: z.infer<typeof formSchema>) {
     if (categoryId) {
       categoryId === listing.category?.id
-        ? router.push(`/listings/${listing.id}/type`)
+        ? router.push(`/listings/create/${listing.id}/type`)
         : startTransition(async () => await update(categoryId))
     } else {
       toast({ description: "Please select a category" })

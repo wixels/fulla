@@ -49,7 +49,7 @@ export default async function TypePage({
         _status: "draft",
       }),
     })
-    redirect(`/listings/${id}/address`)
+    redirect(`/listings/create/${id}/address`)
   }
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start lg:justify-center">

@@ -21,7 +21,7 @@ import { ListingFooter } from "@/components/listing-footer"
 import { Spin } from "@/components/spin"
 
 type Props = {
-  update: (payload: string) => Promise<void>
+  update: (payload: { title: string }) => Promise<void>
   listing: Listing
 }
 
@@ -49,7 +49,7 @@ export const TitleForm: React.FC<Props> = ({ update, listing }) => {
 
   function onSubmit(values: z.infer<typeof FormSchema>) {
     if (listing.title === values.title) {
-      router.push(`/listings/${listing.id}/highlights`)
+      router.push(`/listings/create/${listing.id}/highlights`)
     } else {
       // @ts-ignore
       startTransition(async () => await update(values))
@@ -76,7 +76,7 @@ export const TitleForm: React.FC<Props> = ({ update, listing }) => {
         />
         <ListingFooter progress={22}>
           <Link
-            href={`/listings/${listing.id}/media`}
+            href={`/listings/create/${listing.id}/media`}
             className={buttonVariants({ variant: "link" })}
           >
             Back
