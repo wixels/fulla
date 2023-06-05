@@ -14,6 +14,7 @@ export interface Config {
     offerings: Offering
     amenities: Amenity
     media: Media
+    highlights: Highlight
   }
   globals: {}
 }
@@ -34,6 +35,7 @@ export interface Listing {
   description: string
   category: string | Category
   offerings: string[] | Offering[]
+  highlights: string[] | Highlight[]
   author: string | User
   amenities: string[] | Amenity[]
   type: string | Type
@@ -70,6 +72,13 @@ export interface Category {
 export interface Offering {
   id: string
   label: string
+  updatedAt: string
+  createdAt: string
+}
+export interface Highlight {
+  id: string
+  label: string
+  icon: string
   updatedAt: string
   createdAt: string
 }

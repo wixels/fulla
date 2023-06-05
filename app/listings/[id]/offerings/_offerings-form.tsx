@@ -73,7 +73,7 @@ export const OfferingsForm = ({
               className="peer hidden"
               id={id}
             />
-            <div className="bg-background flex cursor-pointer flex-col gap-2 rounded-lg border p-4 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
+            <div className="flex cursor-pointer flex-col gap-2 rounded-lg border bg-background p-4 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
               {/* @ts-ignore */}
               {Icons?.[label]}
               <Paragraph size={"sm"}>{label}</Paragraph>
@@ -96,7 +96,7 @@ export const OfferingsForm = ({
               className="peer hidden"
               id={id}
             />
-            <div className="bg-background flex cursor-pointer flex-col gap-2 rounded-lg border p-4 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
+            <div className="flex cursor-pointer flex-col gap-2 rounded-lg border bg-background p-4 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
               {/* @ts-ignore */}
               {Icons?.[label]}
               <Paragraph size={"sm"}>{label}</Paragraph>

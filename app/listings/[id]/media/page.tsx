@@ -26,6 +26,7 @@ async function getListing(id: string): Promise<Listing> {
 
   return res.json()
 }
+type FileObject = File & { preview: string }
 
 export default async function TypePage({
   params: { id },
@@ -36,17 +37,18 @@ export default async function TypePage({
   console.log("listing::: ", listing)
   // const [files, setFiles] = useState<any[] | null>(null)
 
-  async function update(payload: Pick<Listing, "featureImage" | "images">) {
+  async function update(payload: FileObject[]) {
     "use server"
 
-    await fetch(`http://localhost:8000/api/listings/${id}?draft=true`, {
-      method: "PATCH",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    })
-    redirect(`/listings/${id}/title`)
+    console.log("payload::: ", payload)
+    // await fetch(`http://localhost:8000/api/listings/${id}?draft=true`, {
+    //   method: "PATCH",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify(payload),
+    // })
+    // redirect(`/listings/${id}/title`)
   }
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">

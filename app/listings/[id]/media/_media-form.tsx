@@ -1,6 +1,6 @@
 "use client"
 
-import React, { ChangeEvent, useState } from "react"
+import React, { ChangeEvent, useState, useTransition } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ImageIcon, Menu, MoreHorizontal, Plus } from "lucide-react"
@@ -18,7 +18,14 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { ListingFooter } from "@/components/listing-footer"
+import { Spin } from "@/components/spin"
 
 type FileObject = File & { preview: string }
 
@@ -26,9 +33,10 @@ export const MediaForm = ({
   update,
   listing,
 }: {
-  update: (payload: Pick<Listing, "featureImage" | "images">) => Promise<void>
+  update: (payload: FileObject[]) => Promise<void>
   listing: Listing
 }) => {
+  const [pending, startTransition] = useTransition()
   const [files, setFiles] = useState<FileObject[]>([])
 
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -65,6 +73,10 @@ export const MediaForm = ({
     })
   }
 
+  function onSubmit() {
+    startTransition(async () => await update(files))
+  }
+
   return (
     <div>
       {files.length === 0 ? (
@@ -84,22 +96,23 @@ export const MediaForm = ({
             Choose at least 5 photos
           </Paragraph>
         </label>
-      ) : null}
-      <label
-        className={buttonVariants({
-          variant: "outline",
-          className: "mb-6 flex w-full gap-5 cursor-pointer",
-        })}
-      >
-        <input
-          className="hidden"
-          type="file"
-          accept="image/*"
-          multiple
-          onChange={handleFileChange}
-        />
-        <Plus /> Add More
-      </label>
+      ) : (
+        <label
+          className={buttonVariants({
+            variant: "outline",
+            className: "mb-6 flex w-full gap-5 cursor-pointer",
+          })}
+        >
+          <input
+            className="hidden"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFileChange}
+          />
+          <Plus /> Add More
+        </label>
+      )}
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
         {files.map((file, index) => (
           <div
@@ -172,10 +185,30 @@ export const MediaForm = ({
         >
           Back
         </Link>
-        {/* <Link href={"/listings/1/title"} className={buttonVariants({})}>
-          Next
-        </Link> */}
-        <Button type="submit">{"Next"}</Button>
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <Link
+                href={`/listings/${listing.id}/title`}
+                className={buttonVariants({})}
+              >
+                Next
+              </Link>
+              {/* <Button
+                onClick={onSubmit}
+                disabled={files?.length < 5}
+                type="submit"
+              >
+                {pending ? <Spin /> : "Next"}
+              </Button> */}
+            </TooltipTrigger>
+            {files.length < 5 ? (
+              <TooltipContent>
+                <Paragraph size={"sm"}>Please upload 5 images</Paragraph>
+              </TooltipContent>
+            ) : null}
+          </Tooltip>
+        </TooltipProvider>
       </ListingFooter>
     </div>
   )
