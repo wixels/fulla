@@ -56,9 +56,6 @@ export default async function HighlightsPage({
     })
     redirect(`/listings/create/${id}/description`)
   }
-
-  console.log("listing::: ", listing)
-  console.log("highlights::: ", highlights)
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start lg:justify-center">
       <ListingHeader />

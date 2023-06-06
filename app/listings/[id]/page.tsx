@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
@@ -21,9 +22,11 @@ import { Title } from "@/components/ui/title"
 import { ListingReviews } from "./_listing-reviews"
 
 export default async function ListingPage() {
+  const grad =
+    "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
   return (
-    <div className="gutter flex min-h-screen flex-col gap-16 lg:flex-row">
-      <div className="section-top section-padding-bottom flex w-[40%] flex-col gap-12">
+    <div className="gutter flex min-h-screen flex-col flex-wrap gap-16 lg:flex-row">
+      <div className="section-top section-padding-bottom order-2 flex w-full flex-col gap-12 lg:order-1 lg:w-[40%]">
         <header>
           <Title className="font-bold" style={{ margin: 0 }}>
             Soho Apartment
@@ -99,7 +102,7 @@ export default async function ListingPage() {
         </div>
         <ListingReviews />
       </div>
-      <div className="section-top relative flex grow flex-col flex-wrap gap-6">
+      <div className="section-top relative order-1 flex aspect-video grow flex-col flex-wrap gap-6 lg:order-2 lg:aspect-auto">
         <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted-foreground">
           <Image
             fill
@@ -110,7 +113,7 @@ export default async function ListingPage() {
             }
           />
         </div>
-        <div className="flex w-full gap-6">
+        <div className="hidden w-full gap-6 lg:flex">
           <div className="relative aspect-video w-1/2 overflow-hidden rounded-lg bg-muted-foreground">
             <Image
               fill
@@ -132,7 +135,7 @@ export default async function ListingPage() {
             />
           </div>
         </div>
-        <div className="flex w-full gap-6">
+        <div className="hidden w-full gap-6 lg:flex">
           <div className="relative aspect-video w-3/4 grow overflow-hidden rounded-lg bg-muted-foreground">
             <Image
               fill
@@ -154,6 +157,16 @@ export default async function ListingPage() {
             />
           </div>
         </div>
+      </div>
+      <div className="section order-3 w-full">
+        <Title level={3}>{"Where you'll be"}</Title>
+        <Separator />
+        <div
+          className={cn([
+            grad,
+            "mt-8 aspect-video w-full rounded-lg opacity-30",
+          ])}
+        />
       </div>
     </div>
   )

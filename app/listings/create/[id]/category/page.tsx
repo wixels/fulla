@@ -57,8 +57,6 @@ export default async function ListingCreate({
     redirect(`listings/create/${id}/type`)
   }
 
-  console.log("listing::: ", listing)
-
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">
       <ListingHeader />

@@ -34,7 +34,6 @@ export default async function TypePage({
   params: { id: string }
 }) {
   const listing = await getListing(id)
-  console.log("listing::: ", listing)
   // const [files, setFiles] = useState<any[] | null>(null)
 
   async function update(payload: FileObject[]) {

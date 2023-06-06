@@ -11,6 +11,7 @@ import { FiltersModal } from "@/components/filters-modal"
 import { Icons } from "@/components/icons"
 
 export default function IndexPage() {
+  console.log(process.env.NEXT_PUBLIC_API_URL as string)
   return (
     <div>
       <section className="gutter section grid grid-cols-1 gap-8 md:grid-cols-2">
