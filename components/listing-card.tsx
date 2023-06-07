@@ -18,14 +18,14 @@ export const ListingCard: React.FC<Props> = ({ listing }) => {
     <Link href={`/listings/${listing?.id}`} className="w-full grid-cols-1">
       <div className="relative aspect-square overflow-hidden rounded-lg">
         <div className="absolute inset-x-0 top-0 z-[1] flex w-full items-center justify-between p-8">
-          <Badge
+          {/* <Badge
             size={"lg"}
             variant={"border"}
             color={listing?._status === "draft" ? "green" : "blue"}
             style={{ color: "white" }}
           >
             {listing?._status === "draft" ? "New" : ""}
-          </Badge>
+          </Badge> */}
           <div className="flex cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/20 p-2 text-white backdrop-blur-sm transition-colors hover:text-red-500">
             <Heart size={14} />
           </div>
@@ -46,7 +46,9 @@ export const ListingCard: React.FC<Props> = ({ listing }) => {
         >
           {listing?.title}
         </Title>
-        <Badge>R{listing?.price} / month</Badge>
+        <Badge>
+          R{new Intl.NumberFormat().format(listing?.price || 0)} / month
+        </Badge>
       </div>
       <Paragraph size={"sm"} className="text-muted-foreground">
         {listing?.suburb}, {listing?.province}
