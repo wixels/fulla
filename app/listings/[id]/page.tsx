@@ -1,19 +1,6 @@
 import Image from "next/image"
-import {
-  Bath,
-  BedSingle,
-  Calendar,
-  Check,
-  ChevronRight,
-  PersonStanding,
-  Search,
-  Star,
-  StarIcon,
-  StarOffIcon,
-  Users,
-} from "lucide-react"
+import { Bath, BedSingle, Calendar, ChevronRight, Users } from "lucide-react"
 
-import { cn } from "@/lib/utils"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
@@ -28,8 +15,18 @@ import { ListingReviews } from "./_listing-reviews"
 export default async function ListingPage() {
   return (
     <div>
-      <div className="gutter section-padding-bottom flex min-h-screen flex-col flex-wrap gap-16 lg:flex-row">
-        <div className="section-top order-2 flex w-full flex-col gap-12 lg:order-1 lg:w-[40%]">
+      <div className="gutter section-padding-bottom relative flex min-h-screen flex-col flex-wrap gap-16 lg:flex-row">
+        <div className="section-top flex w-full flex-col gap-12 lg:w-[40%]">
+          <div className="relative flex aspect-video w-full overflow-hidden rounded-lg bg-muted-foreground lg:hidden">
+            <Image
+              fill
+              className="object-cover"
+              alt="house primary image"
+              src={
+                "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2274&q=80"
+              }
+            />
+          </div>
           <header>
             <Title className="font-bold" style={{ margin: 0 }}>
               Soho Apartment

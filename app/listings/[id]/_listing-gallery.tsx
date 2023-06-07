@@ -3,7 +3,7 @@ import Image from "next/image"
 type Props = {}
 export const ListingGallery: React.FC<Props> = ({}) => {
   return (
-    <div className="section-top relative order-1 flex aspect-video grow flex-col flex-wrap gap-6 lg:order-2 lg:aspect-auto">
+    <div className="section-top hidden aspect-video grow flex-col flex-wrap gap-6 lg:flex lg:aspect-auto">
       <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted-foreground">
         <Image
           fill
@@ -14,7 +14,7 @@ export const ListingGallery: React.FC<Props> = ({}) => {
           }
         />
       </div>
-      <div className="hidden w-full gap-6 lg:flex">
+      <div className="w-full gap-6 lg:flex">
         <div className="relative aspect-video w-1/2 overflow-hidden rounded-lg bg-muted-foreground">
           <Image
             fill
@@ -36,7 +36,7 @@ export const ListingGallery: React.FC<Props> = ({}) => {
           />
         </div>
       </div>
-      <div className="hidden w-full gap-6 lg:flex">
+      <div className="w-full gap-6 lg:flex">
         <div className="relative aspect-video w-3/4 grow overflow-hidden rounded-lg bg-muted-foreground">
           <Image
             fill

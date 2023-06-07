@@ -7,7 +7,7 @@ export const ListingMap: React.FC<Props> = ({}) => {
   const grad =
     "bg-gradient-to-r from-indigo-500 from-10% via-sky-500 via-30% to-emerald-500 to-90%"
   return (
-    <div className="section-top order-3 w-full">
+    <div className="section-top w-full">
       <Title level={3}>{"Where you'll be"}</Title>
       <Separator />
       <div
