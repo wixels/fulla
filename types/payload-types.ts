@@ -20,6 +20,9 @@ export interface Config {
 }
 export interface User {
   id: string
+  firstName?: string
+  lastName?: string
+  roles?: ("admin" | "user")[]
   updatedAt: string
   createdAt: string
   email?: string

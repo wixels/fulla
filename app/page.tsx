@@ -1,7 +1,9 @@
 import Image from "next/image"
 import { Heart, Search } from "lucide-react"
 
+import { Listing } from "@/types/payload-types"
 import { CategoriesList } from "@/lib/categories"
+import { rest } from "@/lib/rest"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -9,9 +11,17 @@ import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { FiltersModal } from "@/components/filters-modal"
 import { Icons } from "@/components/icons"
+import { ListingCard } from "@/components/listing-card"
 
-export default function IndexPage() {
-  console.log(process.env.NEXT_PUBLIC_API_URL as string)
+export default async function IndexPage() {
+  const req = await fetch("http://localhost:3000/api/listings/published")
+  const res = await req.json()
+  const {
+    data: { docs: listings },
+  }: { data: { docs: Listing[] } } = res
+
+  console.log("listings::: ", listings)
+
   return (
     <div>
       <section className="gutter section grid grid-cols-1 gap-8 md:grid-cols-2">
@@ -47,7 +57,7 @@ export default function IndexPage() {
           </div>
           <div className="flex h-16 items-center justify-between rounded-full bg-foreground px-8 text-background">
             <Title className="font-semibold" level={5}>
-              2,000+
+              {listings.length}+
             </Title>
             <Title level={5}>Unique Places</Title>
           </div>
@@ -91,40 +101,9 @@ export default function IndexPage() {
         </div>
       </section>
       <section className="gutter section grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        <div className="w-full grid-cols-1">
-          <div className="relative aspect-square overflow-hidden rounded-lg">
-            <div className="absolute inset-x-0 top-0 z-[1] flex w-full items-center justify-between p-8">
-              <Badge size={"lg"} variant={"border"} style={{ color: "white" }}>
-                Rating: 4.5
-              </Badge>
-              <div className="flex cursor-pointer items-center justify-center rounded-full border border-white/20 bg-white/20 p-2 text-white backdrop-blur-sm transition-colors hover:text-red-500">
-                <Heart size={14} />
-              </div>
-            </div>
-            <Image
-              fill
-              className="object-cover"
-              alt="house primary image"
-              src={
-                "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-              }
-            />
-          </div>
-          <div className="mt-4 flex flex-row items-center justify-between gap-10">
-            <Title
-              className="line-clamp-2 grow"
-              style={{ margin: 0 }}
-              level={3}
-              showAs={5}
-            >
-              Listing Title
-            </Title>
-            <Badge>R3,352 / month</Badge>
-          </div>
-          <Paragraph size={"sm"} className="text-muted-foreground">
-            Johannesburg
-          </Paragraph>
-        </div>
+        {listings.map((listing, i) => (
+          <ListingCard listing={JSON.parse(JSON.stringify(listing))} />
+        ))}
       </section>
     </div>
   )

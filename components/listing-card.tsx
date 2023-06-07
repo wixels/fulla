@@ -1,7 +1,6 @@
-"use client"
-
 import React from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { Heart } from "lucide-react"
 
 import { Listing, Media } from "@/types/payload-types"
@@ -16,7 +15,7 @@ type Props = {
 
 export const ListingCard: React.FC<Props> = ({ listing }) => {
   return (
-    <div className="w-full grid-cols-1">
+    <Link href={`/listings/${listing?.id}`} className="w-full grid-cols-1">
       <div className="relative aspect-square overflow-hidden rounded-lg">
         <div className="absolute inset-x-0 top-0 z-[1] flex w-full items-center justify-between p-8">
           <Badge
@@ -52,6 +51,6 @@ export const ListingCard: React.FC<Props> = ({ listing }) => {
       <Paragraph size={"sm"} className="text-muted-foreground">
         {listing?.suburb}, {listing?.province}
       </Paragraph>
-    </div>
+    </Link>
   )
 }
