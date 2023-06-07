@@ -58,7 +58,7 @@ export default async function ListingCreate() {
               {listings.map((listing: Listing) => (
                 <li>
                   <Link
-                    href={`/listings/${listing?.id}/category`}
+                    href={`/listings/create/${listing?.id}/category`}
                     className="flex items-center gap-6 rounded-lg border p-6 hover:border-zinc-600 hover:bg-stone-100"
                   >
                     <Button variant={"secondary"}>

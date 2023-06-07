@@ -17,6 +17,7 @@ export interface Config {
     highlights: Highlight
     "landlord-reviews": LandlordReview
     "listing-reviews": ListingReview
+    favourites: Favourite
   }
   globals: {}
 }
@@ -159,6 +160,13 @@ export interface ListingReview {
   review: string
   rating: number
   listing: string | Listing
+  updatedAt: string
+  createdAt: string
+}
+export interface Favourite {
+  id: string
+  listing?: string | Listing
+  user?: string | User
   updatedAt: string
   createdAt: string
 }

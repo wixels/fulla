@@ -1,19 +1,15 @@
 import { cookies } from "next/headers"
 import { Search } from "lucide-react"
-import qs from "qs"
 
-import { Listing } from "@/types/payload-types"
+import { Favourite, Listing } from "@/types/payload-types"
 import { CategoriesList } from "@/lib/categories"
-import { rest } from "@/lib/rest"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { FiltersModal } from "@/components/filters-modal"
 import { Icons } from "@/components/icons"
-import { ListingCard } from "@/components/listing-card"
-
-import { TestData } from "./_test"
+import { PublishedListingCard } from "@/components/listing-card/published-listing-card"
 
 async function getListings() {
   const req = await fetch("http://localhost:3000/api/listings/published")
@@ -25,32 +21,34 @@ async function getListings() {
   return data
 }
 async function getFavourites() {
-  // if (!req.ok) throw new Error("Unable to complete request")
-
-  // const res = await req.json()
-
-  const req = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users/me`, {
-    method: "GET",
+  const req = await fetch("http://localhost:3000/api/listings/favourites", {
+    cache: "no-store",
     headers: {
-      "Content-Type": "application/json",
-      Authorization:
-        "JWT eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImRhbkB3aXhlbHMuY29tIiwiaWQiOiI2NDc1ZGRiOTk2NGZmZGIyOWM2ZDdkMzUiLCJjb2xsZWN0aW9uIjoidXNlcnMiLCJpYXQiOjE2ODYxMzU3NDIsImV4cCI6MTY4NjE2NDU0Mn0.93duC4TZ8rI1kijwRky_rfvjhCHrxSPXBBWBba9E3Lw",
+      Authorization: `JWT ${cookies().get("payload-token")}`,
     },
   })
-  const res = await req.json()
-  console.log("res::: ", res)
-  return null
+
+  if (!req.ok) {
+    throw new Error("Failed to fetch data")
+  }
+  const { data } = await req.json()
+  return data
 }
 
 export default async function IndexPage() {
-  const [{ docs: listings }, favourites] = await Promise.all([
+  const [{ docs: listings }, { docs: favourites }] = await Promise.all([
     (await getListings()) as { docs: Listing[] },
-    await getFavourites(),
+    (await getFavourites()) as { docs: Favourite & { listing: Listing }[] },
   ])
+
+  console.log("favourites::: ", favourites)
+
+  const favoritesMap = new Map(favourites.map((fav) => [fav.listing.id, fav]))
+
+  console.log("favoritesSet::: ", favoritesMap)
 
   return (
     <div>
-      <TestData />
       <section className="gutter section grid grid-cols-1 gap-8 md:grid-cols-2">
         <div className="grow">
           <Title className="font-semibold">
@@ -128,8 +126,12 @@ export default async function IndexPage() {
         </div>
       </section>
       <section className="gutter section grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {listings.map((listing, i) => (
-          <ListingCard listing={JSON.parse(JSON.stringify(listing))} />
+        {listings.map((listing) => (
+          <PublishedListingCard
+            key={listing.id}
+            listing={JSON.parse(JSON.stringify(listing))}
+            favorite={favoritesMap.get(listing.id)}
+          />
         ))}
       </section>
     </div>

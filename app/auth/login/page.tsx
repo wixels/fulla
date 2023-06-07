@@ -1,13 +1,12 @@
 "use client"
 
-import React, { useCallback, useEffect, useState, useTransition } from "react"
-import Link from "next/link"
-import { redirect, useRouter } from "next/navigation"
+import React, { useCallback, useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { useAuth } from "@/hooks/use-auth"
+import { rest } from "@/lib/rest"
 import { toast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import {
@@ -19,6 +18,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Login } from "@/types/authTypes"
 
 const schema = z.object({
   email: z
@@ -30,15 +30,21 @@ const schema = z.object({
 const Login: React.FC = () => {
   const [error, setError] = useState("")
   const [pending, startTransition] = useTransition()
-  const { login } = useAuth()
 
   const router = useRouter()
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
   })
+
+  const login = useCallback<Login>(async (args) => {
+    const user = await rest(
+      `${process.env.NEXT_PUBLIC_API_URL as string}/api/users/login`,
+      args
+    )
+    return user
+  }, [])
   async function onSubmit(values: z.infer<typeof schema>) {
     try {
-      // @ts-ignore
       await login(values)
       router.push("/")
     } catch (err) {

@@ -5,7 +5,7 @@ import { Listing } from "@/types/payload-types"
 import { buttonVariants } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
-import { ListingCard } from "@/components/listing-card"
+import { DraftListingCard } from "@/components/listing-card/draft-listing-card"
 import { ListingHeader } from "@/components/listings-header"
 
 async function getListing(id: string): Promise<Listing> {
@@ -55,7 +55,7 @@ export default async function ListingPrice({
         </Paragraph>
         <div className="mt-12 flex items-start gap-16">
           <div className="w-full lg:w-1/2">
-            <ListingCard listing={JSON.parse(JSON.stringify(listing))} />
+            <DraftListingCard listing={JSON.parse(JSON.stringify(listing))} />
           </div>
           <div className="h-96 w-full lg:w-1/2">
             <Title className="font-semibold" level={4}>

@@ -16,7 +16,10 @@ export type Create = (args: {
   lastName: string
 }) => Promise<User> // eslint-disable-line no-unused-vars
 
-export type Login = (args: { email: string; password: string }) => Promise<User> // eslint-disable-line no-unused-vars
+export type Login = (args: {
+  email: string
+  password: string
+}) => Promise<User | null> // eslint-disable-line no-unused-vars
 
 export type Logout = () => Promise<void>
 
