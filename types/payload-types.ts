@@ -15,6 +15,8 @@ export interface Config {
     amenities: Amenity
     media: Media
     highlights: Highlight
+    "landlord-reviews": LandlordReview
+    "listing-reviews": ListingReview
   }
   globals: {}
 }
@@ -22,6 +24,10 @@ export interface User {
   id: string
   firstName?: string
   lastName?: string
+  favourites?: {
+    listing?: string | Listing
+    id?: string
+  }[]
   roles?: ("admin" | "user")[]
   updatedAt: string
   createdAt: string
@@ -137,4 +143,22 @@ export interface Media {
       filename?: string
     }
   }
+}
+export interface LandlordReview {
+  id: string
+  author: string | User
+  review: string
+  rating: number
+  landlord: string | User
+  updatedAt: string
+  createdAt: string
+}
+export interface ListingReview {
+  id: string
+  author: string | User
+  review: string
+  rating: number
+  listing: string | Listing
+  updatedAt: string
+  createdAt: string
 }
