@@ -15,7 +15,7 @@ async function favourite({
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${cookies().get("payload-token")}`,
+        Authorization: `JWT ${cookies().get("payload-token")?.value}`,
       },
       body: JSON.stringify({
         listing: listingId,
@@ -37,7 +37,7 @@ async function unfavourite({ favoriteId }: { favoriteId: string }) {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `JWT ${cookies().get("payload-token")}`,
+          Authorization: `JWT ${cookies().get("payload-token")?.value}`,
         },
       }
     )

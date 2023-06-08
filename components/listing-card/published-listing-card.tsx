@@ -1,5 +1,3 @@
-"use server"
-
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -13,13 +11,12 @@ import { HandleFavouriteButton } from "./handle-favourite-button"
 
 type Props = {
   listing?: Listing & { featureImage: Media }
-  favorite?: Favourite
+  favorite?: Favourite | null
 }
 export const PublishedListingCard: React.FC<Props> = ({
   listing,
   favorite,
 }) => {
-  console.log("favorite from pub listing card::: ", favorite)
   return (
     <Link href={`/listings/${listing?.id}`} className="w-full grid-cols-1">
       <div className="relative aspect-square overflow-hidden rounded-lg">

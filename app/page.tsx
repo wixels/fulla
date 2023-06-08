@@ -12,40 +12,39 @@ import { Icons } from "@/components/icons"
 import { PublishedListingCard } from "@/components/listing-card/published-listing-card"
 
 async function getListings() {
-  const req = await fetch("http://localhost:3000/api/listings/published")
+  const res = await fetch("http://localhost:3000/api/listings/published")
 
-  if (!req.ok) {
+  if (!res.ok) {
     throw new Error("Failed to fetch data")
   }
-  const { data } = await req.json()
+  const { data } = await res.json()
   return data
 }
 async function getFavourites() {
-  const req = await fetch("http://localhost:3000/api/listings/favourites", {
-    cache: "no-store",
-    headers: {
-      Authorization: `JWT ${cookies().get("payload-token")}`,
-    },
-  })
+  const token = cookies().get("payload-token")?.value
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL as string}/api/favourites`,
+    {
+      cache: "no-store",
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    }
+  )
 
-  if (!req.ok) {
-    throw new Error("Failed to fetch data")
-  }
-  const { data } = await req.json()
+  const data = await res.json()
   return data
 }
 
 export default async function IndexPage() {
-  const [{ docs: listings }, { docs: favourites }] = await Promise.all([
-    (await getListings()) as { docs: Listing[] },
-    (await getFavourites()) as { docs: Favourite & { listing: Listing }[] },
-  ])
+  const [{ docs: listings }, { docs: favourites }]: [
+    { docs: Listing[] },
+    { docs: Favourite[] & { listing: Listing } }
+  ] = await Promise.all([getListings(), getFavourites()])
 
-  console.log("favourites::: ", favourites)
-
-  const favoritesMap = new Map(favourites.map((fav) => [fav.listing.id, fav]))
-
-  console.log("favoritesSet::: ", favoritesMap)
+  const favoritesMap = new Map(
+    favourites?.map((fav: Favourite) => [fav.listing.id, fav])
+  )
 
   return (
     <div>

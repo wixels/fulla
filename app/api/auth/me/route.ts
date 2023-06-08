@@ -8,7 +8,7 @@ export async function GET() {
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `JWT ${cookies().get("payload-token")}`,
+        Authorization: `JWT ${cookies().get("payload-token")?.value}`,
       },
     }
   )
