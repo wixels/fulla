@@ -4,6 +4,7 @@ import React, { useEffect, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -58,8 +59,17 @@ export const CategoryForm = ({
       className="grid grid-cols-2 gap-4 lg:grid-cols-3"
       onSubmit={handleSubmit(onSubmit)}
     >
-      {categories.map(({ label, id }) => (
-        <div key={label}>
+      {categories.map(({ label, id }, i) => (
+        <motion.div
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: Number(`0.${i + 1}`),
+            duration: 0.95,
+            ease: [0.165, 0.84, 0.44, 1],
+          }}
+          key={label}
+        >
           <input
             type="radio"
             className="peer hidden"
@@ -76,7 +86,7 @@ export const CategoryForm = ({
             {Icons?.[label]}
             <Paragraph size={"sm"}>{label}</Paragraph>
           </label>
-        </div>
+        </motion.div>
       ))}
       <ListingFooter progress={11}>
         <Link

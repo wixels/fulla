@@ -38,15 +38,6 @@ export const SiteFooter: React.FC<Props> = ({}) => {
                       href="#"
                       className="text-muted-foreground transition hover:opacity-75"
                     >
-                      1on1 Coaching
-                    </a>
-                  </li>
-
-                  <li>
-                    <a
-                      href="#"
-                      className="text-muted-foreground transition hover:opacity-75"
-                    >
                       Company Review
                     </a>
                   </li>
@@ -214,15 +205,6 @@ export const SiteFooter: React.FC<Props> = ({}) => {
                       className="text-muted-foreground transition hover:opacity-75"
                     >
                       Marketing Calendar
-                    </a>
-                  </li>
-
-                  <li>
-                    <a
-                      href="#"
-                      className="text-muted-foreground transition hover:opacity-75"
-                    >
-                      SEO Infographics
                     </a>
                   </li>
                 </ul>

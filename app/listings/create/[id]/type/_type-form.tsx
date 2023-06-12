@@ -4,6 +4,7 @@ import React, { useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -57,8 +58,17 @@ export const TypeForm = ({
       onSubmit={form.handleSubmit(onSubmit)}
       className="flex flex-col gap-3"
     >
-      {types.map((type) => (
-        <label key={type.label}>
+      {types.map((type, i) => (
+        <motion.label
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: Number(`0.${i + 1}`),
+            duration: 0.95,
+            ease: [0.165, 0.84, 0.44, 1],
+          }}
+          key={type.label}
+        >
           <input
             type="radio"
             className="peer hidden"
@@ -76,7 +86,7 @@ export const TypeForm = ({
             {/* @ts-ignore */}
             {Icons?.[type.icon]}
           </div>
-        </label>
+        </motion.label>
       ))}
       <ListingFooter progress={22}>
         <Link

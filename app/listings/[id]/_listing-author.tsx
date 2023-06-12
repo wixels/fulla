@@ -1,31 +1,60 @@
-"use client"
-
 import { Check, Star } from "lucide-react"
+import qs from "qs"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Collection } from "@/types/collection-type"
+import { User } from "@/types/payload-types"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"
+import { ClientAvatar } from "@/components/client-avatar"
 
-type Props = {}
-export const ListingAuthor: React.FC<Props> = ({}) => {
+async function getReviews(authorId: string) {
+  const query = qs.stringify(
+    {
+      where: {
+        landlord: {
+          equals: authorId,
+        },
+      },
+      limit: 1,
+    },
+    { addQueryPrefix: true }
+  )
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL as string}/api/landlord-reviews${query}`,
+    {
+      next: {
+        revalidate: 5,
+      },
+    }
+  )
+  return res.json()
+}
+export default async function ListingAuthor({ author }: { author: User }) {
+  const reviews: Collection = await getReviews(author.id)
+
+  console.log("reviews::: ", reviews)
   return (
     <section className="section flex w-full flex-col gap-6">
       <div className="flex items-center gap-6">
-        <Avatar size={"xl"}>
-          <AvatarImage src="https://images.unsplash.com/photo-1580489944761-15a19d654956?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=761&q=80" />
-          <AvatarFallback>JD</AvatarFallback>
-        </Avatar>
+        <ClientAvatar
+          fallback={author?.firstName?.[0] ?? ""}
+          src={author.avatar.url}
+        />
         <div>
           <Title
             className="font-semibold"
             style={{ margin: "0 0 0.625rem 0" }}
             level={3}
           >
-            Hosted by Dan
+            Hosted by {author.firstName}
           </Title>
           <Paragraph className="text-muted-foreground" size={"sm"}>
-            Joined in November 2020
+            Joined in{" "}
+            {new Intl.DateTimeFormat("en", {
+              month: "short",
+              year: "numeric",
+            }).format(new Date(author.createdAt))}
           </Paragraph>
         </div>
       </div>
@@ -36,7 +65,8 @@ export const ListingAuthor: React.FC<Props> = ({}) => {
               size={"lg"}
               className="flex items-center gap-2 font-semibold"
             >
-              <Star size={22} /> Reviews
+              <Star size={22} /> {reviews.totalDocs} Review
+              {reviews.totalDocs === 1 ? "" : "s"}
             </Paragraph>
             <Paragraph
               size={"lg"}
@@ -46,10 +76,8 @@ export const ListingAuthor: React.FC<Props> = ({}) => {
             </Paragraph>
           </div>
           <Paragraph size={"sm"} className="text-muted-foreground">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Voluptas
-            sequi aliquid cum eaque, voluptatum, nostrum quae natus at corrupti
-            ad quidem expedita, voluptatibus aut. Adipisci quas sit enim debitis
-            fugit?
+            Daniel is a really cool dude that codes things and does other thing
+            such as playing golf and drinking whsikey.
           </Paragraph>
         </div>
         <div className="col-span-2 flex flex-col gap-6 lg:col-span-1">

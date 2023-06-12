@@ -2,6 +2,7 @@ import Link from "next/link"
 import { redirect } from "next/navigation"
 
 import { Listing } from "@/types/payload-types"
+import { openai } from "@/config/openai"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Textarea } from "@/components/ui/textarea"
@@ -25,12 +26,21 @@ async function getListing(id: string): Promise<Listing> {
 
   return res.json()
 }
+async function testGPT() {
+  const completion = await openai.createCompletion({
+    model: "text-davinci-003",
+    prompt: "Hello world",
+  })
+  return completion.data.choices[0].text
+}
 export default async function ListingTitle({
   params: { id },
 }: {
   params: { id: string }
 }) {
   const listing = await getListing(id)
+  const gpt = await testGPT()
+  console.log("gpt::: ", gpt)
 
   async function update(payload: { description: string }) {
     "use server"
@@ -55,6 +65,7 @@ export default async function ListingTitle({
         <Paragraph className="mt-2 text-muted-foreground">
           Share what makes your place special.
         </Paragraph>
+        GPT: {gpt}
         <DescriptionForm
           update={update}
           listing={JSON.parse(JSON.stringify(listing))}

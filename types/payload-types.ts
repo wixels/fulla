@@ -25,10 +25,7 @@ export interface User {
   id: string
   firstName?: string
   lastName?: string
-  favourites?: {
-    listing?: string | Listing
-    id?: string
-  }[]
+  avatar?: string | Media
   roles?: ("admin" | "user")[]
   updatedAt: string
   createdAt: string
@@ -38,6 +35,44 @@ export interface User {
   loginAttempts?: number
   lockUntil?: string
   password?: string
+}
+export interface Media {
+  id: string
+  alt?: string
+  updatedAt: string
+  createdAt: string
+  url?: string
+  filename?: string
+  mimeType?: string
+  filesize?: number
+  width?: number
+  height?: number
+  sizes?: {
+    thumbnail?: {
+      url?: string
+      width?: number
+      height?: number
+      mimeType?: string
+      filesize?: number
+      filename?: string
+    }
+    card?: {
+      url?: string
+      width?: number
+      height?: number
+      mimeType?: string
+      filesize?: number
+      filename?: string
+    }
+    tablet?: {
+      url?: string
+      width?: number
+      height?: number
+      mimeType?: string
+      filesize?: number
+      filename?: string
+    }
+  }
 }
 export interface Listing {
   id: string
@@ -107,44 +142,6 @@ export interface Type {
   updatedAt: string
   createdAt: string
 }
-export interface Media {
-  id: string
-  alt?: string
-  updatedAt: string
-  createdAt: string
-  url?: string
-  filename?: string
-  mimeType?: string
-  filesize?: number
-  width?: number
-  height?: number
-  sizes?: {
-    thumbnail?: {
-      url?: string
-      width?: number
-      height?: number
-      mimeType?: string
-      filesize?: number
-      filename?: string
-    }
-    card?: {
-      url?: string
-      width?: number
-      height?: number
-      mimeType?: string
-      filesize?: number
-      filename?: string
-    }
-    tablet?: {
-      url?: string
-      width?: number
-      height?: number
-      mimeType?: string
-      filesize?: number
-      filename?: string
-    }
-  }
-}
 export interface LandlordReview {
   id: string
   author: string | User
@@ -166,7 +163,7 @@ export interface ListingReview {
 export interface Favourite {
   id: string
   listing?: string | Listing
-  user?: string | User
+  user: string | User
   updatedAt: string
   createdAt: string
 }

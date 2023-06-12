@@ -1,14 +1,15 @@
 import Image from "next/image"
 import { Bath, BedSingle, Calendar, ChevronRight, Users } from "lucide-react"
 
-import { Amenity, Listing, Media, Offering } from "@/types/payload-types"
+import { Amenity, Listing, Media, Offering, User } from "@/types/payload-types"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"
 import { SiteFooter } from "@/components/site-footer"
 
-import { ListingAuthor } from "./_listing-author"
+import { ApplicationDate } from "./_application-date"
+import ListingAuthor from "./_listing-author"
 import { ListingGallery } from "./_listing-gallery"
 import { ListingMap } from "./_listing-map"
 import ListingReviews from "./_listing-reviews"
@@ -35,6 +36,7 @@ export default async function ListingPage({
   params: { id: string }
 }) {
   const listing = (await getListing(id)) as Listing & {
+    author: User
     featureImage: Media
     offerings: Offering[]
     amenities: Amenity[]
@@ -71,16 +73,7 @@ export default async function ListingPage({
               </Paragraph>
             </div>
           </header>
-          <div className="flex h-16 items-center justify-between rounded-full border">
-            <Input
-              rounded={"full"}
-              className="ml-2 border-none"
-              placeholder="Check Availability"
-            />
-            <button className="flex aspect-square h-full items-center justify-center rounded-full bg-primary text-background">
-              <Calendar size={14} />
-            </button>
-          </div>
+          <ApplicationDate listingId={listing.id} />
           <ul className="flex gap-7">
             <li className="flex flex-col gap-1">
               <Users />
@@ -130,11 +123,12 @@ export default async function ListingPage({
               ))}
             </ul>
           </div>
-          <ListingReviews />
+
+          <ListingReviews listingId={listing.id} />
         </div>
         <ListingGallery />
         <ListingMap />
-        <ListingAuthor />
+        <ListingAuthor author={listing.author} />
       </div>
       <SiteFooter />
     </div>

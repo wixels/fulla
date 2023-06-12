@@ -4,6 +4,7 @@ import React, { useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
+import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -64,8 +65,17 @@ export const OfferingsForm = ({
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
       <div className="mb-10 mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-        {offerings.map(({ id, label }) => (
-          <label key={id}>
+        {offerings.map(({ id, label }, i) => (
+          <motion.label
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: Number(`0.${i + 1}`),
+              duration: 0.95,
+              ease: [0.165, 0.84, 0.44, 1],
+            }}
+            key={id}
+          >
             <input
               {...form.register("offerings")}
               value={id}
@@ -78,17 +88,36 @@ export const OfferingsForm = ({
               {Icons?.[label]}
               <Paragraph size={"sm"}>{label}</Paragraph>
             </div>
-          </label>
+          </motion.label>
         ))}
       </div>
 
-      <Title className="font-semibold" level={6}>
-        Do you have any standout amenities?
-      </Title>
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{
+          delay: 1,
+          duration: 0.95,
+          ease: [0.165, 0.84, 0.44, 1],
+        }}
+      >
+        <Title className="font-semibold" level={6}>
+          Do you have any standout amenities?
+        </Title>
+      </motion.div>
 
       <div className="mt-6 grid grid-cols-2 gap-4 lg:grid-cols-3">
-        {amenities.map(({ id, label }) => (
-          <label key={id}>
+        {amenities.map(({ id, label }, i) => (
+          <motion.label
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{
+              delay: Number(`1.${i + 1}`),
+              duration: 0.95,
+              ease: [0.165, 0.84, 0.44, 1],
+            }}
+            key={id}
+          >
             <input
               {...form.register("amenities")}
               value={id}
@@ -101,7 +130,7 @@ export const OfferingsForm = ({
               {Icons?.[label]}
               <Paragraph size={"sm"}>{label}</Paragraph>
             </div>
-          </label>
+          </motion.label>
         ))}
       </div>
       <ListingFooter progress={22}>

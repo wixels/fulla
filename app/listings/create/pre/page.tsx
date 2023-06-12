@@ -116,7 +116,7 @@ export default function ListingsHome() {
           </div>
         </div>
       </section>
-      <section className="gutter section-top grid grid-cols-1 gap-10 bg-gray-100 py-12 lg:grid-cols-2">
+      <section className="gutter section-top grid grid-cols-1 gap-10 bg-gray-100 dark:bg-gray-900 py-12 lg:grid-cols-2">
         <Title level={2} className="font-semibold">
           Got Questions?
         </Title>

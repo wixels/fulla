@@ -106,7 +106,7 @@ export const PriceForm: React.FC<Props> = ({ update, listing }) => {
             </Button>
           </div>
           <Paragraph size={"sm"} className="text-muted-foreground">
-            R {state.price} / per month
+            R {new Intl.NumberFormat().format(state.price)} / per month
           </Paragraph>
           <Paragraph
             size={"sm"}
