@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 export function SiteHeader() {
   const path = usePathname()
   if (path?.includes("/listings/create")) return null
+  if (path?.includes("/application/type")) return null
   if (path?.includes("/auth")) return null
   return (
     <header className="z-40 w-full border-b bg-background">

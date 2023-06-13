@@ -46,7 +46,7 @@ export const ApplicationDate: React.FC<Props> = ({ listingId }) => {
           onSelect={setDate}
           disabled={(date) => date < new Date()}
         />
-        <Link href={`/listings/${listingId}/application`}>
+        <Link href={`/listings/${listingId}/application/type`}>
           <Button disabled={date === undefined} size={"sm"} className="w-full">
             Start Application
           </Button>

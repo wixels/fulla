@@ -196,6 +196,7 @@ export const Icons = {
   Pin: <Pin />,
   Citrus: <Citrus />,
   Trees: <Trees />,
+  checkmark: <Check />,
   close: X,
   spinner: Loader2,
   chevronLeft: ChevronLeft,
