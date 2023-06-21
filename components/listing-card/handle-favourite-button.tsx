@@ -7,7 +7,7 @@ import { Heart } from "lucide-react"
 import { Favourite } from "@/types/payload-types"
 import { useAuth } from "@/hooks/use-auth"
 
-import { favourite, unfavourite } from "../../app/listings/[id]/actions"
+// import { favourite, unfavourite } from "../../app/listings/[id]/actions"
 
 type Props = {
   favorite?: Favourite | null
@@ -26,13 +26,13 @@ export const HandleFavouriteButton: React.FC<Props> = ({
       disabled={pending}
       onClick={(e) => {
         e.preventDefault()
-        startTransition(async () => {
-          if (!favorite) {
-            await favourite({ listingId: listingId, userId: user.id })
-          } else {
-            await unfavourite({ favoriteId: favorite.id })
-          }
-        })
+        // startTransition(async () => {
+        //   if (!favorite) {
+        //     await favourite({ listingId: listingId, userId: user.id })
+        //   } else {
+        //     await unfavourite({ favoriteId: favorite.id })
+        //   }
+        // })
       }}
       className={
         favorite
