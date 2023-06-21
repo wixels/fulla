@@ -29,7 +29,9 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "components/gradient.js"
+    "components/gradient.js",
+    "prisma/seed.js",
+    "prisma/data.js"
   ],
   "exclude": ["node_modules"]
 }
