@@ -5,7 +5,8 @@ import clsx from "clsx"
 import { Heart } from "lucide-react"
 
 import { Favourite } from "@/types/payload-types"
-import { useAuth } from "@/hooks/use-auth"
+
+// import { useAuth } from "@/hooks/use-auth"
 
 // import { favourite, unfavourite } from "../../app/listings/[id]/actions"
 
@@ -19,8 +20,8 @@ export const HandleFavouriteButton: React.FC<Props> = ({
 }) => {
   console.log("favorite from button header::: ", favorite)
   const [pending, startTransition] = useTransition()
-  const { user } = useAuth()
-  if (!user) return null
+  // const { user } = useAuth()
+  // if (!user) return null
   return (
     <button
       disabled={pending}
