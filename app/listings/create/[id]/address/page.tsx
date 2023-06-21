@@ -78,8 +78,9 @@ export default async function TypePage({
           Show your specific location
         </Title>
         <Paragraph size={"sm"} className="text-muted-foreground">
-          Make it clear to guests where your place is located. We'll only share
-          your address after they've made a reservation. <u>Learn more</u>
+          Make it clear to guests where your place is located. We&aposll only
+          share your address after they&aposve made a reservation.{" "}
+          <u>Learn more</u>
         </Paragraph>
         <div
           className={cn([
