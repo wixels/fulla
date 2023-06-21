@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"

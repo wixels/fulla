@@ -7,7 +7,7 @@ import { CheckCircle, FileQuestion } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Title } from "@/components/ui/title"
 
-const createWord = (text, index) => {
+const createWord = (text: any, index: number) => {
   const word = document.createElement("span")
 
   word.innerHTML = `${text} `
@@ -26,9 +26,9 @@ export const Upgrade: React.FC<Props> = ({}) => {
   useEffect(() => {
     ;(() => {
       const subtitle = document.getElementsByClassName("card-subtitle")[0]
-      const addWord = (text, index) =>
+      const addWord = (text: any, index: number) =>
         subtitle.appendChild(createWord(text, index))
-      const createSubtitle = (text) => text.split(" ").map(addWord)
+      const createSubtitle = (text: string) => text.split(" ").map(addWord)
       createSubtitle(
         "Upgrade to Priority Account for Faster Processing and Increased Visibility"
       )

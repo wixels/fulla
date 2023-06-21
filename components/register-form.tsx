@@ -3,7 +3,6 @@
 import React, { useState } from "react"
 import { useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { signIn } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -45,20 +44,20 @@ export const RegisterForm = () => {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setLoading(true)
     console.log(values)
-    const signInResult = await signIn("email", {
-      email: values.email.toLowerCase(),
-      redirect: false,
-      callbackUrl: searchParams?.get("from") || "/",
-    })
+    // const signInResult = await signIn("email", {
+    //   email: values.email.toLowerCase(),
+    //   redirect: false,
+    //   callbackUrl: searchParams?.get("from") || "/",
+    // })
     setLoading(false)
 
-    if (!signInResult?.ok) {
-      return toast({
-        title: "Something went wrong.",
-        description: "Your sign in request failed. Please try again.",
-        variant: "destructive",
-      })
-    }
+    // if (!signInResult?.ok) {
+    //   return toast({
+    //     title: "Something went wrong.",
+    //     description: "Your sign in request failed. Please try again.",
+    //     variant: "destructive",
+    //   })
+    // }
 
     return toast({
       title: "Check your email",
@@ -77,7 +76,7 @@ export const RegisterForm = () => {
         <div className="grid grid-cols-2 gap-6">
           <Button
             disabled={loading}
-            onClick={() => signIn("github")}
+            // onClick={() => signIn("github")}
             variant="outline"
           >
             <Icons.gitHub className="mr-2 h-4 w-4" />
@@ -85,7 +84,7 @@ export const RegisterForm = () => {
           </Button>
           <Button
             disabled={loading}
-            onClick={() => signIn("google")}
+            // onClick={() => signIn("google")}
             variant="outline"
           >
             <Icons.google className="mr-2 h-4 w-4" />

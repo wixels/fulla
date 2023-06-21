@@ -39,7 +39,8 @@ export default async function ListingAuthor({ author }: { author: User }) {
       <div className="flex items-center gap-6">
         <ClientAvatar
           fallback={author?.firstName?.[0] ?? ""}
-          src={author.avatar.url}
+          src={null}
+          // src={author.avatar?.url ?? ""}
         />
         <div>
           <Title

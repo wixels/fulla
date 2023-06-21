@@ -72,7 +72,8 @@ export default async function ListingReviews({ listingId }: Props) {
             <li key={review.id} className="flex flex-col gap-4">
               <div className="flex items-center gap-4">
                 <ClientAvatar
-                  src={review?.author?.avatar?.url || null}
+                  src={null}
+                  // src={review?.author?.avatar?.url || null}
                   fallback={review.author.firstName?.[0] ?? ""}
                 />
                 <div>
