@@ -41,7 +41,7 @@ export const authOptions: NextAuthOptions = {
             equals: token.email,
           },
         },
-      } as Prisma.UserFindFirstArgs)
+      })
 
       if (!dbUser) {
         if (user) {
