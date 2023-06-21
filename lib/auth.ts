@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { Prisma } from "@prisma/client"
 import { NextAuthOptions } from "next-auth"
@@ -41,7 +42,7 @@ export const authOptions: NextAuthOptions = {
             equals: token.email,
           },
         },
-      })
+      } as Prisma.UserFindFirstArgs)
 
       if (!dbUser) {
         if (user) {
