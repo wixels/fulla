@@ -1,8 +1,11 @@
 import { cookies } from "next/headers"
+import { redirect } from "next/navigation"
 import { Search } from "lucide-react"
 
 import { Favourite, Listing } from "@/types/payload-types"
+import { authOptions } from "@/lib/auth"
 import { CategoriesList } from "@/lib/categories"
+import { getCurrentUser } from "@/lib/session"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
@@ -12,6 +15,13 @@ import { Icons } from "@/components/icons"
 import { PublishedListingCard } from "@/components/listing-card/published-listing-card"
 
 export default async function IndexPage() {
+  const user = await getCurrentUser()
+
+  console.log("user::: ", user)
+  if (!user) {
+    redirect(authOptions?.pages?.signIn || "/login")
+  }
+
   const listings = []
 
   return (
