@@ -58,6 +58,8 @@ model User {
   accounts Account[]
   sessions Session[]
 
+  listings Listing[]
+
   stripeCustomerId       String?   @unique @map(name: "stripe_customer_id")
   stripeSubscriptionId   String?   @unique @map(name: "stripe_subscription_id")
   stripePriceId          String?   @map(name: "stripe_price_id")
@@ -73,4 +75,81 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map(name: "verification_tokens")
+}
+
+model Listing {
+  id            Int       @default(autoincrement()) @id
+  authorId      String
+  author        User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  title         String?
+  description   String?
+  province      String?
+  street        String?
+  unitNumber    String?
+  suburb        String?
+  city          String?
+  postalCode    String?
+  featureImage  String?
+  price         Int?
+  roomCount     Int?
+  bedCount      Int?
+  bathroomCount Int?
+  guestCount    Int?
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @default(now()) @map(name: "updated_at")
+
+  category      Category  @relation(fields: [categoryId], references: [id])
+  categoryId    String
+  offerings     Offering[]
+  highlights    Highlight[]
+  amenities     Amenity[]
+  type          Type      @relation(fields: [typeId], references: [id])
+  typeId        String
+
+  @@index([authorId])
+  @@index([categoryId])
+  @@index([typeId])
+}
+
+model Category {
+  id        String    @id @default(uuid())
+  label     String
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+  listings  Listing[]
+}
+
+model Offering {
+  id        String    @id @default(uuid())
+  label     String
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+  listings  Listing[]
+}
+
+model Highlight {
+  id        String    @id @default(uuid())
+  label     String
+  icon      String
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+  listings  Listing[]
+}
+
+model Amenity {
+  id        String    @id @default(uuid())
+  label     String
+  updatedAt DateTime  @updatedAt
+  createdAt DateTime  @default(now())
+  listings  Listing[]
+}
+
+model Type {
+  id          String    @id @default(uuid())
+  label       String
+  description String
+  icon        String
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+  listings    Listing[]
 }
