@@ -3,8 +3,6 @@ import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"
 import { PublishedListingCard } from "@/components/listing-card/published-listing-card"
 
-import { VoiceMemo } from "./_voice-memo"
-
 async function getListing(id: string) {
   const res = await fetch(
     `http://localhost:3000/api/listings/published/${id}`,
@@ -36,7 +34,7 @@ export default async function ListingApplication({
   return (
     <section className="gutter section-bottom section-padding-top flex flex-col items-start gap-10 md:flex-row">
       <div className="flex grow flex-col gap-4 font-semibold">
-        <VoiceMemo />
+        {/* <VoiceMemo /> */}
       </div>
       <div
         id="right"

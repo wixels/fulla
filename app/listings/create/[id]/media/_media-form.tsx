@@ -3,7 +3,7 @@
 import React, { ChangeEvent, useState, useTransition } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ImageIcon, Menu, MoreHorizontal, Plus } from "lucide-react"
+import { FileImage, Menu, MoreHorizontal, Plus } from "lucide-react"
 
 import { Listing } from "@/types/payload-types"
 import { Badge } from "@/components/ui/badge"
@@ -25,7 +25,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { ListingFooter } from "@/components/listing-footer"
-import { Spin } from "@/components/spin"
 
 type FileObject = File & { preview: string }
 
@@ -88,7 +87,7 @@ export const MediaForm = ({
             multiple
             onChange={handleFileChange}
           />
-          <ImageIcon size={128} />
+          <FileImage size={128} />
           <Title className="font-semibold" level={5}>
             Click here to add photos
           </Title>
@@ -170,7 +169,7 @@ export const MediaForm = ({
               multiple
               onChange={handleFileChange}
             />
-            <ImageIcon size={24} />
+            <FileImage size={24} />
             <Paragraph>It looks great!</Paragraph>
             <Paragraph size={"sm"} className="text-muted-foreground">
               We need {5 - files?.length} more

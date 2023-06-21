@@ -11,40 +11,8 @@ import { FiltersModal } from "@/components/filters-modal"
 import { Icons } from "@/components/icons"
 import { PublishedListingCard } from "@/components/listing-card/published-listing-card"
 
-async function getListings() {
-  const res = await fetch("http://localhost:3000/api/listings/published")
-
-  if (!res.ok) {
-    throw new Error("Failed to fetch data")
-  }
-  const { data } = await res.json()
-  return data
-}
-async function getFavourites() {
-  const token = cookies().get("payload-token")?.value
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL as string}/api/favourites`,
-    {
-      cache: "no-store",
-      headers: {
-        Authorization: `JWT ${token}`,
-      },
-    }
-  )
-
-  const data = await res.json()
-  return data
-}
-
 export default async function IndexPage() {
-  const [{ docs: listings }, { docs: favourites }]: [
-    { docs: Listing[] },
-    { docs: Favourite[] & { listing: Listing } }
-  ] = await Promise.all([getListings(), getFavourites()])
-
-  const favoritesMap = new Map(
-    favourites?.map((fav: Favourite) => [fav.listing.id, fav])
-  )
+  const listings = []
 
   return (
     <div>
@@ -125,13 +93,13 @@ export default async function IndexPage() {
         </div>
       </section>
       <section className="gutter section grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {listings.map((listing) => (
+        {/* {listings.map((listing) => (
           <PublishedListingCard
             key={listing.id}
             listing={JSON.parse(JSON.stringify(listing))}
             favorite={favoritesMap.get(listing.id)}
           />
-        ))}
+        ))} */}
       </section>
     </div>
   )

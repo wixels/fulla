@@ -1,61 +1,50 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useWhisper } from "@chengsokdara/use-whisper"
-import { Mic, Square } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import { Paragraph } from "@/components/ui/paragraph"
-import { Textarea } from "@/components/ui/textarea"
-import { Title } from "@/components/ui/title"
-import Balancer from "@/components/balancer"
-import Siriwave from "@/components/siriwave"
-
 type Props = {}
 export const VoiceMemo: React.FC<Props> = ({}) => {
-  const [text, setText] = useState("")
+  // const [text, setText] = useState("")
 
-  const {
-    recording,
-    speaking,
-    transcribing,
-    transcript,
-    startRecording,
-    stopRecording,
-  } = useWhisper({
-    stopTimeout: 1000 * 2,
-    apiKey: "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",
-  })
+  // const {
+  //   recording,
+  //   speaking,
+  //   transcribing,
+  //   transcript,
+  //   startRecording,
+  //   stopRecording,
+  // } = useWhisper({
+  //   stopTimeout: 1000 * 2,
+  //   apiKey: "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",
+  // })
 
-  useEffect(() => {
-    if (transcript.text) {
-      setText(transcript.text)
-      console.log("setText(transcript)::: ", transcript.text)
-    }
-  }, [transcript])
+  // useEffect(() => {
+  //   if (transcript.text) {
+  //     setText(transcript.text)
+  //     console.log("setText(transcript)::: ", transcript.text)
+  //   }
+  // }, [transcript])
 
   return (
     <div>
-      <Title showAs={2} style={{ marginTop: 0 }}>
+      {/* <Title showAs={2} style={{ marginTop: 0 }}>
         <Balancer>Tell us about yourself.</Balancer>
       </Title>
-      <Paragraph size={"lg"} className="text-muted-foreground font-normal">
+      <Paragraph size={"lg"} className="font-normal text-muted-foreground">
         <Balancer>
           Can you briefly describe why you believe you would be an ideal tenant
           for this property and how you plan to maintain and care for it
         </Balancer>
       </Paragraph>
 
-      <div className="bg-muted-foreground/5 rounded-lg flex items-center gap-4 p-4 mt-8">
+      <div className="mt-8 flex items-center gap-4 rounded-lg bg-muted-foreground/5 p-4">
         <button
           onClick={() => {
             recording ? stopRecording() : startRecording()
           }}
-          className="bg-red-500 h-16 w-16 border-spacing-1 border-4 border-white rounded-full relative flex items-center justify-center text-white"
+          className="relative flex h-16 w-16 border-spacing-1 items-center justify-center rounded-full border-4 border-white bg-red-500 text-white"
         >
           {recording ? <Square /> : <Mic />}
         </button>
-        <div id="wave-panel" className="grow flex items-center h-[120px]">
+        <div id="wave-panel" className="flex h-[120px] grow items-center">
           <Siriwave
             parentId="wave-panel"
             autostart={recording}
@@ -76,10 +65,10 @@ export const VoiceMemo: React.FC<Props> = ({}) => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             rows={10}
-            className="resize-none mt-2"
+            className="mt-2 resize-none"
           />
         </div>
-      ) : null}
+      ) : null} */}
     </div>
   )
 }
