@@ -44,6 +44,7 @@ export default async function RootLayout({ children, auth }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <SiteHeader />
             {children}
             <Toaster />
             <TailwindIndicator />
