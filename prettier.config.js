@@ -15,7 +15,6 @@ module.exports = {
     "^@/config/(.*)$",
     "^@/lib/(.*)$",
     "^@/hooks/(.*)$",
-    "^@/prisma/(.*)$",
     "^@/components/ui/(.*)$",
     "^@/components/(.*)$",
     "^@/styles/(.*)$",
@@ -29,5 +28,5 @@ module.exports = {
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   importOrderMergeDuplicateImports: true,
   importOrderCombineTypeAndValueImports: true,
-  plugins: ["@ianvs/prettier-plugin-sort-imports", "prettier-plugin-prisma"],
+  plugins: ["@ianvs/prettier-plugin-sort-imports"],
 }

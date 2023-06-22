@@ -1,8 +1,17 @@
 "use client"
 
+import Link from "next/link"
 import { usePathname } from "next/navigation"
 
 import { siteConfig } from "@/config/site"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
@@ -21,11 +30,27 @@ export function SiteHeader() {
         <div className="flex flex-1 items-center justify-end space-x-4">
           <nav className="flex items-center space-x-1">
             <ThemeToggle />
-            <Avatar size={"sm"}>
-              <AvatarFallback>
-                <Icons.user />
-              </AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar size={"sm"}>
+                  <AvatarFallback>
+                    <Icons.user />
+                  </AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent>
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+
+                <DropdownMenuItem>
+                  <Link href={"/login"}>Login</Link>
+                </DropdownMenuItem>
+
+                <DropdownMenuItem>Billing</DropdownMenuItem>
+                <DropdownMenuItem>Team</DropdownMenuItem>
+                <DropdownMenuItem>Subscription</DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
         </div>
       </div>
