@@ -16,13 +16,14 @@ import { Icons } from "@/components/icons"
 import { MainNav } from "@/components/main-nav"
 import { ThemeToggle } from "@/components/theme-toggle"
 
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
+import { Avatar, AvatarFallback } from "./ui/avatar"
 
 export function SiteHeader() {
   const path = usePathname()
   if (path?.includes("/listings/create")) return null
   if (path?.includes("/application/type")) return null
-  if (path?.includes("/auth")) return null
+  if (path?.includes("/login")) return null
+  if (path?.includes("/register")) return null
   return (
     <header className="z-40 w-full border-b bg-background">
       <div className="gutter flex h-16 items-center space-x-4 sm:justify-between sm:space-x-0">
