@@ -2,15 +2,14 @@
 
 import React from "react"
 import Image from "next/image"
-
-import { Listing, Media } from "@/types/payload-types"
+import { Listing } from "@prisma/client"
 
 import { Badge } from "../ui/badge"
 import { Paragraph } from "../ui/paragraph"
 import { Title } from "../ui/title"
 
 type Props = {
-  listing?: Listing & { featureImage: Media }
+  listing: Listing
 }
 export const DraftListingCard: React.FC<Props> = ({ listing }) => {
   return (
@@ -23,7 +22,7 @@ export const DraftListingCard: React.FC<Props> = ({ listing }) => {
           fill
           className="object-cover"
           alt="house primary image"
-          src={listing?.featureImage?.url ?? ""}
+          src={listing?.featureImageUrl || ""}
         />
       </div>
       <div className="mt-4 flex flex-row items-center justify-between gap-10">

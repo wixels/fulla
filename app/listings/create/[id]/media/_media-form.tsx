@@ -10,6 +10,7 @@ import React, {
 } from "react"
 import Image from "next/image"
 import Link from "next/link"
+import { useRouter } from "next/navigation"
 import { Listing, Prisma } from "@prisma/client"
 import { Image as ImageIcon, MoreHorizontal, Plus } from "lucide-react"
 import { FileWithPath, useDropzone } from "react-dropzone"
@@ -50,7 +51,7 @@ export const MediaForm = ({
   )
   const [hasChanged, setHasChanged] = useState(false)
   const previousValueRef = useRef(files)
-
+  const router = useRouter()
   useEffect(() => {
     if (!arraysEqual(previousValueRef.current, files)) {
       setHasChanged(true)
@@ -107,12 +108,13 @@ export const MediaForm = ({
   }
 
   async function onSubmit() {
+    router.prefetch(`/listings/create/${listing.id}/title`)
     let res: any
     if (hasChanged) {
       res = await startUpload([...files.filter((x) => !x.fileUrl)])
-    }
-    if (res) {
       startTransition(async () => await update(res))
+    } else {
+      router.push(`/listings/create/${listing.id}/title`)
     }
   }
 
