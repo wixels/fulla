@@ -1,9 +1,6 @@
-import { cookies } from "next/headers"
-import { redirect } from "next/navigation"
+import { Favourite, Listing } from "@prisma/client"
 import { Search } from "lucide-react"
 
-import { Favourite, Listing } from "@/types/payload-types"
-import { authOptions } from "@/lib/auth"
 import { CategoriesList } from "@/lib/categories"
 import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
@@ -17,19 +14,44 @@ import { PublishedListingCard } from "@/components/listing-card/published-listin
 
 export default async function IndexPage() {
   const user = await getCurrentUser()
-  const listings = await db.listing.findMany({
-    where: {
-      status: {
-        equals: "published",
-      },
-    },
-  })
-  console.log("listings::: ", listings)
+  const [favourites, listings] = await Promise.all([
+    await (async () => {
+      if (!user) return []
+      const dbUser = await db.user.findUnique({
+        where: {
+          id: user?.id,
+        },
+        include: {
+          favourites: true,
+        },
+      })
+      if (dbUser) {
+        return dbUser.favourites ?? []
+      }
+      return []
+    })(),
+    await (async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_URL!}/api/listings/published`,
+        {
+          next: {
+            revalidate: 120,
+          },
+        }
+      )
+      if (!res.ok) {
+        throw new Error("Failed to fetch data")
+      }
 
-  console.log("user::: ", user)
-  if (!user) {
-    redirect(authOptions?.pages?.signIn || "/login")
-  }
+      return res.json()
+    })(),
+  ])
+
+  console.log("favourites::: ", favourites)
+
+  const favoritesMap = new Map(
+    favourites?.map((fav: Favourite) => [fav.listingId, fav])
+  )
 
   return (
     <div>
@@ -110,13 +132,13 @@ export default async function IndexPage() {
         </div>
       </section>
       <section className="gutter section grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {/* {listings.map((listing) => (
+        {listings.map((listing: Listing) => (
           <PublishedListingCard
             key={listing.id}
-            listing={JSON.parse(JSON.stringify(listing))}
+            listing={listing}
             favorite={favoritesMap.get(listing.id)}
           />
-        ))} */}
+        ))}
       </section>
     </div>
   )

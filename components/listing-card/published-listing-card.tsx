@@ -1,8 +1,7 @@
 import React from "react"
 import Image from "next/image"
 import Link from "next/link"
-
-import { Favourite, Listing, Media } from "@/types/payload-types"
+import { Favourite, Listing } from "@prisma/client"
 
 import { Badge } from "../ui/badge"
 import { Paragraph } from "../ui/paragraph"
@@ -10,7 +9,7 @@ import { Title } from "../ui/title"
 import { HandleFavouriteButton } from "./handle-favourite-button"
 
 type Props = {
-  listing?: Listing & { featureImage: Media }
+  listing?: Listing
   favorite?: Favourite | null
 }
 export const PublishedListingCard: React.FC<Props> = ({
@@ -27,7 +26,7 @@ export const PublishedListingCard: React.FC<Props> = ({
           fill
           className="object-cover"
           alt="house primary image"
-          src={listing?.featureImage?.url ?? ""}
+          src={listing?.featureImageUrl ?? ""}
         />
       </div>
       <div className="mt-4 flex flex-row items-center justify-between gap-10">
