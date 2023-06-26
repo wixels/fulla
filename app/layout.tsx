@@ -6,9 +6,10 @@ import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { ClientOnly } from "@/components/client-only"
-import { SiteHeader } from "@/components/site-header"
+import { SiteHeader } from "@/components/navigation/site-header"
+import { NextAuthProvider } from "@/components/providers/next-auth-provider"
+import { ThemeProvider } from "@/components/providers/theme-provider"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
-import { ThemeProvider } from "@/components/theme-provider"
 
 export const metadata: Metadata = {
   title: {
@@ -44,8 +45,10 @@ export default async function RootLayout({ children, auth }: RootLayoutProps) {
           )}
         >
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <SiteHeader />
-            {children}
+            <NextAuthProvider>
+              <SiteHeader />
+              {children}
+            </NextAuthProvider>
             <Toaster />
             <TailwindIndicator />
           </ThemeProvider>

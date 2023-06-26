@@ -5,11 +5,15 @@ import { redirect } from "next/navigation"
 import { Image as ImageIcon } from "lucide-react"
 
 import { Listing } from "@/types/payload-types"
+import { db } from "@/lib/db"
+import { getCurrentUser } from "@/lib/session"
 import { buttonVariants } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { ListingFooter } from "@/components/listing-footer"
 import { ListingHeader } from "@/components/listings-header"
+
+import { MediaForm } from "./_media-form"
 
 type FileObject = File & { preview: string }
 
@@ -18,8 +22,17 @@ export default async function TypePage({
 }: {
   params: { id: string }
 }) {
-  //   const listing = await getListing(id)
-  // const [files, setFiles] = useState<any[] | null>(null)
+  const user = await getCurrentUser()
+  const listing = await db.listing.findFirstOrThrow({
+    where: {
+      id: {
+        equals: id,
+      },
+      authorId: {
+        equals: user?.id,
+      },
+    },
+  })
 
   async function update(payload: FileObject[]) {
     "use server"
@@ -46,10 +59,7 @@ export default async function TypePage({
             "You'll need 5 photos to get started. You can add more or make changes later."
           }
         </Paragraph>
-        {/* <MediaForm
-          update={update}
-          listing={JSON.parse(JSON.stringify(listing))}
-        /> */}
+        <MediaForm update={update} listing={listing} />
       </section>
     </div>
   )
