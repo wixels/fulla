@@ -31,12 +31,13 @@ export default async function TypePage({
         equals: user?.id,
       },
     },
+    include: {
+      images: true,
+    },
   })
 
   async function update(payload: { fileKey: string; fileUrl: string }[]) {
     "use server"
-
-    console.log("payload::: ", payload)
     await db.listing.update({
       where: { id },
       data: {

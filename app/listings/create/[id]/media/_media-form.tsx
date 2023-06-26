@@ -1,9 +1,16 @@
 "use client"
 
-import React, { ChangeEvent, useCallback, useState, useTransition } from "react"
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Listing } from "@prisma/client"
+import { Listing, Prisma } from "@prisma/client"
 import { Image as ImageIcon, MoreHorizontal, Plus } from "lucide-react"
 import { FileWithPath, useDropzone } from "react-dropzone"
 import { generateClientDropzoneAccept } from "uploadthing/client"
@@ -34,14 +41,37 @@ export const MediaForm = ({
   listing,
   update,
 }: {
-  listing: Listing
+  listing: Prisma.ListingGetPayload<{ include: { images: true } }>
   update: (payload: { fileKey: string; fileUrl: string }[]) => Promise<void>
 }) => {
   const [pending, startTransition] = useTransition()
-  const [files, setFiles] = useState<File[]>([])
+  const [files, setFiles] = useState<any[]>(
+    listing?.images ? listing.images : []
+  )
+  const [hasChanged, setHasChanged] = useState(false)
+  const previousValueRef = useRef(files)
+
+  useEffect(() => {
+    if (!arraysEqual(previousValueRef.current, files)) {
+      setHasChanged(true)
+    }
+
+    previousValueRef.current = files
+  }, [files])
+
+  // Function to compare two arrays
+  const arraysEqual = (a: any, b: any) => {
+    if (a === b) return true
+    if (a.length !== b.length) return false
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] !== b[i]) return false
+    }
+    return true
+  }
 
   const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
-    setFiles(acceptedFiles)
+    setHasChanged(true)
+    setFiles((x) => [...x, ...acceptedFiles])
   }, [])
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
@@ -77,7 +107,10 @@ export const MediaForm = ({
   }
 
   async function onSubmit() {
-    const res = await startUpload([...files])
+    let res: any
+    if (hasChanged) {
+      res = await startUpload([...files.filter((x) => !x.fileUrl)])
+    }
     if (res) {
       startTransition(async () => await update(res))
     }
@@ -125,7 +158,7 @@ export const MediaForm = ({
               fill
               className="object-cover"
               alt="house primary image"
-              src={URL.createObjectURL(file)}
+              src={file?.fileUrl ? file?.fileUrl : URL.createObjectURL(file)}
             />
 
             <div className="absolute inset-x-0 top-0 flex items-center justify-between px-5 pt-4">

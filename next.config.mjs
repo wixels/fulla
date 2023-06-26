@@ -7,7 +7,12 @@ const nextConfig = {
     // serverActions: true,
   },
   images: {
-    domains: ["images.unsplash.com", "localhost"],
+    domains: [
+      "images.unsplash.com",
+      "localhost",
+      "uploadthing.com",
+      "https:/uploadthing.com",
+    ],
   },
 }
 
