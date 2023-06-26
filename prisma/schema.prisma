@@ -75,44 +75,53 @@ enum Status {
 }
 
 model Listing {
-  id            String  @id @default(cuid())
-  title         String?
-  description   String?
-  province      String?
-  street        String?
-  unitNumber    String?
-  suburb        String?
-  city          String?
-  postalCode    String?
-  featureImage  String?
-  price         Int?
-  roomCount     Int?
-  bedCount      Int?
-  bathroomCount Int?
-  guestCount    Int?
-  status        Status  @default(draft)
+  id              String  @id @default(cuid())
+  title           String?
+  description     String?
+  province        String?
+  street          String?
+  unitNumber      String?
+  suburb          String?
+  city            String?
+  postalCode      String?
+  featureImageUrl String?
+  price           Int?
+  roomCount       Int?
+  bedCount        Int?
+  bathroomCount   Int?
+  guestCount      Int?
+  status          Status  @default(draft)
 
-  authorId String?
-  author   User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId        String?
+  author          User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
-  categoryId String?
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  categoryId      String?
+  category        Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
-  typeId String?
-  type   Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
+  typeId          String?
+  type            Type?   @relation(fields: [typeId], references: [id], onDelete: Cascade)
 
-  offerings Offering[]
+  images          Image[]
 
-  highlights Highlight[]
+  offerings       Offering[]
 
-  amenities Amenity[]
+  highlights      Highlight[]
 
-  createdAt DateTime? @default(now()) @map("created_at")
-  updatedAt DateTime? @default(now()) @map("updated_at")
+  amenities       Amenity[]
+
+  createdAt       DateTime? @default(now()) @map("created_at")
+  updatedAt       DateTime? @default(now()) @map("updated_at")
 
   @@index([authorId])
   @@index([categoryId])
   @@index([typeId])
+}
+
+model Image {
+  id        String    @id @default(cuid())
+  fileKey   String
+  fileUrl   String
+  listings  Listing[]
 }
 
 model Category {

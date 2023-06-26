@@ -1,8 +1,7 @@
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
-import { Image as ImageIcon } from "lucide-react"
+import { Image } from "@prisma/client"
 
 import { Listing } from "@/types/payload-types"
 import { db } from "@/lib/db"
@@ -34,19 +33,25 @@ export default async function TypePage({
     },
   })
 
-  async function update(payload: FileObject[]) {
+  async function update(payload: { fileKey: string; fileUrl: string }[]) {
     "use server"
 
     console.log("payload::: ", payload)
-    // await fetch(`http://localhost:8000/api/listings/${id}?draft=true`, {
-    //   method: "PATCH",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(payload),
-    // })
-    // redirect(`/listings/create/${id}/title`)
+    await db.listing.update({
+      where: { id },
+      data: {
+        featureImageUrl: payload?.[0].fileUrl,
+        images: {
+          create: payload.map((image) => ({
+            fileKey: image.fileKey,
+            fileUrl: image.fileUrl,
+          })),
+        },
+      },
+    })
+    redirect(`/listings/create/${id}/title`)
   }
+
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">
       <ListingHeader />

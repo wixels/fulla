@@ -1,11 +1,14 @@
 "use client"
 
-import React, { ChangeEvent, useState, useTransition } from "react"
+import React, { ChangeEvent, useCallback, useState, useTransition } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Listing } from "@prisma/client"
-import { ImageIcon, MoreHorizontal, Plus } from "lucide-react"
+import { Image as ImageIcon, MoreHorizontal, Plus } from "lucide-react"
+import { FileWithPath, useDropzone } from "react-dropzone"
+import { generateClientDropzoneAccept } from "uploadthing/client"
 
+import { useUploadThing } from "@/lib/uploadthing"
 import { Badge } from "@/components/ui/badge"
 import { Button, buttonVariants } from "@/components/ui/button"
 import {
@@ -25,32 +28,33 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { ListingFooter } from "@/components/listing-footer"
-
-type FileObject = File & { preview: string }
+import { Spin } from "@/components/spin"
 
 export const MediaForm = ({
-  update,
   listing,
+  update,
 }: {
-  update: (payload: FileObject[]) => Promise<void>
   listing: Listing
+  update: (payload: { fileKey: string; fileUrl: string }[]) => Promise<void>
 }) => {
   const [pending, startTransition] = useTransition()
-  const [files, setFiles] = useState<FileObject[]>([])
+  const [files, setFiles] = useState<File[]>([])
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const selectedFiles = Array.from(event.target.files as FileList)
-
-    const newFiles = selectedFiles
-      .slice(0, 5 - files.length) // Limit to remaining slots in the state
-      .map((file) =>
-        Object.assign(file, { preview: URL.createObjectURL(file) })
-      ) as FileObject[]
-
-    const updatedFiles = files.concat(newFiles)
-    setFiles(updatedFiles)
-  }
-
+  const onDrop = useCallback((acceptedFiles: FileWithPath[]) => {
+    setFiles(acceptedFiles)
+  }, [])
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: ["image"] ? generateClientDropzoneAccept(["image"]) : undefined,
+  })
+  const { startUpload, isUploading } = useUploadThing("imageUploader", {
+    onClientUploadComplete: () => {
+      alert("uploaded successfully!")
+    },
+    onUploadError: () => {
+      alert("error occurred while uploading")
+    },
+  })
   const removeImage = (index: number) => {
     setFiles((prevFiles) => {
       const updatedFiles = [...prevFiles]
@@ -72,21 +76,21 @@ export const MediaForm = ({
     })
   }
 
-  function onSubmit() {
-    // startTransition(async () => await update(files))
+  async function onSubmit() {
+    const res = await startUpload([...files])
+    if (res) {
+      startTransition(async () => await update(res))
+    }
   }
 
   return (
     <div>
       {files.length === 0 ? (
-        <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed text-center transition-colors hover:border-foreground hover:bg-muted-foreground/5">
-          <input
-            type="file"
-            className="hidden"
-            accept="image/*"
-            multiple
-            onChange={handleFileChange}
-          />
+        <label
+          {...getRootProps()}
+          className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center rounded-xl border border-dashed text-center transition-colors hover:border-foreground hover:bg-muted-foreground/5"
+        >
+          <input accept="image/*" className="hidden" {...getInputProps()} />
           <ImageIcon size={128} />
           <Title className="font-semibold" level={5}>
             Click here to add photos
@@ -97,18 +101,13 @@ export const MediaForm = ({
         </label>
       ) : (
         <label
+          {...getRootProps()}
           className={buttonVariants({
             variant: "outline",
             className: "mb-6 flex w-full gap-5 cursor-pointer",
           })}
         >
-          <input
-            className="hidden"
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFileChange}
-          />
+          <input className="hidden" accept="image/*" {...getInputProps()} />
           <Plus /> Add More
         </label>
       )}
@@ -126,7 +125,7 @@ export const MediaForm = ({
               fill
               className="object-cover"
               alt="house primary image"
-              src={file.preview}
+              src={URL.createObjectURL(file)}
             />
 
             <div className="absolute inset-x-0 top-0 flex items-center justify-between px-5 pt-4">
@@ -161,14 +160,11 @@ export const MediaForm = ({
           </div>
         ))}
         {files.length < 5 && files?.length > 0 ? (
-          <label className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border border-dashed text-center transition-colors hover:border-foreground hover:bg-muted-foreground/5">
-            <input
-              className="hidden"
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleFileChange}
-            />
+          <label
+            {...getRootProps()}
+            className="flex aspect-square w-full cursor-pointer flex-col items-center justify-center gap-4 rounded-xl border border-dashed text-center transition-colors hover:border-foreground hover:bg-muted-foreground/5"
+          >
+            <input className="hidden" accept="image/*" {...getInputProps()} />
             <ImageIcon size={24} />
             <Paragraph>It looks great!</Paragraph>
             <Paragraph size={"sm"} className="text-muted-foreground">
@@ -187,19 +183,13 @@ export const MediaForm = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger>
-              <Link
-                href={`/listings/create/${listing.id}/title`}
-                className={buttonVariants({})}
-              >
-                Next
-              </Link>
-              {/* <Button
+              <Button
                 onClick={onSubmit}
-                disabled={files?.length < 5}
+                disabled={pending || isUploading || files?.length < 5}
                 type="submit"
               >
-                {pending ? <Spin /> : "Next"}
-              </Button> */}
+                {pending || isUploading ? <Spin /> : "Next"}
+              </Button>
             </TooltipTrigger>
             {files.length < 5 ? (
               <TooltipContent>

@@ -25,7 +25,6 @@ import { MainNav } from "./main-nav"
 
 export function SiteHeader() {
   const { data: session } = useSession()
-  console.log("session::: ", session)
   const path = usePathname()
   if (path?.includes("/listings/create")) return null
   if (path?.includes("/application/type")) return null
