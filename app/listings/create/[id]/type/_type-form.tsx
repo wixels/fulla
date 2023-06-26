@@ -38,8 +38,8 @@ export const TypeForm = ({
       typeId: listing.typeId ?? "",
     },
   })
-  router.prefetch(`/listings/create/${listing.id}/address`)
   async function onSubmit({ typeId }: z.infer<typeof formSchema>) {
+    router.prefetch(`/listings/create/${listing.id}/address`)
     if (typeId) {
       if (listing.typeId && typeId === listing.typeId) {
         router.push(`/listings/create/${listing.id}/address`)

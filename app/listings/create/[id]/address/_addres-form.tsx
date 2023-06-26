@@ -62,8 +62,8 @@ export const AddressForm = ({
       province: listing.province ?? "",
     },
   })
-  router.prefetch(`/listings/create/${listing.id}/basics`)
   async function onSubmit(values: z.infer<typeof formSchema>) {
+    router.prefetch(`/listings/create/${listing.id}/basics`)
     if (
       listing.city === values.city &&
       listing.postalCode === values.postalCode &&

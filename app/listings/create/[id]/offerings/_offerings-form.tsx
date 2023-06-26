@@ -50,12 +50,15 @@ export const OfferingsForm = ({
       amenities: listing.amenities.map((x) => x.id) || null,
     },
   })
-  router.prefetch(`/listings/create/${listing.id}/media`)
 
   function onSubmit(data: z.infer<typeof formSchema>) {
+    router.prefetch(`/listings/create/${listing.id}/media`)
     if (
       compareObjects(
-        { offerings: listing.offerings, amenities: listing.amenities },
+        {
+          offerings: listing.offerings.flatMap((x) => x.id),
+          amenities: listing.amenities.flatMap((x) => x.id),
+        },
         data
       )
     ) {

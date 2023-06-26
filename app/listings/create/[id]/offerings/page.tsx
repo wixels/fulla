@@ -64,7 +64,6 @@ export default async function OfferingsPage({
       offerings: true,
     },
   })
-  console.log("listing::: ", listing)
   async function update(payload: {
     offerings: Offering["id"][] | null
     amenities: Amenity["id"][] | null
@@ -73,10 +72,14 @@ export default async function OfferingsPage({
     await db.listing.update({
       data: {
         offerings: {
-          connect: offerings,
+          connect: payload.offerings
+            ? payload.offerings?.map((id: string) => ({ id }))
+            : [],
         },
         amenities: {
-          connect: amenities,
+          connect: payload.amenities
+            ? payload.amenities?.map((id: string) => ({ id }))
+            : [],
         },
       },
       where: {
@@ -85,25 +88,6 @@ export default async function OfferingsPage({
     })
     redirect(`listings/create/${id}/media`)
   }
-  //   const [listing, { docs: offerings }, { docs: amenities }] = await Promise.all(
-  //     [await getListing(id), await getOfferings(), await getAmenities()]
-  //   )
-
-  //   async function update(payload: {
-  //     offerings: Offering["id"][] | null
-  //     amenities: Amenity["id"][] | null
-  //   }) {
-  //     "use server"
-
-  //     await fetch(`http://localhost:8000/api/listings/${id}?draft=true`, {
-  //       method: "PATCH",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify(payload),
-  //     })
-  //     redirect(`/listings/create/${id}/media`)
-  //   }
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-start">
       <ListingHeader />

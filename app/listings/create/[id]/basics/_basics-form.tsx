@@ -80,7 +80,6 @@ export const BasicsForm = ({
     bedCount: listing.bedCount ?? 0,
     bathroomCount: listing.bathroomCount ?? 0,
   })
-  router.prefetch(`/listings/create/${listing.id}/offerings`)
 
   const areAllCountsGreaterThanZero = (state: CounterState): boolean => {
     return Object.values(state).every((count) => count > 0)
@@ -95,6 +94,7 @@ export const BasicsForm = ({
   }
 
   async function onSubmit() {
+    router.prefetch(`/listings/create/${listing.id}/offerings`)
     if (areAllCountsGreaterThanZero(state)) {
       if (
         listing.guestCount === state.guestCount &&
