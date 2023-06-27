@@ -21,7 +21,6 @@ export const ApplicationDate: React.FC<Props> = ({ listingId }) => {
   const [date, setDate] = useState<Date | undefined>(new Date())
   const elementRef = useRef<HTMLDivElement>(null)
   const width = useElementWidth(elementRef)
-  console.log("data::: ", date)
   return (
     <Popover>
       <PopoverTrigger asChild>

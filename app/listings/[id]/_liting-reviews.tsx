@@ -14,40 +14,41 @@ type Props = {
   listingId: string
 }
 
-async function getReviews(listingId: string) {
-  const query = qs.stringify(
-    {
-      where: {
-        listing: {
-          equals: listingId,
-        },
-      },
-      limit: 3,
-    },
-    { addQueryPrefix: true }
-  )
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL as string}/api/listing-reviews${query}`,
-    {
-      next: {
-        revalidate: 5,
-      },
-    }
-  )
-  return res.json()
-}
+// async function getReviews(listingId: string) {
+//   const query = qs.stringify(
+//     {
+//       where: {
+//         listing: {
+//           equals: listingId,
+//         },
+//       },
+//       limit: 3,
+//     },
+//     { addQueryPrefix: true }
+//   )
+//   const res = await fetch(
+//     `${process.env.NEXT_PUBLIC_API_URL as string}/api/listing-reviews${query}`,
+//     {
+//       next: {
+//         revalidate: 5,
+//       },
+//     }
+//   )
+//   return res.json()
+// }
 
 type deepListingReview = ListingReview & { author: User }
 export default async function ListingReviews({ listingId }: Props) {
-  const reviews: Collection & { docs: deepListingReview[] } = await getReviews(
-    listingId
-  )
-  const avg =
-    reviews.docs.reduce((sum, review) => sum + review.rating, 0) /
-    reviews.docs.length
+  // const reviews: Collection & { docs: deepListingReview[] } = await getReviews(
+  //   listingId
+  // )
+  // const avg =
+  //   reviews.docs.reduce((sum, review) => sum + review.rating, 0) /
+  //   reviews.docs.length
   return (
     <section className="flex flex-col gap-4">
-      <Suspense
+      reviews
+      {/* <Suspense
         fallback={
           <li className="flex flex-col gap-4">
             <div className="flex items-center gap-4">
@@ -96,7 +97,7 @@ export default async function ListingReviews({ listingId }: Props) {
             </li>
           ))}
         </ul>
-      </Suspense>
+      </Suspense> */}
     </section>
   )
 }
