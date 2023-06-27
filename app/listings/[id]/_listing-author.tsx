@@ -1,8 +1,8 @@
+import { Prisma, User } from "@prisma/client"
 import { Check, Star } from "lucide-react"
 import qs from "qs"
 
 import { Collection } from "@/types/collection-type"
-import { User } from "@/types/payload-types"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"
@@ -30,16 +30,18 @@ async function getReviews(authorId: string) {
   )
   return res.json()
 }
-export default async function ListingAuthor({ author }: { author: User }) {
-  const reviews: Collection = await getReviews(author.id)
-
-  console.log("reviews::: ", reviews)
+export default async function ListingAuthor({
+  author,
+}: {
+  author: Prisma.ListingGetPayload<{ include: { author: true } }>["author"]
+}) {
+  const reviews = []
   return (
     <section className="section flex w-full flex-col gap-6">
       <div className="flex items-center gap-6">
         <ClientAvatar
-          fallback={author?.firstName?.[0] ?? ""}
-          src={author.avatar.url}
+          fallback={author?.name?.[0] ?? ""}
+          src={author?.image ?? ""}
         />
         <div>
           <Title
@@ -47,14 +49,14 @@ export default async function ListingAuthor({ author }: { author: User }) {
             style={{ margin: "0 0 0.625rem 0" }}
             level={3}
           >
-            Hosted by {author.firstName}
+            Hosted by {author?.name}
           </Title>
           <Paragraph className="text-muted-foreground" size={"sm"}>
             Joined in{" "}
             {new Intl.DateTimeFormat("en", {
               month: "short",
               year: "numeric",
-            }).format(new Date(author.createdAt))}
+            }).format(new Date(author?.createdAt!))}
           </Paragraph>
         </div>
       </div>
@@ -65,8 +67,9 @@ export default async function ListingAuthor({ author }: { author: User }) {
               size={"lg"}
               className="flex items-center gap-2 font-semibold"
             >
-              <Star size={22} /> {reviews.totalDocs} Review
-              {reviews.totalDocs === 1 ? "" : "s"}
+              {/* <Star size={22} /> {reviews.totalDocs} Review
+              {reviews.totalDocs === 1 ? "" : "s"} */}
+              <Star size={22} /> TODO Reviews
             </Paragraph>
             <Paragraph
               size={"lg"}

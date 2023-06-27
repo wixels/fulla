@@ -46,8 +46,6 @@ export default async function IndexPage() {
     })(),
   ])
 
-  console.log("favourites::: ", favourites)
-
   const favoritesMap = new Map(
     favourites?.map((fav: Favourite) => [fav.listingId, fav])
   )

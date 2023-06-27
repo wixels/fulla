@@ -41,13 +41,6 @@ export default async function ListingPage({
   params: { id: string }
 }) {
   const listing = await fetchListing(id)
-  console.log("listing::: ", listing)
-  // const listing = (await getListing(id)) as Listing & {
-  //   author: User
-  //   featureImage: Media
-  //   offerings: Offering[]
-  //   amenities: Amenity[]
-  // }
   return (
     <div>
       <div className="gutter section-padding-bottom relative flex min-h-screen flex-col flex-wrap gap-16 lg:flex-row">
@@ -133,8 +126,8 @@ export default async function ListingPage({
           {/* <ListingReviews listingId={listing.id} /> */}
         </div>
         <ListingGallery images={listing.images ?? []} />
-        {/* <ListingMap />
-        <ListingAuthor author={listing.author} /> */}
+        <ListingMap />
+        <ListingAuthor author={listing.author} />
       </div>
       <SiteFooter />
     </div>
