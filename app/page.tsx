@@ -42,7 +42,6 @@ export default async function IndexPage() {
       if (!res.ok) {
         throw new Error("Failed to fetch data")
       }
-
       return res.json()
     })(),
   ])

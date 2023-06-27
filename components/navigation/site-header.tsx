@@ -6,7 +6,6 @@ import { CreditCard, LogOut, PlusCircle, Settings, User } from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
 
 import { siteConfig } from "@/config/site"
-import { getCurrentUser } from "@/lib/session"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -18,7 +17,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Icons } from "@/components/icons"
-import { ThemeToggle } from "@/components/theme-toggle"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { MainNav } from "./main-nav"
