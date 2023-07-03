@@ -1,52 +1,48 @@
-import { NextResponse } from "next/server"
-import { getToken } from "next-auth/jwt"
-import { withAuth } from "next-auth/middleware"
-
-export default withAuth(
-  async function middleware(req) {
-    const token = await getToken({ req })
-    const isAuth = !!token
-    const isAuthPage =
-      req.nextUrl.pathname.startsWith("/login") ||
-      req.nextUrl.pathname.startsWith("/register")
-
-    if (isAuthPage) {
-      if (isAuth) {
-        return NextResponse.redirect(new URL("/", req.url))
-      }
-
-      return null
-    }
-
-    if (!isAuth) {
-      let from = req.nextUrl.pathname
-      if (req.nextUrl.search) {
-        from += req.nextUrl.search
-      }
-
-      return NextResponse.redirect(
-        new URL(`/login?from=${encodeURIComponent(from)}`, req.url)
-      )
-    }
-  },
-  {
-    callbacks: {
-      async authorized() {
-        // This is a work-around for handling redirect on auth pages.
-        // We return true here so that the middleware function above
-        // is always called.
-        return true
-      },
-    },
-  }
-)
+import { NextRequest, NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 export const config = {
   matcher: [
-    "/listings/create/:path*",
-    "/profile",
-    "/profile/:path*",
-    "/login",
-    "/register",
+    /*
+     * Match all paths except for:
+     * 1. /api routes
+     * 2. /_next (Next.js internals)
+     * 3. /_static (inside /public)
+     * 4. all root files inside /public (e.g. /favicon.ico)
+     */
+    "/((?!api/|_next/|_static/|_vercel|[\\w-]+\\.\\w+).*)",
   ],
+};
+
+export default async function middleware(req: NextRequest) {
+  const url = req.nextUrl;
+
+  // Get hostname of request (e.g. demo.vercel.pub, demo.localhost:3000)
+  const hostname = req.headers
+    .get("host")!
+    .replace(".localhost:3000", `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
+
+  // Get the pathname of the request (e.g. /, /about, /blog/first-post)
+  const path = url.pathname;
+
+  // rewrites for app pages
+  if (hostname == `app.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`) {
+    const session = await getToken({ req });
+    if (!session && path !== "/login") {
+      return NextResponse.redirect(new URL("/login", req.url));
+    } else if (session && path == "/login") {
+      return NextResponse.redirect(new URL("/", req.url));
+    }
+    return NextResponse.rewrite(
+      new URL(`/app${path === "/" ? "" : path}`, req.url),
+    );
+  }
+
+  // rewrite root application to `/home` folder
+  if (hostname === "localhost:3000" || hostname === "vercel.pub") {
+    return NextResponse.rewrite(new URL(`/home${path}`, req.url));
+  }
+
+  // rewrite everything else to `/[domain]/[path] dynamic route
+  return NextResponse.rewrite(new URL(`/${hostname}${path}`, req.url));
 }
