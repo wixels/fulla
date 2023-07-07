@@ -2,7 +2,7 @@
 
 import React from "react"
 import Image from "next/image"
-import { Listing } from "@prisma/client"
+import { Space as Listing } from "@prisma/client"
 
 import { Badge } from "../ui/badge"
 import { Paragraph } from "../ui/paragraph"

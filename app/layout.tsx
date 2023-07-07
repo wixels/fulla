@@ -44,11 +44,8 @@ export default async function RootLayout({ children, auth }: RootLayoutProps) {
             fontSans.variable
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-            <NextAuthProvider>
-              <SiteHeader />
-              {children}
-            </NextAuthProvider>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+            <NextAuthProvider>{children}</NextAuthProvider>
             <Toaster />
             <TailwindIndicator />
           </ThemeProvider>

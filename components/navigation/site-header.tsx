@@ -4,14 +4,33 @@ import { useMemo, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, useTransform } from "framer-motion"
-import { CreditCard, LogOut, PlusCircle, Settings, User } from "lucide-react"
+import {
+  CreditCard,
+  LogOut,
+  Moon,
+  PlusCircle,
+  Search,
+  Settings,
+  Sun,
+  User,
+} from "lucide-react"
 import { signOut, useSession } from "next-auth/react"
+import { useTheme } from "next-themes"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 import { useBoundedScroll } from "@/hooks/use-bounded-scroll"
 
+import { Icons } from "../icons"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { Button } from "../ui/button"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu"
+import { Input } from "../ui/input"
 import { ProfileAvatar } from "./profile-avatar"
 
 export function SiteHeader() {
@@ -19,52 +38,13 @@ export function SiteHeader() {
   const [hoveredTab, setHoveredTab] = useState<string | null>(
     siteConfig.mainNav[0].href
   )
-  const path = usePathname()
 
-  let { scrollYBoundedProgress } = useBoundedScroll(400)
-  let scrollYBoundedProgressThrottled = useTransform(
-    scrollYBoundedProgress,
-    [0, 0.75, 1],
-    [0, 0, 1]
-  )
-
-  const hideMe = useMemo(() => {
-    if (path?.includes("/listings/create")) return true
-    if (path?.includes("/application/type")) return true
-    if (path?.includes("/login")) return true
-    if (path?.includes("/register")) return true
-    return false
-  }, [path])
+  const { setTheme } = useTheme()
 
   return (
-    <motion.header
-      style={{
-        display: hideMe ? "none" : "flex",
-        height: useTransform(scrollYBoundedProgressThrottled, [0, 1], [80, 50]),
-      }}
-      className="gutter fixed top-0 z-40 flex w-full items-center space-x-4 bg-background  shadow backdrop-blur-md sm:justify-between sm:space-x-0"
-    >
-      <div className="flex items-center gap-4">
-        <Link href={"/"}>
-          <motion.svg
-            style={{
-              scale: useTransform(
-                scrollYBoundedProgressThrottled,
-                [0, 1],
-                [1, 0.6]
-              ),
-            }}
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="h-10 w-10"
-          >
-            <circle cx="12" cy="12" r="10"></circle>
-          </motion.svg>
-        </Link>
+    <header className="gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 bg-background py-2">
+      <div className="flex items-center gap-3">
+        <Icons.logo className="h-6 w-6" />
         <motion.div
           onHoverEnd={() => setHoveredTab(null)}
           className="flex space-x-1"
@@ -75,7 +55,7 @@ export function SiteHeader() {
               key={href}
               onClick={() => setActiveTab(href)}
               className={cn(
-                "font-mediu relative rounded-full px-3 py-1.5 text-sm text-white transition hover:text-white/50 focus-visible:outline-2"
+                "relative rounded-full px-3 py-1.5 text-sm font-medium text-white transition hover:text-white/50 focus-visible:outline-2"
               )}
             >
               <motion.div onHoverStart={() => setHoveredTab(href)}>
@@ -121,18 +101,39 @@ export function SiteHeader() {
           ))}
         </motion.div>
       </div>
-      <motion.nav
-        style={{
-          opacity: useTransform(
-            scrollYBoundedProgressThrottled,
-            [0, 1],
-            [1, 0]
-          ),
-        }}
-        className="flex space-x-4 "
-      >
+      <div className="flex items-center justify-between gap-3 rounded-full border border-input bg-muted-foreground/10 px-4">
+        <Search size={14} className="text-muted-foreground/50" />
+        <Input
+          className="grow"
+          placeholder="Discover the ideal space to grow your business..."
+          variant={"ghost"}
+          rounded={"full"}
+        />
+      </div>
+      <div className="flex items-center justify-end gap-3">
+        <Button rounded={"full"}>Rent your space</Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="icon">
+              <Sun className="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-[1.2rem] w-[1.2rem] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => setTheme("light")}>
+              Light
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("dark")}>
+              Dark
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => setTheme("system")}>
+              System
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <ProfileAvatar />
-      </motion.nav>
-    </motion.header>
+      </div>
+    </header>
   )
 }

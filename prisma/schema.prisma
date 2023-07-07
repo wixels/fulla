@@ -55,8 +55,9 @@ model User {
   stripeCurrentPeriodEnd DateTime? @map("stripe_current_period_end")
   accounts               Account[]
   sessions               Session[]
-  listings               Listing[]
-  favourites             Favourite[]
+
+  organizations           OrganizationUser[]
+  spaces                  SpaceUser[]
 
   @@map("users")
 }
@@ -69,13 +70,71 @@ model VerificationToken {
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
+model Organization {
+  id          String    @id @default(cuid())
+  name        String
+  logo        Image?    @relation(fields: [logoId], references: [id])
+  logoId      String?
 
-enum Status {
+  spaces      Space[]
+
+  users       OrganizationUser[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([logoId])
+  @@map("organizations")
+}
+
+enum PersonRoles {
+  user
+  admin
+}
+model OrganizationUser {
+  id              String                  @id @default(cuid())
+  user            User                    @relation(fields: [userId], references: [id])
+  userId          String
+  organization    Organization            @relation(fields: [organizationId], references: [id])
+  organizationId  String
+  role            PersonRoles @default(user)
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  @@index([organizationId])
+  @@index([userId])
+  @@map("organization_users")
+}
+model Image {
+  id            String    @id @default(cuid())
+  fileKey       String
+  fileUrl       String
+  organization  Organization[]
+  space         Space[]
+  @@map("images")
+}
+
+
+enum ListingStatus {
   draft
   published
 }
 
-model Listing {
+model SpaceUser {
+  id              String                  @id @default(cuid())
+  user            User                    @relation(fields: [userId], references: [id])
+  userId          String
+  space    Space            @relation(fields: [spaceId], references: [id])
+  spaceId  String
+  role            PersonRoles @default(user)
+  createdAt       DateTime                @default(now())
+  updatedAt       DateTime                @updatedAt
+
+  @@index([userId])
+  @@index([spaceId])
+  @@map("space_users")
+}
+model Space {
   id              String  @id @default(cuid())
   title           String?
   description     String?
@@ -91,10 +150,14 @@ model Listing {
   bedCount        Int?
   bathroomCount   Int?
   guestCount      Int?
-  status          Status  @default(draft)
+  status          ListingStatus  @default(draft)
 
-  authorId        String?
-  author          User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  organization    Organization  @relation(fields: [organizationId], references: [id])
+  organizationId  String
+
+  users SpaceUser[]
+  // authorId        String?
+  // author          User?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   categoryId      String?
   category        Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
@@ -113,41 +176,20 @@ model Listing {
   createdAt       DateTime? @default(now()) @map("created_at")
   updatedAt       DateTime? @default(now()) @map("updated_at")
 
-  favourites      Favourite[]
-
-  @@index([authorId])
   @@index([categoryId])
   @@index([typeId])
+  @@index([organizationId])
+  @@map("spaces")
 }
 
-model Favourite {
-  id        String    @id @default(cuid())
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @default(now()) @map("updated_at")
-
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String
-
-  listing   Listing   @relation(fields: [listingId], references: [id], onDelete: Cascade)
-  listingId String
-
-  @@index([userId])
-  @@index([listingId])
-}
-
-model Image {
-  id        String    @id @default(cuid())
-  fileKey   String
-  fileUrl   String
-  listings  Listing[]
-}
 
 model Category {
   id        String    @id @default(cuid())
   label     String
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
-  listings  Listing[]
+  spaces   Space[]
+  @@map("categories")
 }
 
 model Offering {
@@ -155,7 +197,8 @@ model Offering {
   label     String
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
-  listings  Listing[]
+  spaces   Space[]
+  @@map("offerings")
 }
 
 model Highlight {
@@ -164,7 +207,8 @@ model Highlight {
   icon      String
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
-  listings  Listing[]
+  spaces   Space[]
+  @@map("highlights")
 }
 
 model Amenity {
@@ -172,7 +216,8 @@ model Amenity {
   label     String
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
-  listings  Listing[]
+  spaces   Space[]
+  @@map("amenities")
 }
 
 model Type {
@@ -182,5 +227,6 @@ model Type {
   icon        String
   updatedAt   DateTime  @updatedAt
   createdAt   DateTime  @default(now())
-  listings    Listing[]
+  spaces     Space[]
+  @@map("types")
 }

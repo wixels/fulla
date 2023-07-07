@@ -1,0 +1,12 @@
+{
+  "Create Next Page": {
+    "scope": "typescriptreact",
+    "prefix": "npage",
+    "body": [
+      "export default async function $1() {",
+      "return <div>Page</div>",
+      "}"
+    ],
+    "description": "Log output to console"
+  }
+}

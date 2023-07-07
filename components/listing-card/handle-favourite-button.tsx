@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 "use client"
 
 import { useTransition } from "react"
@@ -5,7 +7,7 @@ import { Favourite } from "@prisma/client"
 import { Heart } from "lucide-react"
 import { useSession } from "next-auth/react"
 
-import { favourite, unfavourite } from "@/app/listings/[id]/actions"
+import { favourite, unfavourite } from "@/app/_listings/[id]/actions"
 
 import { Spin } from "../spin"
 

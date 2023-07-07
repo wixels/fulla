@@ -5,7 +5,6 @@ import { rounded, shadow } from "@/lib/constants"
 const inputBase = [
   "flex",
   "w-full",
-  "rounded-md",
   "border",
   "border-input",
   "bg-transparent",
