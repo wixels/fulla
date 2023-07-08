@@ -15,7 +15,6 @@ const load = async () => {
     await prisma.amenity.deleteMany()
     await prisma.highlight.deleteMany()
     await prisma.offering.deleteMany()
-    // await prisma.listing.deleteMany()
 
     await prisma.$queryRaw`ALTER TABLE categories AUTO_INCREMENT = 1`
     await prisma.$queryRaw`ALTER TABLE offerings AUTO_INCREMENT = 1`

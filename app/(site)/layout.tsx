@@ -7,7 +7,7 @@ export default async function Layout({
   children: React.ReactNode
 }) {
   return (
-    <div className="min-h-screen">
+    <div className="flex min-h-screen flex-col">
       <SiteHeader />
       <SiteSpaceFilters />
       {children}

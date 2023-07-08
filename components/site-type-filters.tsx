@@ -7,6 +7,9 @@ import { cn } from "@/lib/utils"
 
 type Props = {
   space: string
+  agile: number
+  furnished: number
+  private: number
 }
 
 let tabs: { title: string; href: string }[] = [
@@ -14,19 +17,20 @@ let tabs: { title: string; href: string }[] = [
   { title: "Furnished", href: "furnished" },
   { title: "Private", href: "private" },
 ]
-export const SiteTypeFilters: React.FC<Props> = ({ space }) => {
+export const SiteTypeFilters: React.FC<Props> = ({ space, ...rest }) => {
   const path = usePathname()
   return (
-    <nav className="flex items-center gap-2">
+    <nav className="gutter flex items-center gap-2">
       {tabs?.map(({ title, href }) => (
         <Link
           className={cn(
-            "flex items-center gap-2 rounded-sm px-3 py-1 text-base transition-all",
+            "flex items-center gap-2 rounded-md px-3 py-1 text-base transition-all",
             {
               "bg-foreground": href === path?.split("/")?.[2],
               "hover:bg-primary/10": href !== path?.split("/")?.[2],
             }
           )}
+          key={`/${space}/${href}`}
           href={`/${space}/${href}`}
         >
           <span
@@ -48,7 +52,8 @@ export const SiteTypeFilters: React.FC<Props> = ({ space }) => {
               "text-primary-foreground": href === path?.split("/")?.[2],
             })}
           >
-            424
+            {/* @ts-ignore */}
+            {rest?.[href]}
           </span>
         </Link>
       ))}

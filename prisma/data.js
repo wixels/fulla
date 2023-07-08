@@ -1,46 +1,31 @@
 const categories = [
   {
-    label: "Luxury",
+    label: "Agile",
   },
   {
-    label: "Farm Style",
+    label: "Furnished",
   },
   {
-    label: "Camping",
-  },
-  {
-    label: "Mountain",
-  },
-  {
-    label: "Lake",
-  },
-  {
-    label: "Countryside",
-  },
-  {
-    label: "Modern",
-  },
-  {
-    label: "Beach",
+    label: "Private",
   },
 ]
 
 const types = [
   {
-    label: "A Shared Room",
+    label: "A Desk",
     description:
-      "Guests sleep in a room or common area that may be shared with you or others.",
-    icon: "Users",
+      "Tenants use a desk or common area that may be shared with you or others.",
+    icon: "LampDesk",
   },
   {
     label: "A Room",
     description:
-      "Tenants have their own room in a home, plus access to shared spaces.",
+      "Tenants have their own room in an office, plus access to shared spaces.",
     icon: "BedSingle",
   },
   {
-    label: "An Entire Place",
-    description: "Tenants will have the whole place to themselves",
+    label: "An Entire Floor",
+    description: "Tenants will have the whole floor to themselves",
     icon: "Home",
   },
 ]
@@ -105,10 +90,6 @@ const highlights = [
   {
     label: "Stylish",
     icon: "Home",
-  },
-  {
-    label: "Family-Friendly",
-    icon: "Users",
   },
   {
     label: "Unique",

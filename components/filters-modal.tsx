@@ -6,19 +6,17 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { buttonVariants } from "./ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "./ui/dialog"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
 import { Input } from "./ui/input"
-import {
-  Modal,
-  ModalAction,
-  ModalCancel,
-  ModalContent,
-  ModalDescription,
-  ModalFooter,
-  ModalHeader,
-  ModalTitle,
-  ModalTrigger,
-} from "./ui/modal"
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import { Separator } from "./ui/separator"
 import { Title } from "./ui/title"
@@ -45,15 +43,15 @@ export const FiltersModal = (props: Props) => {
     console.log(values)
   }
   return (
-    <Modal>
-      <ModalTrigger asChild>{props.children}</ModalTrigger>
-      <ModalContent>
-        <ModalHeader>
-          <ModalTitle>Filters</ModalTitle>
-          <ModalDescription>
+    <Dialog>
+      <DialogTrigger asChild>{props.children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Filters</DialogTitle>
+          <DialogDescription>
             Tailor your search to find exactly what you need
-          </ModalDescription>
-        </ModalHeader>
+          </DialogDescription>
+        </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
             <Title level={4}>Price Range</Title>
@@ -63,7 +61,7 @@ export const FiltersModal = (props: Props) => {
                 name="minPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Min</FormLabel>
                     <FormControl>
                       <Input placeholder="Min Price" />
                     </FormControl>
@@ -75,7 +73,7 @@ export const FiltersModal = (props: Props) => {
                 name="maxPrice"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Max</FormLabel>
                     <FormControl>
                       <Input placeholder="Min Price" />
                     </FormControl>
@@ -323,11 +321,7 @@ export const FiltersModal = (props: Props) => {
             />
           </form>
         </Form>
-        <ModalFooter>
-          <ModalCancel>Cancel</ModalCancel>
-          <ModalAction>Continue</ModalAction>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   )
 }

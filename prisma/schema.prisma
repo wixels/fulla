@@ -186,6 +186,7 @@ model Space {
 model Category {
   id        String    @id @default(cuid())
   label     String
+  key         String?
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
   spaces   Space[]
@@ -195,6 +196,7 @@ model Category {
 model Offering {
   id        String    @id @default(cuid())
   label     String
+  key         String?
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
   spaces   Space[]
@@ -204,6 +206,7 @@ model Offering {
 model Highlight {
   id        String    @id @default(cuid())
   label     String
+  key         String?
   icon      String
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
@@ -214,6 +217,7 @@ model Highlight {
 model Amenity {
   id        String    @id @default(cuid())
   label     String
+  key         String?
   updatedAt DateTime  @updatedAt
   createdAt DateTime  @default(now())
   spaces   Space[]
@@ -223,6 +227,7 @@ model Amenity {
 model Type {
   id          String    @id @default(cuid())
   label       String
+  key         String?
   description String
   icon        String
   updatedAt   DateTime  @updatedAt
