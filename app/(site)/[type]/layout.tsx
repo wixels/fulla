@@ -5,13 +5,13 @@ import { SiteTypeFilters } from "@/components/site-type-filters"
 
 export default async function Layout({
   children,
-  params,
+  params: { type },
 }: {
   children: React.ReactNode
-  params: { space: string }
+  params: { type: string }
 }) {
   const [agile, furnished, priv] = await Promise.all([
-    db.space.count({
+    await db.space.count({
       where: {
         AND: [
           {
@@ -24,14 +24,14 @@ export default async function Layout({
           {
             type: {
               key: {
-                equals: params.space,
+                equals: type,
               },
             },
           },
         ],
       },
     }),
-    db.space.count({
+    await db.space.count({
       where: {
         AND: [
           {
@@ -44,14 +44,14 @@ export default async function Layout({
           {
             type: {
               key: {
-                equals: params.space,
+                equals: type,
               },
             },
           },
         ],
       },
     }),
-    db.space.count({
+    await db.space.count({
       where: {
         AND: [
           {
@@ -64,7 +64,7 @@ export default async function Layout({
           {
             type: {
               key: {
-                equals: params.space,
+                equals: type,
               },
             },
           },
@@ -79,7 +79,7 @@ export default async function Layout({
         agile={agile}
         furnished={furnished}
         private={priv}
-        space={params.space}
+        space={type}
       />
       {children}
     </div>

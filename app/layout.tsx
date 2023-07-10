@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster"
 import { ClientOnly } from "@/components/client-only"
 import { SiteHeader } from "@/components/navigation/site-header"
 import { NextAuthProvider } from "@/components/providers/next-auth-provider"
+import { QueryClientProvider } from "@/components/providers/query-client.provider"
 import { ThemeProvider } from "@/components/providers/theme-provider"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
@@ -44,11 +45,13 @@ export default async function RootLayout({ children, auth }: RootLayoutProps) {
             fontSans.variable
           )}
         >
-          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-            <NextAuthProvider>{children}</NextAuthProvider>
-            <Toaster />
-            <TailwindIndicator />
-          </ThemeProvider>
+          <QueryClientProvider>
+            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
+              <NextAuthProvider>{children}</NextAuthProvider>
+              <Toaster />
+              <TailwindIndicator />
+            </ThemeProvider>
+          </QueryClientProvider>
         </body>
       </html>
     </>

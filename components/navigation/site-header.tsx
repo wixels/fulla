@@ -1,28 +1,16 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useEffect, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { motion, useTransform } from "framer-motion"
-import {
-  CreditCard,
-  LogOut,
-  Moon,
-  PlusCircle,
-  Search,
-  Settings,
-  Sun,
-  User,
-} from "lucide-react"
-import { signOut, useSession } from "next-auth/react"
+import { motion } from "framer-motion"
+import { Moon, Search, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
-import { useBoundedScroll } from "@/hooks/use-bounded-scroll"
+import { useHotkeys } from "@/hooks/use-hotkeys"
 
 import { Icons } from "../icons"
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { Button } from "../ui/button"
 import {
   CommandDialog,
@@ -39,40 +27,98 @@ import {
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
 import { Input } from "../ui/input"
+import { Label } from "../ui/label"
+import { Paragraph } from "../ui/paragraph"
+import { Title } from "../ui/title"
 import { ProfileAvatar } from "./profile-avatar"
 
+let commandTabs: { title: string; value: string }[] = [
+  { title: "Desks", value: "desks" },
+  { title: "Rooms", value: "rooms" },
+  { title: "Floors", value: "floors" },
+]
 export function SiteHeader() {
   const [open, setOpen] = useState(false)
-  let [activeTab, setActiveTab] = useState(siteConfig.mainNav[0].href)
+  const [activeTab, setActiveTab] = useState(siteConfig.mainNav[0].href)
   const [hoveredTab, setHoveredTab] = useState<string | null>(
     siteConfig.mainNav[0].href
   )
 
-  useEffect(() => {
-    const down = (e: KeyboardEvent) => {
-      if (e.key === "k" && e.metaKey) {
-        setOpen((open) => !open)
-      }
-    }
-    document.addEventListener("keydown", down)
-    return () => document.removeEventListener("keydown", down)
-  }, [])
+  const [activeCommandTab, setActiveCommandTab] = useState(commandTabs[0].value)
+  const [hoveredCommandTab, setHoveredCommandTab] = useState<string | null>(
+    null
+  )
+
+  useHotkeys([["mod+k", () => setOpen((open) => !open)]])
 
   const { setTheme } = useTheme()
 
   return (
     <>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog
+        open={open}
+        onOpenChange={setOpen}
+        dialogContentModifier="top-2 translate-y-0"
+      >
+        <motion.header
+          onHoverEnd={() => setHoveredCommandTab(null)}
+          className="flex border-b p-3"
+        >
+          {commandTabs.map(({ title, value }) => (
+            <div
+              onClick={() => setActiveCommandTab(value)}
+              key={value}
+              className={cn(
+                "relative px-2 py-1 text-base font-semibold text-muted-foreground/50",
+                {
+                  "text-foreground": value === activeCommandTab,
+                }
+              )}
+            >
+              <motion.div onHoverStart={() => setHoveredCommandTab(value)}>
+                {hoveredCommandTab === value && (
+                  <motion.div
+                    layoutId="commandFiltersHover"
+                    className="absolute inset-0 rounded-md bg-stone-600/10"
+                    animate={{
+                      opacity: 1,
+                    }}
+                    exit={{
+                      opacity: 0,
+                    }}
+                    transition={{
+                      type: "spring",
+                      bounce: 0.2,
+                      duration: 0.6,
+                    }}
+                  />
+                )}
+                <span>{title}</span>
+              </motion.div>
+            </div>
+          ))}
+        </motion.header>
         <CommandInput
-          className="grow"
+          className="grow py-3"
           placeholder="Discover the ideal space to grow your business..."
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>Calendar</CommandItem>
-            <CommandItem>Search Emoji</CommandItem>
-            <CommandItem>Calculator</CommandItem>
+          <CommandGroup heading="Popular Companies">
+            <CommandItem className="flex gap-4">
+              <div className="rounded-md bg-stone-200 p-2 shadow-lg">
+                <Icons.google />
+              </div>
+              <div className="flex flex-col">
+                <Title style={{ margin: 0 }} level={6}>
+                  Google
+                </Title>
+                <Label className="text-muted-foreground">
+                  <span className="text-blue-500">1024 • </span>
+                  Spaces
+                </Label>
+              </div>
+            </CommandItem>
           </CommandGroup>
         </CommandList>
       </CommandDialog>
@@ -81,7 +127,7 @@ export function SiteHeader() {
           <Icons.logo className="h-6 w-6" />
           <motion.div
             onHoverEnd={() => setHoveredTab(null)}
-            className="flex space-x-1"
+            className="hidden space-x-1 lg:flex"
           >
             {siteConfig.mainNav.map(({ href, title }) => (
               <Link
@@ -153,7 +199,9 @@ export function SiteHeader() {
           </kbd>
         </div>
         <div className="flex items-center justify-end gap-3">
-          <Button rounded={"full"}>Rent your space</Button>
+          <Button className="hidden lg:flex" rounded={"full"}>
+            Rent your space
+          </Button>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="outline" size="icon">
