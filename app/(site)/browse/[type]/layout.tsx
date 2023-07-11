@@ -12,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { SiteSpaceFilters } from "@/components/site-space-filters"
 import { SiteTypeFilters } from "@/components/site-type-filters"
 
 import { FiltersModalWrapper } from "./[category]/_filters-modal-wrapper"
@@ -53,7 +54,7 @@ export default async function Layout({
         <div className="flex items-center gap-2">
           <Suspense
             fallback={
-              <Button disabled>
+              <Button size={"sm"} variant={"secondary"} disabled>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Setting up filters
               </Button>

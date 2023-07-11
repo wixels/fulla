@@ -33,9 +33,9 @@ import { Title } from "../ui/title"
 import { ProfileAvatar } from "./profile-avatar"
 
 let commandTabs: { title: string; value: string }[] = [
-  { title: "Desks", value: "desks" },
-  { title: "Rooms", value: "rooms" },
-  { title: "Floors", value: "floors" },
+  { title: "Desks", value: "browse/desks" },
+  { title: "Rooms", value: "browse/rooms" },
+  { title: "Floors", value: "browse/floors" },
 ]
 export function SiteHeader() {
   const [open, setOpen] = useState(false)

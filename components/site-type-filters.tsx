@@ -26,30 +26,30 @@ export const SiteTypeFilters: React.FC<Props> = ({ space, ...rest }) => {
           className={cn(
             "flex items-center gap-2 rounded-md px-3 py-1 text-base transition-all",
             {
-              "bg-foreground": href === path?.split("/")?.[2],
-              "hover:bg-primary/10": href !== path?.split("/")?.[2],
+              "bg-foreground": href === path?.split("/")?.[3],
+              "hover:bg-primary/10": href !== path?.split("/")?.[3],
             }
           )}
-          key={`/${space}/${href}`}
-          href={`/${space}/${href}`}
+          key={`/browse/${space}/${href}`}
+          href={`/browse/${space}/${href}`}
         >
           <span
             className={cn("font-medium text-primary", {
-              "text-primary-foreground": href === path?.split("/")?.[2],
+              "text-primary-foreground": href === path?.split("/")?.[3],
             })}
           >
             {title}
           </span>
           <span
             className={cn("font-medium text-primary", {
-              "text-primary-foreground": href === path?.split("/")?.[2],
+              "text-primary-foreground": href === path?.split("/")?.[3],
             })}
           >
             |
           </span>
           <span
             className={cn("text-primary/30", {
-              "text-primary-foreground": href === path?.split("/")?.[2],
+              "text-primary-foreground": href === path?.split("/")?.[3],
             })}
           >
             {/* @ts-ignore */}

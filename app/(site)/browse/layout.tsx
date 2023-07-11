@@ -8,7 +8,7 @@ export default async function Layout({
 }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
+      <SiteSpaceFilters />
       {children}
     </div>
   )
