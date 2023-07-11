@@ -27,7 +27,7 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
 
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery(
     [`infinite-space-${type}-${category}`],
-    async ({ pageParam = 1 }) => {
+    async ({ pageParam = 0 }) => {
       const obj = {
         limit: INFINITE_SCROLL_PAGINATION_RESULTS.toString(),
         page: pageParam.toString(),
@@ -46,8 +46,6 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
         }
       })
       const urlSearchParams = new URLSearchParams(params).toString()
-
-      console.log("urlSearchParams from client::: ", urlSearchParams)
 
       const query = `/api/spaces/${type}/${category}${
         urlSearchParams && urlSearchParams?.length ? `?${urlSearchParams}` : ""

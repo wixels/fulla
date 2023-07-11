@@ -8,85 +8,72 @@ export async function GET(
 ) {
   const url = new URL(req.url)
   try {
-    const desks = url.searchParams.get("desks")
-      ? parseInt(url.searchParams.get("desks") as string)
-      : 2
-    const rooms = url.searchParams.get("rooms")
     const parsedSearchParams = z
       .object({
         limit: z.string(),
         page: z.string(),
+        desks: z.string().nullish().optional(),
+        rooms: z.string().nullish().optional(),
       })
       .parse({
         limit: url.searchParams.get("limit"),
         page: url.searchParams.get("page"),
+        desks: url.searchParams.get("desks"),
+        rooms: url.searchParams.get("rooms"),
       })
 
-    const where = {
-      // AND: [
-      //   {
-      //     type: {
-      //       key: {
-      //         equals: type,
-      //       },
-      //     },
-      //   },
-      //   {
-      //     category: {
-      //       key: {
-      //         equals: category,
-      //       },
-      //     },
-      //   },
-      // ],
+    const where: { AND: {}[] } = {
+      AND: [
+        {
+          type: {
+            key: {
+              equals: type,
+            },
+          },
+        },
+        {
+          category: {
+            key: {
+              equals: category,
+            },
+          },
+        },
+      ],
     }
 
-    // Object.keys(parsedSearchParams)?.forEach((key: string) => {
-    //   switch (key) {
-    //     case "desks": {
-    //       if (parsedSearchParams?.[key] !== undefined)
-    //         where.AND.push({
-    //           desks: {
-    //             gte: parsedSearchParams?.[key],
-    //           },
-    //         })
-    //       break
-    //     }
-    //     case "rooms":
-    //       break
-
-    //     default:
-    //       break
-    //   }
-    // })
+    Object.keys(parsedSearchParams)?.forEach((key: string) => {
+      switch (key) {
+        case "desks": {
+          if (parsedSearchParams?.[key])
+            where.AND.push({
+              desks: {
+                gte: parseInt(parsedSearchParams?.[key]!),
+              },
+            })
+          break
+        }
+        case "rooms": {
+          if (parsedSearchParams?.[key])
+            where.AND.push({
+              rooms: {
+                gte: parseInt(parsedSearchParams?.[key]!),
+              },
+            })
+          break
+        }
+        default:
+          break
+      }
+    })
     const spaces = await db.space.findMany({
       take: parseInt(parsedSearchParams.limit),
       skip:
-        parseInt(parsedSearchParams.page) === 0
-          ? 0
-          : parseInt(parsedSearchParams.page) *
-            parseInt(parsedSearchParams.limit),
+        (parseInt(parsedSearchParams.page) - 1) *
+        parseInt(parsedSearchParams.limit),
       orderBy: {
         createdAt: "desc",
       },
-      where: {
-        AND: [
-          {
-            type: {
-              key: {
-                equals: type,
-              },
-            },
-          },
-          {
-            category: {
-              key: {
-                equals: category,
-              },
-            },
-          },
-        ],
-      },
+      where,
       include: {
         type: true,
         category: true,

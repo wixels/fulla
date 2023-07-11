@@ -1,14 +1,15 @@
 "use client"
 
-import React, { useMemo, useState, useTransition } from "react"
+import React, { useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Amenity, Category, Highlight, Offering, Type } from "@prisma/client"
+import { useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
-import { Button, buttonVariants } from "./ui/button"
+import { Button } from "./ui/button"
 import {
   Dialog,
   DialogContent,
@@ -18,13 +19,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "./ui/dialog"
-import { Form, FormControl, FormField, FormItem, FormLabel } from "./ui/form"
-import { Input } from "./ui/input"
+import { Form } from "./ui/form"
 import { Label } from "./ui/label"
 import { Paragraph } from "./ui/paragraph"
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
-import { Separator } from "./ui/separator"
-import { Slider } from "./ui/slider"
 import { Title } from "./ui/title"
 
 type Props = {
@@ -76,6 +73,7 @@ export const FiltersModal = ({
   const router = useRouter()
   const path = usePathname()
   const searchParams = useSearchParams()
+  const queryClient = useQueryClient()
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -87,12 +85,11 @@ export const FiltersModal = ({
   const formValues = form.watch()
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-
     let params = {}
 
     Object.keys(values).forEach((key: string) => {
-      if (values?.[key as keyof typeof values]) {
+      const value = values?.[key as keyof typeof values]
+      if (value && value !== "0") {
         params = {
           ...params,
           [key]: values?.[key as keyof typeof values],
@@ -102,7 +99,8 @@ export const FiltersModal = ({
     const searchParams = new URLSearchParams(params).toString()
 
     startTransition(async () => {
-      await router.replace(
+      await queryClient.clear()
+      await router.push(
         `${path}${
           searchParams && searchParams?.length ? `?${searchParams}` : ""
         }`
