@@ -1,5 +1,6 @@
+import { Suspense } from "react"
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from "@/config"
-import { Space } from "@prisma/client"
+import { Prisma, Space } from "@prisma/client"
 import { Plus, SlidersHorizontal } from "lucide-react"
 
 import { db } from "@/lib/db"
@@ -18,67 +19,100 @@ import { SpaceFeed } from "./_space-feed"
 
 export default async function Page({
   params: { category, type },
+  searchParams = {},
 }: {
   params: { category: string; type: string }
+  searchParams?: {
+    search?: string
+  }
 }) {
   const [spaces, types, offerings, highlights, categories, amenities] =
     await Promise.all([
-      await db.space.findMany({
-        take: INFINITE_SCROLL_PAGINATION_RESULTS,
-        orderBy: {
-          createdAt: "desc",
-        },
-        where: {
-          AND: [
-            {
-              type: {
-                key: {
-                  equals: type,
-                },
-              },
-            },
-            {
-              category: {
-                key: {
-                  equals: category,
-                },
-              },
-            },
-          ],
-        },
-        include: {
-          type: true,
-          category: true,
-        },
-      }),
+      await (async () => {
+        let params = {
+          limit: INFINITE_SCROLL_PAGINATION_RESULTS.toString(),
+          page: "0",
+        }
+
+        Object.keys(searchParams).forEach((key: string) => {
+          if (searchParams?.[key as keyof typeof searchParams]) {
+            params = {
+              ...params,
+              [key]: searchParams?.[key as keyof typeof searchParams],
+            }
+          }
+        })
+        const urlSearchParams = new URLSearchParams(params).toString()
+        const query = `${
+          process.env.NEXT_PUBLIC_API_URL
+        }/api/spaces/${type}/${category}${
+          urlSearchParams && urlSearchParams?.length
+            ? `?${urlSearchParams}`
+            : ""
+        }`
+
+        const res = await fetch(query, {
+          next: {
+            revalidate: 60,
+          },
+        })
+        const data = await res.json()
+        return data as Prisma.SpaceGetPayload<{
+          include: { type: true; category: true }
+        }>[]
+      })(),
       await (async () => {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_URL}/api/types`,
-          {}
+          {
+            next: {
+              revalidate: 60 * 30,
+            },
+          }
         )
         return res.json()
       })(),
       await (async () => {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/offerings`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/offerings`,
+          {
+            next: {
+              revalidate: 60 * 30,
+            },
+          }
         )
         return res.json()
       })(),
       await (async () => {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/highlights`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/highlights`,
+          {
+            next: {
+              revalidate: 60 * 30,
+            },
+          }
         )
         return res.json()
       })(),
       await (async () => {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
+          {
+            next: {
+              revalidate: 60 * 30,
+            },
+          }
         )
         return res.json()
       })(),
       await (async () => {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/amenities`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/amenities`,
+          {
+            next: {
+              revalidate: 60 * 30,
+            },
+          }
         )
         return res.json()
       })(),
@@ -115,7 +149,9 @@ export default async function Page({
           </SelectContent>
         </Select>
       </div>
-      <SpaceFeed initial={spaces ?? []} category={category} type={type} />
+      <Suspense fallback="Fetching Spaces">
+        <SpaceFeed initial={spaces ?? []} category={category} type={type} />
+      </Suspense>
     </div>
   )
 }

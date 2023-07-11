@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useMemo, useTransition } from "react"
+import React, { useMemo, useState, useTransition } from "react"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Amenity, Category, Highlight, Offering, Type } from "@prisma/client"
@@ -56,8 +56,8 @@ function groupPrices(numbers: number[]) {
 }
 
 const formSchema = z.object({
-  minPrice: z.number().optional(),
-  maxPrice: z.number().optional(),
+  minPrice: z.string().optional(),
+  maxPrice: z.string().optional(),
   desks: z.string().optional(),
   rooms: z.string().optional(),
   bathrooms: z.string().optional(),
@@ -71,6 +71,7 @@ export const FiltersModal = ({
   categories,
   amenities,
 }: Props) => {
+  const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const router = useRouter()
   const path = usePathname()
@@ -80,22 +81,37 @@ export const FiltersModal = ({
     resolver: zodResolver(formSchema),
     defaultValues: {
       rooms: searchParams.get("rooms") ?? "0",
+      desks: searchParams.get("desks") ?? "0",
     },
   })
   const formValues = form.watch()
 
-  console.log("formValues::: ", formValues)
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values)
+
+    let params = {}
+
+    Object.keys(values).forEach((key: string) => {
+      if (values?.[key as keyof typeof values]) {
+        params = {
+          ...params,
+          [key]: values?.[key as keyof typeof values],
+        }
+      }
+    })
+    const searchParams = new URLSearchParams(params).toString()
+
     startTransition(async () => {
-      console.log("values::: ", values)
-      await router.push(`${path}?rooms=${values?.rooms}`)
+      await router.replace(
+        `${path}${
+          searchParams && searchParams?.length ? `?${searchParams}` : ""
+        }`
+      )
+      setOpen(false)
     })
   }
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="max-w-3xl">
         <DialogHeader>
@@ -123,7 +139,7 @@ export const FiltersModal = ({
               {Array(9)
                 .fill(null)
                 .map((_, i) => (
-                  <label id={`rooms-${i}`}>
+                  <label key={`rooms-${i}`} id={`rooms-${i}`}>
                     <input
                       {...form.register("rooms")}
                       value={i}
@@ -131,7 +147,7 @@ export const FiltersModal = ({
                       className="peer hidden"
                       id={`rooms-${i}`}
                     />
-                    <li className="flex cursor-pointer gap-3 rounded-full border bg-background px-6 py-2 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-500 peer-checked:bg-blue-600 peer-checked:text-white">
+                    <li className="flex cursor-pointer gap-3 rounded-full border bg-background px-6 py-2 transition-all hover:border-zinc-600 hover:shadow peer-checked:bg-primary peer-checked:text-white">
                       <Paragraph size={"sm"}>
                         {i === 0 ? "Any" : i === 8 ? "8+" : i}
                       </Paragraph>
@@ -153,7 +169,7 @@ export const FiltersModal = ({
               {Array(9)
                 .fill(null)
                 .map((_, i) => (
-                  <label id={`rooms-${i}`}>
+                  <label id={`rooms-${i}`} key={`rooms-${i}`}>
                     <input
                       {...form.register("desks")}
                       value={i}
@@ -161,7 +177,7 @@ export const FiltersModal = ({
                       className="peer hidden"
                       id={`rooms-${i}`}
                     />
-                    <li className="flex cursor-pointer gap-3 rounded-full border bg-background px-6 py-2 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-500 peer-checked:bg-blue-600 peer-checked:text-white">
+                    <li className="flex cursor-pointer gap-3 rounded-full border bg-background px-6 py-2 transition-all hover:border-zinc-600 hover:shadow peer-checked:bg-primary peer-checked:text-white">
                       <Paragraph size={"sm"}>
                         {i === 0 ? "Any" : i === 8 ? "8+" : i}
                       </Paragraph>
@@ -169,85 +185,6 @@ export const FiltersModal = ({
                   </label>
                 ))}
             </motion.div>
-            {/* <FormField
-              control={form.control}
-              name="rooms"
-              render={({ field }) => (
-                <FormItem className="space-y-3">
-                  <FormLabel>Rooms</FormLabel>
-                  <FormControl>
-                    <RadioGroup onValueChange={field.onChange} className="flex">
-                      <FormItem
-                        className={buttonVariants({
-                          variant: "secondary",
-                          className: "gap-2",
-                        })}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="all" />
-                        </FormControl>
-                        Any
-                      </FormItem>
-                      <FormItem
-                        className={buttonVariants({
-                          variant: "outline",
-                          className: "gap-2",
-                        })}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="1" />
-                        </FormControl>
-                        1
-                      </FormItem>
-                      <FormItem
-                        className={buttonVariants({
-                          variant: "outline",
-                          className: "gap-2",
-                        })}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="2" />
-                        </FormControl>
-                        2
-                      </FormItem>
-                      <FormItem
-                        className={buttonVariants({
-                          variant: "outline",
-                          className: "gap-2",
-                        })}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="3" />
-                        </FormControl>
-                        3
-                      </FormItem>
-                      <FormItem
-                        className={buttonVariants({
-                          variant: "outline",
-                          className: "gap-2",
-                        })}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="4" />
-                        </FormControl>
-                        4
-                      </FormItem>
-                      <FormItem
-                        className={buttonVariants({
-                          variant: "outline",
-                          className: "gap-2",
-                        })}
-                      >
-                        <FormControl>
-                          <RadioGroupItem value="5" />
-                        </FormControl>
-                        5+
-                      </FormItem>
-                    </RadioGroup>
-                  </FormControl>
-                </FormItem>
-              )}
-            /> */}
             <DialogFooter className="">
               <Button type="submit">Submit</Button>
             </DialogFooter>

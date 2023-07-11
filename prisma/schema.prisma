@@ -146,9 +146,9 @@ model Space {
   postalCode      String?
   featureImageUrl String?
   price           Int?
-  roomCount       Int?
-  bedCount        Int?
-  bathroomCount   Int?
+  rooms           Int?
+  desks           Int?
+  bathrooms       Int?
   guestCount      Int?
   status          ListingStatus  @default(draft)
 
