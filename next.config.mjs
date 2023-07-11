@@ -6,6 +6,15 @@ const nextConfig = {
     serverActions: true,
     // serverActions: true,
   },
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/desks/agile",
+        permanent: true,
+      },
+    ]
+  },
   images: {
     domains: [
       "images.unsplash.com",

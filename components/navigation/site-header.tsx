@@ -126,7 +126,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-3">
           <Icons.logo className="h-6 w-6" />
           <motion.div
-            onHoverEnd={() => setHoveredTab(null)}
+            onHoverEnd={() => setHoveredTab(activeTab)}
             className="hidden space-x-1 lg:flex"
           >
             {siteConfig.mainNav.map(({ href, title }) => (
