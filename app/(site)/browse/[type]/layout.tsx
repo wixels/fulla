@@ -1,8 +1,6 @@
 import { Suspense } from "react"
-import Link from "next/link"
 import { Loader2, Plus } from "lucide-react"
 
-import { db } from "@/lib/db"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -12,7 +10,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { SiteSpaceFilters } from "@/components/site-space-filters"
 import { SiteTypeFilters } from "@/components/site-type-filters"
 
 import { FiltersModalWrapper } from "./[category]/_filters-modal-wrapper"
