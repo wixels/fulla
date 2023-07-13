@@ -10,7 +10,12 @@ const nextConfig = {
     return [
       {
         source: "/",
-        destination: "/desks/agile",
+        destination: "/browse/desks/agile",
+        permanent: true,
+      },
+      {
+        source: "/desks/:path*",
+        destination: "/browse/desks/agile",
         permanent: true,
       },
     ]

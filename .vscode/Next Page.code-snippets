@@ -4,7 +4,7 @@
     "prefix": "npage",
     "body": [
       "export default async function $1() {",
-      "return <div>Page</div>",
+      "return <div>$2</div>",
       "}"
     ],
     "description": "Log output to console"

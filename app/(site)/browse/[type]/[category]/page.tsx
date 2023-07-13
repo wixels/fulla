@@ -49,33 +49,6 @@ export default async function Page({
 
   return (
     <div className="section-bottom flex grow flex-col">
-      {/* <div className="gutter sticky top-[3.65rem] flex items-center justify-between bg-background/90 py-2 backdrop-blur-md">
-        <div className="flex items-center gap-2">
-          <Suspense
-            fallback={
-              <Button disabled>
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Setting up filters
-              </Button>
-            }
-          >
-            <FiltersModalWrapper />
-          </Suspense>
-          <div className={buttonVariants({ variant: "ghost", size: "sm" })}>
-            <Plus className="text-muted-foreground" size={14} />
-            <Input sizing={"sm"} placeholder="Add filter" variant={"ghost"} />
-          </div>
-        </div>
-        <Select defaultValue="Latest">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Latest">Latest</SelectItem>
-            <SelectItem value="Most Popular">Most Popular</SelectItem>
-          </SelectContent>
-        </Select>
-      </div> */}
       <SpaceFeed initial={spaces} category={category} type={type} />
     </div>
   )

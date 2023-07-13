@@ -18,8 +18,6 @@ export const SiteSpaceFilters: React.FC<Props> = ({}) => {
   const path = usePathname()
   const [hoveredTab, setHoveredTab] = useState<string | null>(null)
 
-  console.log('path?.split("/")?::: ', path?.split("/")?.[2])
-
   return (
     <motion.nav
       onHoverEnd={() => setHoveredTab(null)}
@@ -27,7 +25,7 @@ export const SiteSpaceFilters: React.FC<Props> = ({}) => {
     >
       {tabs.map(({ href, title }) => (
         <Link
-          href={`browse/${href}/${
+          href={`/browse/${href}/${
             path?.split("/")?.[3] ? path?.split("/")?.[3] : ""
           }`}
           key={href}

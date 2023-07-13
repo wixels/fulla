@@ -73,7 +73,7 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
 
   return (
     <>
-      <div className="gutter grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3">
+      <div className="gutter grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {spaces?.map(({ id, title, rooms, desks }, index) => {
           if (index === spaces.length - 1) {
             return (

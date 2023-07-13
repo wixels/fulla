@@ -1,3 +1,3 @@
 export default async function Page() {
-  return <div>Browse Type Page</div>
+  return <div>Site group page</div>
 }
