@@ -1,8 +1,7 @@
 import { Suspense } from "react"
-import { Loader2, Plus, SlidersHorizontal } from "lucide-react"
+import { Filter } from "lucide-react"
 
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 import {
   Select,
   SelectContent,
@@ -10,9 +9,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { DynamicFiltering } from "@/components/dynamic-filtering"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { FiltersModal } from "@/components/filters-modal"
 import { SiteTypeFilters } from "@/components/site-type-filters"
+
+import { TypeCategoryFilters } from "./_type-category-filters"
 
 async function getCounts(type: string) {
   const res = await fetch(
@@ -39,21 +45,11 @@ export default async function Layout({
 }) {
   const [
     { agileCount, furnishedCount, privateCount },
-    types,
     offerings,
     highlights,
-    categories,
     amenities,
   ] = await Promise.all([
     await getCounts(type),
-    await (async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/types`, {
-        next: {
-          revalidate: 60 * 30,
-        },
-      })
-      return res.json()
-    })(),
     await (async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/offerings`,
@@ -76,17 +72,7 @@ export default async function Layout({
       )
       return res.json()
     })(),
-    await (async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-        {
-          next: {
-            revalidate: 60 * 30,
-          },
-        }
-      )
-      return res.json()
-    })(),
+
     await (async () => {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_URL}/api/amenities`,
@@ -109,36 +95,39 @@ export default async function Layout({
         space={type}
       />
       <div className="gutter sticky top-[3.65rem] flex items-center justify-between bg-background/90 py-2 backdrop-blur-md">
+        <TypeCategoryFilters
+          offerings={offerings}
+          amenities={amenities}
+          highlights={highlights}
+        />
+
         <div className="flex items-center gap-2">
-          <DynamicFiltering
-            options={offerings}
-            identifier="offerings"
-            title="Offerings"
-          />
-          <DynamicFiltering
-            options={highlights}
-            identifier="highlights"
-            title="Highlights"
-          />
-          <DynamicFiltering
-            options={amenities}
-            identifier="amenities"
-            title="Amenities"
-          />
-          {/* <div className={buttonVariants({ variant: "ghost", size: "sm" })}>
-            <Plus className="text-muted-foreground" size={14} />
-            <Input sizing={"sm"} placeholder="Add filter" variant={"ghost"} />
-          </div> */}
+          {/* <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <Select disabled defaultValue="Latest">
+                  <SelectTrigger className="h-8 w-[180px]">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Latest">Latest</SelectItem>
+                    <SelectItem value="Most Popular">Most Popular</SelectItem>
+                  </SelectContent>
+                </Select>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Filter coming soon...</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider> */}
+          <Suspense>
+            {/* <FiltersModal>
+              <Button size={"sm"} className="h-8">
+                <Filter size={12} />
+              </Button>
+            </FiltersModal> */}
+          </Suspense>
         </div>
-        <Select defaultValue="Latest">
-          <SelectTrigger className="w-[180px]">
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="Latest">Latest</SelectItem>
-            <SelectItem value="Most Popular">Most Popular</SelectItem>
-          </SelectContent>
-        </Select>
       </div>
       {children}
     </div>

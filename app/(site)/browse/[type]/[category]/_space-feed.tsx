@@ -11,7 +11,13 @@ import { Icons } from "@/components/icons"
 
 type Props = {
   initial: Prisma.SpaceGetPayload<{
-    include: { type: true; category: true }
+    include: {
+      type: true
+      category: true
+      highlights: true
+      amenities: true
+      offerings: true
+    }
   }>[]
   category: string
   type: string
@@ -33,6 +39,15 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
         page: pageParam.toString(),
         rooms: searchParams.get("rooms") ? searchParams.get("rooms") : null,
         desks: searchParams.get("desks") ? searchParams.get("desks") : null,
+        offerings: searchParams.get("offerings")
+          ? searchParams.get("offerings")
+          : null,
+        highlights: searchParams.get("highlights")
+          ? searchParams.get("highlights")
+          : null,
+        amenities: searchParams.get("amenities")
+          ? searchParams.get("amenities")
+          : null,
       }
 
       let params = {}
@@ -53,7 +68,15 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
 
       const res = await fetch(query)
       const data = await res.json()
-      return data as Space[]
+      return data as Prisma.SpaceGetPayload<{
+        include: {
+          type: true
+          category: true
+          highlights: true
+          amenities: true
+          offerings: true
+        }
+      }>[]
     },
     {
       getNextPageParam: (_, pages) => {
@@ -74,17 +97,50 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
   return (
     <>
       <div className="gutter grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {spaces?.map(({ id, title, rooms, desks }, index) => {
+        {spaces?.map(({ id, title, rooms, desks, ...space }, index) => {
           if (index === spaces.length - 1) {
             return (
-              <div key={id} ref={ref} className="aspect-square bg-red-200">
-                {title} - Rooms: {rooms} - Desks: {desks}
+              <div
+                key={id}
+                ref={ref}
+                className="flex aspect-square flex-col gap-3 bg-red-200"
+              >
+                <span> {title}</span>
+                <span>Rooms: {rooms}</span>
+                <span>Desks: {desks}</span>
+                <span>
+                  Offerings: {space.offerings?.map((x) => x?.label)?.join(" ,")}
+                </span>
+                <span>
+                  Highlights:{" "}
+                  {space.highlights?.map((x) => x?.label)?.join(" ,")}
+                </span>
+                <span>
+                  Amenities: {space.amenities?.map((x) => x?.label)?.join(" ,")}
+                </span>
+                <span>id: {id}</span>
               </div>
             )
           } else {
             return (
-              <div key={id} className="aspect-square bg-red-200">
-                {title} - Rooms: {rooms} - Desks: {desks}
+              <div
+                key={id}
+                className="flex aspect-square flex-col gap-3 bg-red-200"
+              >
+                <span> {title}</span>
+                <span>Rooms: {rooms}</span>
+                <span>Desks: {desks}</span>
+                <span>
+                  Offerings: {space.offerings?.map((x) => x?.label)?.join(" ,")}
+                </span>
+                <span>
+                  Highlights:{" "}
+                  {space.highlights?.map((x) => x?.label)?.join(" ,")}
+                </span>
+                <span>
+                  Amenities: {space.amenities?.map((x) => x?.label)?.join(" ,")}
+                </span>
+                <span>id: {id}</span>
               </div>
             )
           }

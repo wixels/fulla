@@ -14,12 +14,18 @@ export async function GET(
         page: z.string(),
         desks: z.string().nullish().optional(),
         rooms: z.string().nullish().optional(),
+        offerings: z.string().nullish().optional(),
+        amenities: z.string().nullish().optional(),
+        highlights: z.string().nullish().optional(),
       })
       .parse({
         limit: url.searchParams.get("limit"),
         page: url.searchParams.get("page"),
         desks: url.searchParams.get("desks"),
         rooms: url.searchParams.get("rooms"),
+        offerings: url.searchParams.get("offerings"),
+        amenities: url.searchParams.get("amenities"),
+        highlights: url.searchParams.get("highlights"),
       })
 
     const where: { AND: {}[] } = {
@@ -61,6 +67,55 @@ export async function GET(
             })
           break
         }
+        case "offerings": {
+          const arr = parsedSearchParams?.[key]
+            ?.split(",")
+            ?.filter((x) => x !== "")
+          if (parsedSearchParams?.[key] && arr?.length)
+            where.AND.push({
+              offerings: {
+                some: {
+                  label: {
+                    in: arr,
+                  },
+                },
+              },
+            })
+          break
+        }
+        case "amenities": {
+          const arr = parsedSearchParams?.[key]
+            ?.split(",")
+            ?.filter((x) => x !== "")
+          if (parsedSearchParams?.[key] && arr?.length)
+            where.AND.push({
+              amenities: {
+                some: {
+                  label: {
+                    in: arr,
+                  },
+                },
+              },
+            })
+          break
+        }
+        case "highlights": {
+          const arr = parsedSearchParams?.[key]
+            ?.split(",")
+            ?.filter((x) => x !== "")
+
+          if (parsedSearchParams?.[key] && arr?.length)
+            where.AND.push({
+              highlights: {
+                some: {
+                  label: {
+                    in: arr,
+                  },
+                },
+              },
+            })
+          break
+        }
         default:
           break
       }
@@ -77,6 +132,9 @@ export async function GET(
       include: {
         type: true,
         category: true,
+        offerings: true,
+        highlights: true,
+        amenities: true,
       },
     })
     return new Response(JSON.stringify(spaces))

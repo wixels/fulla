@@ -26,11 +26,6 @@ import { Title } from "./ui/title"
 
 type Props = {
   children: React.ReactNode
-  types: Type[]
-  offerings: Offering[]
-  highlights: Highlight[]
-  categories: Category[]
-  amenities: Amenity[]
 }
 
 function groupPrices(numbers: number[]) {
@@ -60,14 +55,7 @@ const formSchema = z.object({
   bathrooms: z.string().optional(),
   type: z.string().optional(),
 })
-export const FiltersModal = ({
-  children,
-  types,
-  offerings,
-  highlights,
-  categories,
-  amenities,
-}: Props) => {
+export const FiltersModal = ({ children }: Props) => {
   const [open, setOpen] = useState(false)
   const [pending, startTransition] = useTransition()
   const router = useRouter()
@@ -85,24 +73,33 @@ export const FiltersModal = ({
   const formValues = form.watch()
 
   function onSubmit(values: z.infer<typeof formSchema>) {
-    let params = {}
+    let params: Record<string, string | string[]> = {}
 
+    searchParams.forEach((value, key) => {
+      if (value) {
+        params[key] = value
+      }
+    })
     Object.keys(values).forEach((key: string) => {
       const value = values?.[key as keyof typeof values]
       if (value && value !== "0") {
+        // @ts-ignore
         params = {
           ...params,
           [key]: values?.[key as keyof typeof values],
         }
       }
     })
-    const searchParams = new URLSearchParams(params).toString()
+    // @ts-ignore
+    const newSearchParams = new URLSearchParams(params).toString()
 
     startTransition(async () => {
       await queryClient.clear()
       await router.push(
         `${path}${
-          searchParams && searchParams?.length ? `?${searchParams}` : ""
+          newSearchParams && newSearchParams?.length
+            ? `?${newSearchParams}`
+            : ""
         }`
       )
       setOpen(false)
