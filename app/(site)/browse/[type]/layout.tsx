@@ -94,40 +94,12 @@ export default async function Layout({
         private={privateCount}
         space={type}
       />
-      <div className="gutter sticky top-[3.65rem] flex items-center justify-between bg-background/90 py-2 backdrop-blur-md">
+      <div className="gutter sticky top-[3.6rem] z-10 flex items-center justify-between bg-background/90 py-2 backdrop-blur-md">
         <TypeCategoryFilters
           offerings={offerings}
           amenities={amenities}
           highlights={highlights}
         />
-
-        <div className="flex items-center gap-2">
-          {/* <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger>
-                <Select disabled defaultValue="Latest">
-                  <SelectTrigger className="h-8 w-[180px]">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="Latest">Latest</SelectItem>
-                    <SelectItem value="Most Popular">Most Popular</SelectItem>
-                  </SelectContent>
-                </Select>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Filter coming soon...</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider> */}
-          <Suspense>
-            {/* <FiltersModal>
-              <Button size={"sm"} className="h-8">
-                <Filter size={12} />
-              </Button>
-            </FiltersModal> */}
-          </Suspense>
-        </div>
       </div>
       {children}
     </div>

@@ -38,28 +38,6 @@ export default async function Page({
     search?: string
   }
 }) {
-  const offeringsIds = [
-    "cljstcwcg000ilsxxtl3bew1v",
-    "cljstcwcg000jlsxx0j4zcysq",
-    "cljstcwcg000klsxx0l86472l",
-    "cljstcwcg000llsxxp6tfv3in",
-    "cljstcwch000mlsxxu2uhe31x",
-    "cljstcwch000nlsxxbzgteptw",
-    "cljstcwch000olsxx163jg9zc",
-  ]
-  const highlightsIds = [
-    "cljstcuz7000dlsxxtp3hppr2",
-    "cljstcuz7000elsxx96cfilyl",
-    "cljstcuz7000flsxxl7290p49",
-    "cljstcuz7000glsxxhof558vx",
-    "cljstcuz7000hlsxxmmaylep5",
-  ]
-
-  const amenitiesIds = [
-    "cljstctl10006lsxx6eqa94s0",
-    "cljstctl1000blsxxxe95ll88",
-    "cljstctl10008lsxxnwws9o2l",
-  ]
   const [spaces] = await Promise.all([
     await (async () => {
       let params = {
@@ -129,35 +107,6 @@ export default async function Page({
   return (
     <div className="section-bottom flex grow flex-col">
       <SpaceFeed initial={spaces} category={category} type={type} />
-      {/* <div className="gutter grid w-full grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {spaces.map(({ id, title, rooms, desks, ...space }, index) => (
-          <div
-            key={id}
-            className="flex aspect-square flex-col gap-3 bg-red-200"
-          >
-            <span> {title}</span>
-            <span>Rooms: {rooms}</span>
-            <span>Desks: {desks}</span>
-            <span>
-              Offerings: {space.offerings?.map((x) => x?.label)?.join(" ,")}
-            </span>
-            <span>
-              Highlights: {space.highlights?.map((x) => x?.label)?.join(" ,")}
-            </span>
-            <span>
-              Amenities: {space.amenities?.map((x) => x?.label)?.join(" ,")}
-            </span>
-            <span>id: {id}</span>
-          </div>
-        ))}
-      </div> */}
     </div>
   )
-}
-
-{
-  /*  */
-}
-{
-  /* {spaces?.map(({ id, title, rooms, desks, ...space }, index) =>  ())} */
 }
