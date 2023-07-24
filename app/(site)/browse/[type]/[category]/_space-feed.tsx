@@ -18,6 +18,7 @@ type Props = {
       highlights: true
       amenities: true
       offerings: true
+      images: true
     }
   }>[]
   category: string
@@ -71,11 +72,13 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
       const data = await res.json()
       return data as Prisma.SpaceGetPayload<{
         include: {
+          organization: true
           type: true
           category: true
           highlights: true
           amenities: true
           offerings: true
+          images: true
         }
       }>[]
     },
@@ -95,56 +98,31 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
 
   const spaces = data?.pages.flatMap((page) => page) ?? initial
 
+  console.log("spaces images::: ", spaces)
+
   return (
     <>
       <div className="gutter grid w-full grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {spaces?.map(({ id, title, rooms, desks, ...space }, index) => {
+        {spaces?.map(({ id, title, images }, index) => {
           if (index === spaces.length - 1) {
             return (
-              <PublishedSpaceCard key={id} title={title!} />
-              // <div
-              //   key={id}
-              //   ref={ref}
-              //   className="flex aspect-square flex-col gap-3 bg-red-200"
-              // >
-              //   <span> {title}</span>
-              //   <span>Rooms: {rooms}</span>
-              //   <span>Desks: {desks}</span>
-              //   <span>
-              //     Offerings: {space.offerings?.map((x) => x?.label)?.join(" ,")}
-              //   </span>
-              //   <span>
-              //     Highlights:{" "}
-              //     {space.highlights?.map((x) => x?.label)?.join(" ,")}
-              //   </span>
-              //   <span>
-              //     Amenities: {space.amenities?.map((x) => x?.label)?.join(" ,")}
-              //   </span>
-              //   <span>id: {id}</span>
-              // </div>
+              <PublishedSpaceCard
+                images={images?.map((x) => x?.fileUrl) ?? []}
+                key={id}
+                title={title!}
+                // @ts-ignore
+                ref={ref}
+              />
             )
           } else {
             return (
-              <PublishedSpaceCard key={id} title={title!} />
-              // <div
-              //   key={id}
-              //   className="flex aspect-square flex-col gap-3 bg-red-200"
-              // >
-              //   <span> {title}</span>
-              //   <span>Rooms: {rooms}</span>
-              //   <span>Desks: {desks}</span>
-              //   <span>
-              //     Offerings: {space.offerings?.map((x) => x?.label)?.join(" ,")}
-              //   </span>
-              //   <span>
-              //     Highlights:{" "}
-              //     {space.highlights?.map((x) => x?.label)?.join(" ,")}
-              //   </span>
-              //   <span>
-              //     Amenities: {space.amenities?.map((x) => x?.label)?.join(" ,")}
-              //   </span>
-              //   <span>id: {id}</span>
-              // </div>
+              <PublishedSpaceCard
+                images={images?.map((x) => x?.fileUrl) ?? []}
+                key={id}
+                title={title!}
+                // @ts-ignore
+                ref={null}
+              />
             )
           }
         })}

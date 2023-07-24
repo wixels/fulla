@@ -54,7 +54,6 @@ export default async function Page({
         }
       })
       const urlSearchParams = new URLSearchParams(params).toString()
-      console.log("urlSearchParams from page::: ", params)
       const query = `${
         process.env.NEXT_PUBLIC_API_URL
       }/api/spaces/${type}/${category}${
@@ -69,11 +68,13 @@ export default async function Page({
       const data = await res.json()
       return data as Prisma.SpaceGetPayload<{
         include: {
+          organization: true
           type: true
           category: true
           highlights: true
           amenities: true
           offerings: true
+          images: true
         }
       }>[]
     })(),
@@ -83,20 +84,13 @@ export default async function Page({
     //       id: "ck8mv8m5u0023uqpk35v0r5ju",
     //     },
     //     data: {
-    //       offerings: {
-    //         connect: getRandomStrings(offeringsIds).map((string) => ({
-    //           id: string,
-    //         })),
-    //       },
-    //       amenities: {
-    //         connect: getRandomStrings(amenitiesIds).map((string) => ({
-    //           id: string,
-    //         })),
-    //       },
-    //       highlights: {
-    //         connect: getRandomStrings(highlightsIds).map((string) => ({
-    //           id: string,
-    //         })),
+    //       images: {
+    //         connect: [
+    //           { id: "clkclji6b0000lscx9prvrimn" },
+    //           { id: "clkclji6c0001lscx2w3wy6m9" },
+    //           { id: "clkclji6c0002lscxdhc8tar7" },
+    //           { id: "clkclji6c0003lscxf39fefsa" },
+    //         ],
     //       },
     //     },
     //   })

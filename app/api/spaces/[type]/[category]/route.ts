@@ -130,11 +130,13 @@ export async function GET(
       },
       where,
       include: {
+        organization: true,
         type: true,
         category: true,
         offerings: true,
         highlights: true,
         amenities: true,
+        images: true,
       },
     })
     return new Response(JSON.stringify(spaces))
