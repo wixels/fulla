@@ -73,6 +73,7 @@ model VerificationToken {
 model Organization {
   id          String    @id @default(cuid())
   name        String
+  description String?
   logo        Image?    @relation(fields: [logoId], references: [id])
   logoId      String?
 

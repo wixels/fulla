@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import React, { useEffect, useRef } from "react"
 import { useSearchParams } from "next/navigation"
 import { INFINITE_SCROLL_PAGINATION_RESULTS } from "@/config"
 import { Prisma, Space } from "@prisma/client"
@@ -13,11 +13,16 @@ import { PublishedSpaceCard } from "@/components/space-cards/published-space-car
 type Props = {
   initial: Prisma.SpaceGetPayload<{
     include: {
+      organization: {
+        include: {
+          logo: true
+        }
+      }
       type: true
       category: true
+      offerings: true
       highlights: true
       amenities: true
-      offerings: true
       images: true
     }
   }>[]
@@ -72,12 +77,16 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
       const data = await res.json()
       return data as Prisma.SpaceGetPayload<{
         include: {
-          organization: true
+          organization: {
+            include: {
+              logo: true
+            }
+          }
           type: true
           category: true
+          offerings: true
           highlights: true
           amenities: true
-          offerings: true
           images: true
         }
       }>[]
@@ -103,27 +112,15 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
   return (
     <>
       <div className="gutter grid w-full grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-        {spaces?.map(({ id, title, images }, index) => {
+        {spaces?.map((space, index) => {
           if (index === spaces.length - 1) {
             return (
-              <PublishedSpaceCard
-                images={images?.map((x) => x?.fileUrl) ?? []}
-                key={id}
-                title={title!}
-                // @ts-ignore
-                ref={ref}
-              />
+              <div ref={ref} key={space.id}>
+                <PublishedSpaceCard space={space} />
+              </div>
             )
           } else {
-            return (
-              <PublishedSpaceCard
-                images={images?.map((x) => x?.fileUrl) ?? []}
-                key={id}
-                title={title!}
-                // @ts-ignore
-                ref={null}
-              />
-            )
+            return <PublishedSpaceCard key={space.id} space={space} />
           }
         })}
       </div>

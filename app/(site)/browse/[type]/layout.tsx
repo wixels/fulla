@@ -1,21 +1,3 @@
-import { Suspense } from "react"
-import { Filter } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { FiltersModal } from "@/components/filters-modal"
 import { SiteTypeFilters } from "@/components/site-type-filters"
 
 import { TypeCategoryFilters } from "./_type-category-filters"

@@ -34,9 +34,7 @@ export default async function Page({
   searchParams = {},
 }: {
   params: { category: string; type: string }
-  searchParams?: {
-    search?: string
-  }
+  searchParams: QueryParams
 }) {
   const [spaces] = await Promise.all([
     await (async () => {
@@ -65,37 +63,26 @@ export default async function Page({
           revalidate: 60,
         },
       })
+      if (!res.ok) {
+        return []
+      }
       const data = await res.json()
       return data as Prisma.SpaceGetPayload<{
         include: {
-          organization: true
+          organization: {
+            include: {
+              logo: true
+            }
+          }
           type: true
           category: true
+          offerings: true
           highlights: true
           amenities: true
-          offerings: true
           images: true
         }
       }>[]
     })(),
-    // await (async () => {
-    //   const update = await db.space.update({
-    //     where: {
-    //       id: "ck8mv8m5u0023uqpk35v0r5ju",
-    //     },
-    //     data: {
-    //       images: {
-    //         connect: [
-    //           { id: "clkclji6b0000lscx9prvrimn" },
-    //           { id: "clkclji6c0001lscx2w3wy6m9" },
-    //           { id: "clkclji6c0002lscxdhc8tar7" },
-    //           { id: "clkclji6c0003lscxf39fefsa" },
-    //         ],
-    //       },
-    //     },
-    //   })
-    //   console.log("update::: ", update)
-    // })(),
   ])
 
   return (

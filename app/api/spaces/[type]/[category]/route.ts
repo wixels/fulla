@@ -130,7 +130,11 @@ export async function GET(
       },
       where,
       include: {
-        organization: true,
+        organization: {
+          include: {
+            logo: true,
+          },
+        },
         type: true,
         category: true,
         offerings: true,
