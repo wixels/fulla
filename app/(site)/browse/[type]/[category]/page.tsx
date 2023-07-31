@@ -2,6 +2,7 @@ import { INFINITE_SCROLL_PAGINATION_RESULTS } from "@/config"
 import { Prisma } from "@prisma/client"
 
 import { db } from "@/lib/db"
+import { getCurrentUser } from "@/lib/session"
 
 import { SpaceFeed } from "./_space-feed"
 

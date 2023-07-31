@@ -107,8 +107,6 @@ export const SpaceFeed: React.FC<Props> = ({ initial, category, type }) => {
 
   const spaces = data?.pages.flatMap((page) => page) ?? initial
 
-  console.log("spaces images::: ", spaces)
-
   return (
     <>
       <div className="gutter grid w-full grid-cols-1 gap-x-6 gap-y-10 lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">

@@ -5,7 +5,7 @@ import React from "react"
 export default async function ServerCompTest() {
   async function action(form: FormData) {
     "use server"
-    console.log("formData::: ", form)
+    // console.log("formData::: ", form)
   }
   return (
     <div>

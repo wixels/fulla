@@ -78,7 +78,6 @@ model Organization {
   logoId      String?
 
   spaces      Space[]
-
   users       OrganizationUser[]
 
   createdAt   DateTime  @default(now())
