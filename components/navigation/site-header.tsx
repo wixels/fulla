@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import { Search } from "lucide-react"
 
@@ -30,6 +31,7 @@ let commandTabs: { title: string; value: string }[] = [
   { title: "Floors", value: "browse/floors" },
 ]
 export function SiteHeader() {
+  const path = usePathname()
   const [open, setOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(siteConfig.mainNav[0].href)
   const [hoveredTab, setHoveredTab] = useState<string | null>(
@@ -40,8 +42,12 @@ export function SiteHeader() {
   const [hoveredCommandTab, setHoveredCommandTab] = useState<string | null>(
     null
   )
-
   useHotkeys([["mod+k", () => setOpen((open) => !open)]])
+
+  const hideMe = useMemo(() => {
+    if (path?.includes("/create/space")) return true
+    return false
+  }, [path])
 
   return (
     <>
@@ -112,7 +118,14 @@ export function SiteHeader() {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-      <header className="gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 bg-background py-2">
+      <header
+        className={cn(
+          "gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 bg-background py-2",
+          {
+            hidden: hideMe,
+          }
+        )}
+      >
         <div className="flex items-center gap-3">
           <Icons.logo className="h-6 w-6" />
           <motion.div

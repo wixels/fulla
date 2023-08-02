@@ -149,7 +149,7 @@ model Space {
   rooms           Int?
   desks           Int?
   bathrooms       Int?
-  guestCount      Int?
+  
   status          ListingStatus  @default(draft)
 
   organization    Organization  @relation(fields: [organizationId], references: [id])

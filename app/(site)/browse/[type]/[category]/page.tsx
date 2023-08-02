@@ -84,6 +84,17 @@ export default async function Page({
         }
       }>[]
     })(),
+    // (async () => {
+    //   const update = await db.space.update({
+    //     where: {
+    //       id: "ck8mv8m5u0023uqpk35v0r5ju",
+    //     },
+    //     data: {
+    //       status: "draft",
+    //     },
+    //   })
+    //   console.log("update::: ", update)
+    // })(),
   ])
 
   return (

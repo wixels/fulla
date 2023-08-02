@@ -1,4 +1,3 @@
-import { SiteHeader } from "@/components/navigation/site-header"
 import { SiteSpaceFilters } from "@/components/site-space-filters"
 
 export default async function Layout({

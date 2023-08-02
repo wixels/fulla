@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { Prisma } from "@prisma/client"
@@ -13,6 +13,7 @@ import {
   MoreHorizontal,
 } from "lucide-react"
 
+import { useHover } from "@/hooks/use-hover"
 import { useViewportSize } from "@/hooks/use-viewport-size"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
@@ -45,15 +46,32 @@ type Props = {
 
 export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
   const [index, setIndex] = useState(0)
-  const [hovered, setHovered] = useState(false)
-
+  const { hovered, ref } = useHover()
   const { width } = useViewportSize()
+
+  useEffect(() => {
+    if (space.images.length > 0) {
+      const intervalId = setInterval(() => {
+        if (hovered && index + 1 < space.images.length) {
+          console.log("Logging something every one second...")
+
+          setIndex(index + 1)
+        } else {
+          console.log("You're at the end")
+          setIndex(0)
+        }
+      }, 2000)
+
+      return () => {
+        clearInterval(intervalId)
+      }
+    }
+  }, [hovered, index])
 
   return (
     <MotionConfig transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
       <motion.div
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
+        ref={ref}
         className="group flex w-full grid-cols-1 flex-col gap-4"
       >
         <div className="relative overflow-hidden rounded-lg">
@@ -203,6 +221,7 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
             <div className="">
               <p className="line-clamp-1 text-sm font-medium transition-all group-hover:underline">
                 {space.title}
+                {/* {space.id} */}
               </p>
               <p className="line-clamp-1 text-xs text-muted-foreground">
                 Suburb, Province
