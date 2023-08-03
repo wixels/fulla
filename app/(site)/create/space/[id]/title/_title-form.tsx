@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Space } from "@prisma/client"
 import { motion } from "framer-motion"
-import { ArrowRight, Loader2 } from "lucide-react"
+import { ArrowRight, Info, Loader2 } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -23,6 +23,7 @@ import {
 import { Title } from "@/components/ui/title"
 
 import { updateSpaceWithParsedData } from "../../actions"
+import { SpaceCreateFooter } from "../space-create-footer"
 
 const FormSchema = z.object({
   title: z
@@ -63,11 +64,11 @@ export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="z-10 flex h-screen flex-col justify-between"
+        className="gutter z-10 flex h-screen flex-col justify-between"
       >
-        <div className="gutter flex h-full grow flex-col items-start justify-center px-16 lg:px-32 xl:px-64">
-          <Title showAs={5} className="font-medium text-muted-foreground">
-            Hi {data?.user?.name?.split(" ")[0]}! Give your space a name
+        <div className="flex h-full grow flex-col items-start justify-center">
+          <Title showAs={5} className="font-medium">
+            Hi {data?.user?.name?.split(" ")[0]}! {step.label}
           </Title>
           <FormField
             control={form.control}
@@ -88,32 +89,7 @@ export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
             )}
           />
         </div>
-        <footer className="gutter flex items-center justify-between py-8">
-          <div>x</div>
-          <div className="flex items-center gap-2">
-            <Button disabled={pending} type="submit" rounded={"full"}>
-              Next
-              <motion.div
-                animate={
-                  pending
-                    ? { y: 0, opacity: 1 }
-                    : { y: "100%", opacity: 0, display: "none" }
-                }
-              >
-                <Loader2 className="ml-2 h-4 w-4 animate-spin" />
-              </motion.div>
-              <motion.div
-                animate={
-                  !pending
-                    ? { y: 0, opacity: 1 }
-                    : { y: "-100%", opacity: 0, display: "none" }
-                }
-              >
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </motion.div>
-            </Button>
-          </div>
-        </footer>
+        <SpaceCreateFooter pending={pending} />
       </form>
     </Form>
   )

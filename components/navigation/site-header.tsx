@@ -1,10 +1,10 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Search } from "lucide-react"
+import { Plus, Search } from "lucide-react"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -21,8 +21,6 @@ import {
   CommandList,
 } from "../ui/command"
 import { Input } from "../ui/input"
-import { Label } from "../ui/label"
-import { Title } from "../ui/title"
 import { ProfileAvatar } from "./profile-avatar"
 
 let commandTabs: { title: string; value: string }[] = [
@@ -31,6 +29,7 @@ let commandTabs: { title: string; value: string }[] = [
   { title: "Floors", value: "browse/floors" },
 ]
 export function SiteHeader() {
+  const router = useRouter()
   const path = usePathname()
   const [open, setOpen] = useState(false)
   const [activeTab, setActiveTab] = useState(siteConfig.mainNav[0].href)
@@ -48,6 +47,11 @@ export function SiteHeader() {
     if (path?.includes("/create/space")) return true
     return false
   }, [path])
+
+  const runCommand = useCallback((command: () => unknown) => {
+    setOpen(false)
+    command()
+  }, [])
 
   return (
     <>
@@ -100,20 +104,21 @@ export function SiteHeader() {
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Popular Companies">
-            <CommandItem className="flex gap-4">
-              <div className="rounded-md bg-stone-200 p-2 shadow-lg">
-                <Icons.google />
-              </div>
-              <div className="flex flex-col">
-                <Title style={{ margin: 0 }} level={6}>
-                  Google
-                </Title>
-                <Label className="text-muted-foreground">
-                  <span className="text-blue-500">1024 • </span>
-                  Spaces
-                </Label>
-              </div>
+
+          <CommandGroup heading="Navigation">
+            <CommandItem
+              onSelect={() => runCommand(() => router.push("/create/space"))}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              <span>Create A New Space</span>
+            </CommandItem>
+            <CommandItem
+              onSelect={() =>
+                runCommand(() => router.push("/browse/desks/agile"))
+              }
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              <span>Browse Spaces</span>
             </CommandItem>
           </CommandGroup>
         </CommandList>

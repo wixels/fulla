@@ -22,7 +22,6 @@ export async function createDraftSpace(orgId: string) {
 export async function updateSpaceWithParsedData({
   id,
   data,
-  redirectTo,
 }: {
   id: string
   data: any

@@ -170,7 +170,7 @@ export default function Layout({
           ></path>
         </g>
       </svg>
-      <header className="gutter absolute inset-x-0 top-0 z-20 flex w-full items-center justify-between py-8">
+      <header className="gutter absolute inset-x-0 top-0 z-20 mx-auto flex w-full max-w-7xl items-center justify-between py-8">
         <Icons.logo className="h-6 w-6" />
         <div className="flex gap-2">
           {spaceCreationSteps.map((step, i) => (
@@ -227,7 +227,7 @@ export default function Layout({
           ))}
         </div>
       </header>
-      {children}
+      <div className="z-10 mx-auto w-full max-w-7xl">{children}</div>
     </div>
   )
 }

@@ -184,12 +184,13 @@ model Space {
 
 
 model Category {
-  id        String    @id @default(cuid())
-  label     String
+  id          String    @id @default(cuid())
+  label       String
+  description String?
   key         String?
-  updatedAt DateTime  @updatedAt
-  createdAt DateTime  @default(now())
-  spaces   Space[]
+  updatedAt   DateTime  @updatedAt
+  createdAt   DateTime  @default(now())
+  spaces      Space[]
   @@map("categories")
 }
 

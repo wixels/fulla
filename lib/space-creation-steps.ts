@@ -5,6 +5,7 @@ export const spaceCreationSteps = [
     name: "Title",
     label: "Add a title to your space",
     nextPath: "/type",
+    previousPath: null,
   },
   {
     keys: "type",
@@ -12,6 +13,7 @@ export const spaceCreationSteps = [
     name: "Type",
     label: "What type of space do you have?",
     nextPath: "/category",
+    previousPath: "/title",
   },
   {
     keys: "category",
@@ -19,6 +21,7 @@ export const spaceCreationSteps = [
     name: "Category",
     label: "What category is your space?",
     nextPath: "/address",
+    previousPath: "/type",
   },
   {
     keys: ["province", "street", "unitNumber", "city", "suburb", "postalCode"],
@@ -26,20 +29,15 @@ export const spaceCreationSteps = [
     name: "Address",
     label: "Where is your space?",
     nextPath: "/features",
+    previousPath: "/category",
   },
   {
     keys: ["rooms", "desks", "bathrooms"],
     path: "/features",
     name: "Features",
     label: "What does your space feature?",
-    nextPath: "/offerings",
-  },
-  {
-    keys: "offerings",
-    path: "/offerings",
-    name: "Offerings",
-    label: "What does your space of to offer?",
     nextPath: "/images",
+    previousPath: "/address",
   },
   {
     keys: "images",
@@ -47,13 +45,7 @@ export const spaceCreationSteps = [
     name: "Images",
     label: "What does your space look like?",
     nextPath: "/amenities",
-  },
-  {
-    keys: "amenities",
-    path: "/amenities",
-    name: "Amenities",
-    label: "What amenities does your space have?",
-    nextPath: "/highlights",
+    previousPath: "/offerings",
   },
   {
     keys: "highlights",
@@ -61,6 +53,7 @@ export const spaceCreationSteps = [
     name: "Highlights",
     label: "What makes your space stand out?",
     nextPath: "/price",
+    previousPath: "/amenities",
   },
   {
     keys: "price",
@@ -68,5 +61,6 @@ export const spaceCreationSteps = [
     name: "Price",
     label: "How much does your space cost?",
     nextPath: null,
+    previousPath: "/highlights",
   },
 ]
