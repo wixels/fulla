@@ -3,6 +3,7 @@ import { Prisma } from "@prisma/client"
 
 import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
+import { SpaceCardSkeleton } from "@/components/space-cards/space-card-skeleton"
 
 import { SpaceFeed } from "./_space-feed"
 
@@ -84,17 +85,6 @@ export default async function Page({
         }
       }>[]
     })(),
-    // (async () => {
-    //   const update = await db.space.update({
-    //     where: {
-    //       id: "ck8mv8m5u0023uqpk35v0r5ju",
-    //     },
-    //     data: {
-    //       status: "draft",
-    //     },
-    //   })
-    //   console.log("update::: ", update)
-    // })(),
   ])
 
   return (
