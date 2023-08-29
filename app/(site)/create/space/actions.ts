@@ -27,11 +27,13 @@ export async function updateSpaceWithParsedData({
   data: any
   redirectTo?: string
 }) {
-  const space = await db.space.update({
-    data,
-    where: {
-      id,
-    },
-  })
-  return space
+  console.log("data::: ", data)
+  return "Hello World"
+  // const space = await db.space.update({
+  //   data,
+  //   where: {
+  //     id,
+  //   },
+  // })
+  // return space
 }

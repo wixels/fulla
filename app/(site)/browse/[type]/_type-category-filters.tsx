@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { amenities, offerings } from "@/prisma/data"
 import { Amenity, Highlight, Offering } from "@prisma/client"
 import { useQueryClient } from "@tanstack/react-query"
 import { Check, Plus, X } from "lucide-react"
