@@ -28,18 +28,30 @@ export const authOptions: NextAuthOptions = {
         session.user.name = token.name
         session.user.email = token.email
         session.user.image = token.picture
+        session.user.organizations = token.organizations
       }
 
       return session
     },
     async jwt({ token, user }) {
       const dbUser = await db.user.findFirst({
+        include: {
+          organizations: {
+            include: {
+              organization: {
+                include: {
+                  logo: true,
+                },
+              },
+            },
+          },
+        },
         where: {
           email: {
             equals: token.email,
           },
         },
-      } as Prisma.UserFindFirstArgs)
+      })
 
       if (!dbUser) {
         if (user) {
@@ -53,6 +65,7 @@ export const authOptions: NextAuthOptions = {
         name: dbUser.name,
         email: dbUser.email,
         picture: dbUser.image,
+        organizations: dbUser.organizations,
       }
     },
   },

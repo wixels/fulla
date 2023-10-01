@@ -1,3 +1,4 @@
+import { OrganizationUser, Prisma } from "@prisma/client"
 import { User } from "next-auth"
 import { JWT } from "next-auth/jwt"
 
@@ -13,6 +14,15 @@ declare module "next-auth" {
   interface Session {
     user: User & {
       id: UserId
+      organizations: Prisma.OrganizationUserGetPayload<{
+        include: {
+          organization: {
+            include: {
+              logo: true
+            }
+          }
+        }
+      }>[]
     }
   }
 }

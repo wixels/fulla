@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -9,10 +10,13 @@ import * as z from "zod"
 
 import { db } from "@/lib/db"
 import { getCurrentUser } from "@/lib/session"
+import { serverClient } from "@/lib/trpc/server"
 import { Button } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Title } from "@/components/ui/title"
+import { Await } from "@/components/await"
 import Balancer from "@/components/balancer"
 import { ClientAvatar } from "@/components/client-avatar"
 
@@ -22,42 +26,6 @@ import { GradPanel } from "./_grad-panel"
 
 export default async function SpaceCreationPage() {
   const user = await getCurrentUser()
-
-  const [spaces, dbUser] = await Promise.all([
-    await db.space.findMany({
-      where: {
-        status: "draft",
-        organization: {
-          users: {
-            every: {
-              userId: {
-                equals: user?.id,
-              },
-            },
-          },
-        },
-      },
-      include: {
-        organization: {
-          include: {
-            logo: true,
-          },
-        },
-      },
-    }),
-    await db.user.findFirst({
-      where: {
-        id: user?.id,
-      },
-      include: {
-        organizations: {
-          include: {
-            organization: true,
-          },
-        },
-      },
-    }),
-  ])
 
   return (
     <div className="flex w-full flex-col md:flex-row md:overflow-hidden">
@@ -80,30 +48,56 @@ export default async function SpaceCreationPage() {
           </Paragraph>
           <div className="mt-12 flex flex-col gap-3">
             <ul className="flex flex-col gap-6">
-              {spaces.map((space) => (
-                <li key={space.id}>
-                  <Link
-                    href={`/create/space/${space?.id}/title`}
-                    className="flex items-center gap-6 rounded-lg border p-6 transition-all hover:border-primary hover:shadow"
-                  >
-                    <ClientAvatar
-                      src={space.organization.logo?.fileUrl}
-                      size="sm"
-                      fallback={space.organization.name?.[0] ?? ""}
-                    />
-                    <Paragraph className="font-medium">
-                      {space.title ?? "Untitled Space"}
-                    </Paragraph>
-                  </Link>
-                </li>
-              ))}
-              <CreateButton orgId={dbUser?.organizations[0].organization.id} />
+              <Suspense
+                fallback={
+                  <>
+                    <SpaceSkeleton />
+                    <SpaceSkeleton />
+                    <SpaceSkeleton />
+                  </>
+                }
+              >
+                <Await promise={serverClient.draftSpaces()}>
+                  {(spaces) => (
+                    <>
+                      {spaces.map((space) => (
+                        <li key={space.id}>
+                          <Link
+                            href={`/create/space/${space?.id}/title`}
+                            className="flex items-center gap-6 rounded-lg border p-6 transition-all hover:border-primary hover:shadow"
+                          >
+                            <ClientAvatar
+                              src={space.organization.logo?.fileUrl}
+                              size="sm"
+                              fallback={space.organization.name?.[0] ?? ""}
+                            />
+                            <Paragraph className="font-medium">
+                              {space.title ?? "Untitled Space"}
+                            </Paragraph>
+                          </Link>
+                        </li>
+                      ))}
+                    </>
+                  )}
+                </Await>
+              </Suspense>
+
+              <CreateButton orgId={user?.organizations[0].organization.id} />
             </ul>
             <CreateFromTemplate />
           </div>
         </div>
       </div>
-      <GradPanel orgId={dbUser?.organizations[0].organization.id} />
+      <GradPanel orgId={user?.organizations[0].organization.id} />
     </div>
+  )
+}
+
+const SpaceSkeleton = () => {
+  return (
+    <li className="flex items-center gap-6 rounded-lg border p-6 transition-all hover:border-primary hover:shadow">
+      <Skeleton className="h-10 w-10 rounded-full" />
+      <Skeleton className="h-10 grow rounded-xl" />
+    </li>
   )
 }

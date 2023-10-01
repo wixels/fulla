@@ -122,6 +122,24 @@ export const appRouter = router({
         },
       })
     }),
+  draftSpaces: privateProcedure.query(async (opts) => {
+    const { user } = opts.ctx
+    return await db.space.findMany({
+      include: {
+        organization: {
+          include: {
+            logo: true,
+          },
+        },
+      },
+      where: {
+        status: "draft",
+        organizationId: {
+          equals: user.organizations?.[0].organizationId,
+        },
+      },
+    })
+  }),
 })
 
 export type AppRouter = typeof appRouter

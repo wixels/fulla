@@ -1,20 +1,22 @@
 import { cookies } from "next/headers"
-import { initTRPC, TRPCError } from "@trpc/server"
+import { TRPCError, initTRPC } from "@trpc/server"
+
+import { getCurrentUser } from "../session"
 
 const t = initTRPC.create()
 
 export const middleware = t.middleware
 
 const isAuthed = middleware(async (opts) => {
-  const token = cookies().get("token")?.value
+  const user = await getCurrentUser()
 
-  if (!token) {
+  if (!user) {
     throw new TRPCError({ code: "UNAUTHORIZED" })
   }
 
   return opts.next({
     ctx: {
-      token,
+      user,
     },
   })
 })

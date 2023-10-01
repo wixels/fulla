@@ -1,7 +1,6 @@
 "use server"
 
 import { redirect } from "next/navigation"
-import { Space } from "@prisma/client"
 
 import { db } from "@/lib/db"
 
