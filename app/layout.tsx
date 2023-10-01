@@ -5,11 +5,7 @@ import { siteConfig } from "@/config/site"
 import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
-import { ClientOnly } from "@/components/client-only"
-import { SiteHeader } from "@/components/navigation/site-header"
-import { NextAuthProvider } from "@/components/providers/next-auth-provider"
-import { QueryClientProvider } from "@/components/providers/query-client.provider"
-import { ThemeProvider } from "@/components/providers/theme-provider"
+import { Providers } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
 export const metadata: Metadata = {
@@ -45,13 +41,12 @@ export default async function RootLayout({ children, auth }: RootLayoutProps) {
             fontSans.variable
           )}
         >
-          <QueryClientProvider>
-            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-              <NextAuthProvider>{children}</NextAuthProvider>
-              <Toaster />
-              <TailwindIndicator />
-            </ThemeProvider>
-          </QueryClientProvider>
+          {/* @ts-ignore */}
+          <Providers>
+            {children}
+            <Toaster />
+            <TailwindIndicator />
+          </Providers>
         </body>
       </html>
     </>
