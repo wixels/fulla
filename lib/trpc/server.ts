@@ -6,7 +6,7 @@ import { appRouter } from "."
 export const serverClient = appRouter.createCaller({
   links: [
     httpBatchLink({
-      url: process.env.NEXT_PUBLIC_APP_URL + "/api/trpc",
+      url: process.env.NEXT_PUBLIC_API_URL + "/api/trpc",
     }),
   ],
 })
