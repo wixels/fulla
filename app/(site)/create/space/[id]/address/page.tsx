@@ -1,4 +1,5 @@
 import { db } from "@/lib/db"
+import { serverClient } from "@/lib/trpc/server"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 
@@ -8,20 +9,7 @@ type Props = {
   params: { id: string }
 }
 const AddressPage: React.FC<Props> = async ({ params: { id } }) => {
-  const space = await db.space.findFirst({
-    where: {
-      id,
-      status: "draft",
-    },
-    select: {
-      city: true,
-      postalCode: true,
-      province: true,
-      street: true,
-      suburb: true,
-      unitNumber: true,
-    },
-  })
+  const space = await serverClient.space.draft({ id })
 
   return (
     <div className="gutter mt-36 flex h-screen flex-col">

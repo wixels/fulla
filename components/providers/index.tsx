@@ -7,7 +7,10 @@ import QueryClientProvider from "./query-client-provider"
 import { ThemeProvider } from "./theme-provider"
 
 export const Providers = combineProviders([
-  [ThemeProvider],
+  [
+    ThemeProvider,
+    { attribute: "class", defaultTheme: "dark", enableSystem: true },
+  ],
   [NextAuthProvider],
   [QueryClientProvider],
 ])

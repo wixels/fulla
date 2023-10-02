@@ -1,4 +1,5 @@
 import { db } from "@/lib/db"
+import { serverClient } from "@/lib/trpc/server"
 
 import { CategoryForm } from "./_category-form"
 
@@ -7,15 +8,7 @@ type Props = {
 }
 const CategoryPage: React.FC<Props> = async ({ params: { id } }) => {
   const [space, categories] = await Promise.all([
-    await db.space.findFirst({
-      where: {
-        id,
-        status: "draft",
-      },
-      select: {
-        category: true,
-      },
-    }),
+    await serverClient.space.draft({ id }),
     await db.category.findMany(),
   ])
 

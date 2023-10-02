@@ -1,4 +1,5 @@
 import { db } from "@/lib/db"
+import { serverClient } from "@/lib/trpc/server"
 
 import { TitleForm } from "./_title-form"
 
@@ -7,15 +8,7 @@ type Props = {
 }
 
 const TitlePage: React.FC<Props> = async ({ params: { id } }) => {
-  const space = await db.space.findFirst({
-    where: {
-      id,
-      status: "draft",
-    },
-    select: {
-      title: true,
-    },
-  })
+  const space = await serverClient.space.draft({ id })
 
   return <TitleForm id={id} defaultValues={{ title: space?.title ?? "" }} />
 }

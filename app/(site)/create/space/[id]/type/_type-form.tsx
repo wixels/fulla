@@ -4,14 +4,18 @@ import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Type } from "@prisma/client"
+import { useQueryClient } from "@tanstack/react-query"
 import { motion } from "framer-motion"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { forceDelay } from "@/lib/forceDelay"
+import { trpc } from "@/lib/trpc/client"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
+import { useToast } from "@/hooks/use-toast"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
+import { ToastAction } from "@/components/ui/toast"
 
 import { updateSpaceWithParsedData } from "../../actions"
 import { SpaceCreateFooter } from "../space-create-footer"
@@ -26,9 +30,25 @@ const FormSchema = z.object({
   typeId: z.string({ description: "Please Select a type" }),
 })
 export const TypeForm: React.FC<Props> = ({ id, defaultValues, types }) => {
+  const utils = trpc.useContext()
+  const { toast } = useToast()
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { step } = useSpaceCreationStep()
+  const { mutateAsync } = trpc.updateSpace.useMutation({
+    onSuccess() {
+      utils.draftSpace.invalidate({ id })
+      router.push("." + step.nextPath)
+    },
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    },
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -36,24 +56,21 @@ export const TypeForm: React.FC<Props> = ({ id, defaultValues, types }) => {
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (data.typeId !== defaultValues.typeId) {
-      startTransition(async () => {
-        await forceDelay(
-          updateSpaceWithParsedData({
-            data: {
-              type: {
-                connect: {
-                  id: data.typeId,
-                },
+    startTransition(async () => {
+      await forceDelay(
+        mutateAsync({
+          id,
+          data: {
+            type: {
+              connect: {
+                id: data.typeId,
               },
             },
-            id,
-          }),
-          500
-        )
-      })
-    }
-    router.push("." + step.nextPath)
+          },
+        }),
+        500
+      )
+    })
   }
   return (
     <form

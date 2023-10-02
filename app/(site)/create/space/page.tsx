@@ -29,7 +29,7 @@ export default async function SpaceCreationPage() {
 
   return (
     <div className="flex w-full flex-col md:flex-row md:overflow-hidden">
-      <div className="gutter flex min-h-[60vh] w-full flex-col justify-center bg-[#FCFCFC] lg:h-screen lg:w-1/2">
+      <div className="gutter flex min-h-[60vh] w-full flex-col justify-center bg-background lg:h-screen lg:w-1/2">
         <div className="flex h-full w-full flex-col justify-center">
           <Title className="font-semibold" level={1} showAs={2}>
             <Balancer>
@@ -57,7 +57,7 @@ export default async function SpaceCreationPage() {
                   </>
                 }
               >
-                <Await promise={serverClient.draftSpaces()}>
+                <Await promise={serverClient.spaces.drafts()}>
                   {(spaces) => (
                     <>
                       {spaces.map((space) => (

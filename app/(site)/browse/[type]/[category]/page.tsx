@@ -8,7 +8,7 @@ export default async function Page({
   params: { category: string; type: string }
   searchParams: QueryParams
 }) {
-  const spaces = await serverClient.spaces({
+  const spaces = await serverClient.spaces.published({
     category,
     type,
   })

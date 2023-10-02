@@ -11,6 +11,7 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { forceDelay } from "@/lib/forceDelay"
+import { trpc } from "@/lib/trpc/client"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
 import { Button } from "@/components/ui/button"
 import {
@@ -45,6 +46,11 @@ export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
   const [pending, startTransition] = useTransition()
   const { data } = useSession()
   const { step } = useSpaceCreationStep()
+  const { mutateAsync } = trpc.updateSpace.useMutation({
+    onSuccess() {
+      router.push("." + step.nextPath)
+    },
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -52,12 +58,9 @@ export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (data.title !== defaultValues.title) {
-      startTransition(async () => {
-        await forceDelay(updateSpaceWithParsedData({ data, id }), 500)
-      })
-    }
-    router.push("." + step.nextPath)
+    startTransition(async () => {
+      await forceDelay(mutateAsync({ id, data }), 500)
+    })
   }
 
   return (

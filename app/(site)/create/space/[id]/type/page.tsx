@@ -1,4 +1,5 @@
 import { db } from "@/lib/db"
+import { serverClient } from "@/lib/trpc/server"
 
 import { TypeForm } from "./_type-form"
 
@@ -7,15 +8,7 @@ type Props = {
 }
 const TypePage: React.FC<Props> = async ({ params: { id } }) => {
   const [space, types] = await Promise.all([
-    await db.space.findFirst({
-      where: {
-        id,
-        status: "draft",
-      },
-      select: {
-        type: true,
-      },
-    }),
+    await serverClient.space.draft({ id }),
     await db.type.findMany(),
   ])
 

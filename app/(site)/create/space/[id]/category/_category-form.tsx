@@ -9,9 +9,12 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { forceDelay } from "@/lib/forceDelay"
+import { trpc } from "@/lib/trpc/client"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
+import { useToast } from "@/hooks/use-toast"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
+import { ToastAction } from "@/components/ui/toast"
 
 import { updateSpaceWithParsedData } from "../../actions"
 import { SpaceCreateFooter } from "../space-create-footer"
@@ -33,6 +36,22 @@ export const CategoryForm: React.FC<Props> = ({
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { step } = useSpaceCreationStep()
+  const utils = trpc.useContext()
+  const { toast } = useToast()
+  const { mutateAsync } = trpc.updateSpace.useMutation({
+    onSuccess() {
+      utils.draftSpace.invalidate({ id })
+      router.push("." + step.nextPath)
+    },
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    },
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -43,15 +62,13 @@ export const CategoryForm: React.FC<Props> = ({
     if (data.categoryId !== defaultValues.categoryId) {
       startTransition(async () => {
         await forceDelay(
-          updateSpaceWithParsedData({
+          mutateAsync({
+            id,
             data: {
               category: {
-                connect: {
-                  id: data.categoryId,
-                },
+                connect: { id: data.categoryId },
               },
             },
-            id,
           }),
           500
         )
