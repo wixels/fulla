@@ -41,6 +41,8 @@ export const FeatureForm: React.FC<Props> = ({
   offerings,
   amenities,
 }) => {
+  console.log("amens::: ", amenities)
+  console.log("off::: ", offerings)
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { step } = useSpaceCreationStep()
@@ -71,12 +73,12 @@ export const FeatureForm: React.FC<Props> = ({
         mutateAsync({
           data: {
             amenities: {
-              connect: data.amenityIds?.length
+              set: data.amenityIds?.length
                 ? data.amenityIds.map((x) => ({ id: x }))
                 : [],
             },
             offerings: {
-              connect: data.offeringIds
+              set: data.offeringIds
                 ? data.offeringIds.map((x) => ({ id: x }))
                 : [],
             },
@@ -85,7 +87,6 @@ export const FeatureForm: React.FC<Props> = ({
         }),
         500
       )
-      console.log("update", update)
     })
   }
   return (

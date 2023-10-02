@@ -26,6 +26,7 @@ const nextConfig = {
       "localhost",
       "uploadthing.com",
       "https:/uploadthing.com",
+      "plus.unsplash.com",
     ],
   },
 }

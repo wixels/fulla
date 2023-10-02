@@ -27,6 +27,7 @@ export const spaceRouter = router({
           offerings: true,
           type: true,
           category: true,
+          images: true,
         },
       })
     }),
@@ -39,7 +40,6 @@ export const spaceRouter = router({
     )
     .mutation(async (opts) => {
       const { id, data } = opts.input
-      console.log("update data::: ", data)
       return await db.space.update({
         where: {
           id,

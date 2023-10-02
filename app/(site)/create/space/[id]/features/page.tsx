@@ -6,8 +6,9 @@ import { FeatureForm } from "./_feature-form"
 type Props = {
   params: { id: string }
 }
+
 const FeaturePage: React.FC<Props> = async ({ params: { id } }) => {
-  const [space, amenities, offerings] = await Promise.all([
+  const [space, amenities, offerings, _] = await Promise.all([
     await serverClient.space.draft({ id }),
     await db.amenity.findMany(),
     await db.offering.findMany(),

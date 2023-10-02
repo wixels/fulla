@@ -59,22 +59,19 @@ export const CategoryForm: React.FC<Props> = ({
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (data.categoryId !== defaultValues.categoryId) {
-      startTransition(async () => {
-        await forceDelay(
-          mutateAsync({
-            id,
-            data: {
-              category: {
-                connect: { id: data.categoryId },
-              },
+    startTransition(async () => {
+      await forceDelay(
+        mutateAsync({
+          id,
+          data: {
+            category: {
+              connect: { id: data.categoryId },
             },
-          }),
-          500
-        )
-      })
-    }
-    router.push("." + step.nextPath)
+          },
+        }),
+        500
+      )
+    })
   }
 
   console.log("step::: ", step)

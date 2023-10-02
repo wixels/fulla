@@ -4,17 +4,23 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
 import { Button } from "@/components/ui/button"
 
 type Props = {
   pending: boolean
   className?: string
+  onClick?: () => any
 }
-export const SpaceCreateFooter: React.FC<Props> = ({ pending, className }) => {
+export const SpaceCreateFooter: React.FC<Props> = ({
+  pending,
+  className,
+  onClick,
+}) => {
   const { step } = useSpaceCreationStep()
   return (
-    <footer className="flex items-center justify-end py-8">
+    <footer className={cn("flex items-center justify-end py-8", className)}>
       <div className="flex items-center gap-2">
         {step.previousPath ? (
           <Button asChild variant={"outline"} rounded={"full"}>
@@ -25,7 +31,12 @@ export const SpaceCreateFooter: React.FC<Props> = ({ pending, className }) => {
           </Button>
         ) : null}
 
-        <Button disabled={pending} type="submit" rounded={"full"}>
+        <Button
+          disabled={pending}
+          onClick={onClick}
+          type="submit"
+          rounded={"full"}
+        >
           Next
           <motion.div
             animate={
