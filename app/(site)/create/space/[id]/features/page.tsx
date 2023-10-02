@@ -8,7 +8,7 @@ type Props = {
 }
 
 const FeaturePage: React.FC<Props> = async ({ params: { id } }) => {
-  const [space, amenities, offerings, _] = await Promise.all([
+  const [space, amenities, offerings] = await Promise.all([
     await serverClient.space.draft({ id }),
     await db.amenity.findMany(),
     await db.offering.findMany(),
