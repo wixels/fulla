@@ -46,7 +46,7 @@ export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
   const [pending, startTransition] = useTransition()
   const { data } = useSession()
   const { step } = useSpaceCreationStep()
-  const { mutateAsync } = trpc.updateSpace.useMutation({
+  const { mutateAsync } = trpc.space.update.useMutation({
     onSuccess() {
       router.push("." + step.nextPath)
     },

@@ -35,9 +35,9 @@ export const TypeForm: React.FC<Props> = ({ id, defaultValues, types }) => {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { step } = useSpaceCreationStep()
-  const { mutateAsync } = trpc.updateSpace.useMutation({
+  const { mutateAsync } = trpc.space.update.useMutation({
     onSuccess() {
-      utils.draftSpace.invalidate({ id })
+      utils.space.draft.invalidate({ id })
       router.push("." + step.nextPath)
     },
     onError() {

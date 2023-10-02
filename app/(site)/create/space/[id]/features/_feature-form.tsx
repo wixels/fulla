@@ -10,9 +10,12 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { forceDelay } from "@/lib/forceDelay"
+import { trpc } from "@/lib/trpc/client"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
+import { useToast } from "@/hooks/use-toast"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
+import { ToastAction } from "@/components/ui/toast"
 import { Icons } from "@/components/icons"
 
 import { updateSpaceWithParsedData } from "../../actions"
@@ -41,6 +44,22 @@ export const FeatureForm: React.FC<Props> = ({
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { step } = useSpaceCreationStep()
+  const utils = trpc.useContext()
+  const { toast } = useToast()
+  const { mutateAsync } = trpc.space.update.useMutation({
+    onSuccess() {
+      utils.space.draft.invalidate({ id })
+      router.push("." + step.nextPath)
+    },
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    },
+  })
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -49,17 +68,17 @@ export const FeatureForm: React.FC<Props> = ({
   function onSubmit(data: z.infer<typeof FormSchema>) {
     startTransition(async () => {
       const update = await forceDelay(
-        updateSpaceWithParsedData({
+        mutateAsync({
           data: {
             amenities: {
               connect: data.amenityIds?.length
                 ? data.amenityIds.map((x) => ({ id: x }))
-                : null,
+                : [],
             },
             offerings: {
               connect: data.offeringIds
                 ? data.offeringIds.map((x) => ({ id: x }))
-                : null,
+                : [],
             },
           },
           id,
@@ -68,8 +87,6 @@ export const FeatureForm: React.FC<Props> = ({
       )
       console.log("update", update)
     })
-
-    // router.push("." + step.nextPath)
   }
   return (
     <form

@@ -7,7 +7,9 @@ import { useForm } from "react-hook-form"
 import * as z from "zod"
 
 import { forceDelay } from "@/lib/forceDelay"
+import { trpc } from "@/lib/trpc/client"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
+import { useToast } from "@/hooks/use-toast"
 import {
   Form,
   FormControl,
@@ -24,9 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { Title } from "@/components/ui/title"
+import { ToastAction } from "@/components/ui/toast"
 
-import { updateSpaceWithParsedData } from "../../actions"
 import { SpaceCreateFooter } from "../space-create-footer"
 
 type Props = {
@@ -70,21 +71,27 @@ export const AddressForm: React.FC<Props> = ({ defaultValues, id }) => {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { step } = useSpaceCreationStep()
+  const utils = trpc.useContext()
+  const { toast } = useToast()
+  const { mutateAsync } = trpc.space.update.useMutation({
+    onSuccess() {
+      utils.space.draft.invalidate({ id })
+      router.push("." + step.nextPath)
+    },
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem with your request.",
+        action: <ToastAction altText="Try again">Try again</ToastAction>,
+      })
+    },
+  })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    if (
-      data.city !== defaultValues.city ||
-      data.postalCode !== defaultValues.postalCode ||
-      data.suburb !== defaultValues.suburb ||
-      data.unitNumber !== defaultValues.unitNumber ||
-      data.street !== defaultValues.street ||
-      data.province !== defaultValues.province
-    ) {
-      startTransition(async () => {
-        await forceDelay(updateSpaceWithParsedData({ data, id }), 500)
-      })
-    }
-    router.push("." + step.nextPath)
+    startTransition(async () => {
+      await forceDelay(mutateAsync({ data, id }), 500)
+    })
   }
 
   return (

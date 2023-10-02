@@ -38,9 +38,9 @@ export const CategoryForm: React.FC<Props> = ({
   const { step } = useSpaceCreationStep()
   const utils = trpc.useContext()
   const { toast } = useToast()
-  const { mutateAsync } = trpc.updateSpace.useMutation({
+  const { mutateAsync } = trpc.space.update.useMutation({
     onSuccess() {
-      utils.draftSpace.invalidate({ id })
+      utils.space.draft.invalidate({ id })
       router.push("." + step.nextPath)
     },
     onError() {
