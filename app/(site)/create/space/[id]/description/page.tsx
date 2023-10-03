@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client"
+
 import { serverClient } from "@/lib/trpc/server"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
@@ -12,7 +14,18 @@ const DescriptionPage: React.FC<Props> = async ({ params: { id } }) => {
   return (
     <DescriptionForm
       id={id}
-      space={space}
+      space={
+        space as Prisma.SpaceGetPayload<{
+          include: {
+            highlights: true
+            amenities: true
+            offerings: true
+            type: true
+            category: true
+            images: true
+          }
+        }>
+      }
       defaultValues={{ description: space?.description ?? "" }}
     />
   )
