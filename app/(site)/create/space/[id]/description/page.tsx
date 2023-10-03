@@ -12,6 +12,7 @@ const DescriptionPage: React.FC<Props> = async ({ params: { id } }) => {
   return (
     <DescriptionForm
       id={id}
+      space={space}
       defaultValues={{ description: space?.description ?? "" }}
     />
   )

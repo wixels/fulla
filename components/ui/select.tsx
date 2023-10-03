@@ -17,7 +17,7 @@ const selectBaseClass = [
   "rounded-md",
   "border",
   "border-input",
-  "bg-transparent",
+  "bg-background",
   "text-sm",
   "ring-offset-background",
   "placeholder:text-muted-foreground",
@@ -46,6 +46,7 @@ const selectVariants = cva(selectBaseClass, {
   defaultVariants: {
     rounded: "full",
     shadow: "none",
+    sizing: "md",
   },
 })
 
