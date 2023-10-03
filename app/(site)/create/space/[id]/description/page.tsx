@@ -9,6 +9,11 @@ type Props = {
 }
 const DescriptionPage: React.FC<Props> = async ({ params: { id } }) => {
   const space = await serverClient.space.draft({ id })
-  return <DescriptionForm />
+  return (
+    <DescriptionForm
+      id={id}
+      defaultValues={{ description: space?.description ?? "" }}
+    />
+  )
 }
 export default DescriptionPage

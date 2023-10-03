@@ -3,9 +3,10 @@
 import { useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Space } from "@prisma/client"
+import { Prisma, Space } from "@prisma/client"
+import { useCompletion } from "ai/react"
 import { motion } from "framer-motion"
-import { ArrowRight, Info, Loader2 } from "lucide-react"
+import { ArrowRight, Info, Loader2, Star } from "lucide-react"
 import { useSession } from "next-auth/react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
@@ -26,8 +27,9 @@ import { Paragraph } from "@/components/ui/paragraph"
 import { Textarea } from "@/components/ui/textarea"
 import { Title } from "@/components/ui/title"
 import { ToastAction } from "@/components/ui/toast"
+import { Icons } from "@/components/icons"
+import { Spin } from "@/components/spin"
 
-import { updateSpaceWithParsedData } from "../../actions"
 import { SpaceCreateFooter } from "../space-create-footer"
 
 const FormSchema = z.object({
@@ -42,12 +44,24 @@ const FormSchema = z.object({
 })
 type Props = {
   id: string
+  space: Prisma.SpaceGetPayload<{
+    include: {
+      highlights: true
+      amenities: true
+      offerings: true
+      type: true
+      category: true
+    }
+  }>
   defaultValues: { description: string }
 }
-export const DescriptionForm: React.FC<Props> = ({ id, defaultValues }) => {
+export const DescriptionForm: React.FC<Props> = ({
+  id,
+  defaultValues,
+  space,
+}) => {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
-  const { data } = useSession()
   const { step } = useSpaceCreationStep()
   const utils = trpc.useContext()
   const { toast } = useToast()
@@ -75,6 +89,27 @@ export const DescriptionForm: React.FC<Props> = ({ id, defaultValues }) => {
       await forceDelay(mutateAsync({ id, data }), 500)
     })
   }
+
+  const { complete, completion, isLoading } = useCompletion({
+    api: "/api/ai/completion",
+    onResponse: (res) => {
+      // trigger something when the response starts streaming in
+      // e.g. if the user is rate limited, you can show a toast
+      if (res.status === 429) {
+        toast({
+          variant: "destructive",
+          description: "Youa re being rate limited. Please try again later.",
+        })
+        // toast.error("You are being rate limited. Please try again later.")
+      }
+    },
+    onError(error) {
+      toast({
+        description: error.message,
+        variant: "destructive",
+      })
+    },
+  })
 
   return (
     <Form {...form}>
@@ -117,6 +152,17 @@ export const DescriptionForm: React.FC<Props> = ({ id, defaultValues }) => {
               </FormItem>
             )}
           />
+          <Button
+            type="button"
+            aria-disabled={isLoading}
+            onClick={() => complete(JSON.stringify(space))}
+            size={"sm"}
+            rounded={"full"}
+          >
+            <Star className="mr-2 h-4 w-4" /> Ask AI
+            {isLoading ? <Spin /> : null}
+          </Button>
+          <p>{completion}</p>
         </div>
         <SpaceCreateFooter pending={pending} />
       </form>
