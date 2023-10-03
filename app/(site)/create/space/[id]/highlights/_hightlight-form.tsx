@@ -6,7 +6,9 @@ import { amenities, offerings } from "@/prisma/data"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Amenity, Highlight, Offering } from "@prisma/client"
 import { motion } from "framer-motion"
+import { Building, Circle, Citrus, Home, Pin, Trees } from "lucide-react"
 import { useForm } from "react-hook-form"
+import Balancer from "react-wrap-balancer"
 import * as z from "zod"
 
 import { forceDelay } from "@/lib/forceDelay"
@@ -21,23 +23,18 @@ import { SpaceCreateFooter } from "../space-create-footer"
 
 type Props = {
   id: string
-  defaultValues: { amenityIds: string[]; offeringIds: string[] }
-  amenities: Amenity[]
-  offerings: Offering[]
+  defaultValues: { highlightIds: string[] }
+  highlights: Highlight[]
 }
 const FormSchema = z.object({
-  amenityIds: z
-    .array(z.string())
-    .min(1, { message: "Please select at least one" }),
-  offeringIds: z
+  highlightIds: z
     .array(z.string())
     .min(1, { message: "Please select at least one" }),
 })
-export const FeatureForm: React.FC<Props> = ({
+export const HighlightForm: React.FC<Props> = ({
   id,
   defaultValues,
-  offerings,
-  amenities,
+  highlights,
 }) => {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
@@ -45,11 +42,12 @@ export const FeatureForm: React.FC<Props> = ({
   const utils = trpc.useContext()
   const { toast } = useToast()
   const { mutateAsync } = trpc.space.update.useMutation({
-    onSuccess() {
+    onSuccess(data, variables, context) {
       utils.space.draft.invalidate({ id })
       router.push("." + step.nextPath)
     },
-    onError() {
+    onError(error) {
+      console.log("error::: ", error)
       toast({
         variant: "destructive",
         title: "Uh oh! Something went wrong.",
@@ -67,23 +65,35 @@ export const FeatureForm: React.FC<Props> = ({
     startTransition(async () => {
       await forceDelay(
         mutateAsync({
+          id,
           data: {
-            amenities: {
-              set: data.amenityIds?.length
-                ? data.amenityIds.map((x) => ({ id: x }))
-                : [],
-            },
-            offerings: {
-              set: data.offeringIds
-                ? data.offeringIds.map((x) => ({ id: x }))
+            highlights: {
+              set: data.highlightIds?.length
+                ? data.highlightIds.map((x) => ({ id: x }))
                 : [],
             },
           },
-          id,
         }),
         500
       )
     })
+  }
+  const IconRenderer: React.FC<{ iconName: string }> = ({ iconName }) => {
+    const iconMapping: { [key: string]: React.ComponentType<any> } = {
+      Trees: Trees,
+      Building: Building,
+      Pin: Pin,
+      Home: Home,
+      Citrus: Citrus,
+    }
+
+    const IconComponent = iconMapping[iconName]
+
+    if (!IconComponent) {
+      return <Circle />
+    }
+
+    return <IconComponent />
   }
   return (
     <form
@@ -91,13 +101,20 @@ export const FeatureForm: React.FC<Props> = ({
       className="gutter z-10 flex h-screen flex-col justify-between"
     >
       <div className="flex h-full grow flex-col items-start justify-center gap-2">
-        <Title showAs={5} className="font-medium">
-          What does your space have to offer?
+        <Title style={{ marginBottom: 0 }} showAs={2} className="font-semibold">
+          <Balancer>{"Next, let's describe your space"}</Balancer>
         </Title>
-        <div className="mb-12 flex w-3/4 flex-wrap  gap-3 lg:w-2/4">
-          {offerings.map(({ id: offeringId, label }, i) => (
+        <Paragraph className="mt-2 text-muted-foreground">
+          <Balancer>
+            {
+              "Choose up to 2 highlights. We'll use these to get your description started."
+            }
+          </Balancer>
+        </Paragraph>
+        <div className="mt-8 flex flex-wrap gap-3">
+          {highlights.map(({ id: highlightId, label, icon }, i) => (
             <motion.label
-              key={offeringId}
+              key={highlightId}
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
@@ -105,51 +122,24 @@ export const FeatureForm: React.FC<Props> = ({
                 duration: 0.95,
                 ease: [0.165, 0.84, 0.44, 1],
               }}
-              id={offeringId}
+              id={highlightId}
             >
               <input
-                {...form.register("offeringIds")}
-                value={offeringId}
+                {...form.register("highlightIds")}
+                value={highlightId}
                 type="checkbox"
                 className="peer hidden"
-                id={offeringId}
+                id={highlightId}
               />
-              <li className="flex cursor-pointer gap-3 rounded-full border bg-background/75 px-4 py-3 backdrop-blur transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
-                <p>{label}</p>
-              </li>
-            </motion.label>
-          ))}
-        </div>
-        <Title showAs={5} className="font-medium">
-          What amenities does your space have?
-        </Title>
-        <div className="flex w-3/4 flex-wrap gap-3  lg:w-2/4">
-          {amenities.map(({ id: amenityId, label }, i) => (
-            <motion.label
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: Number(`0.${i + 1}`),
-                duration: 0.95,
-                ease: [0.165, 0.84, 0.44, 1],
-              }}
-              id={amenityId}
-              key={amenityId}
-            >
-              <input
-                {...form.register("amenityIds")}
-                value={amenityId}
-                type="checkbox"
-                className="peer hidden"
-                id={amenityId}
-              />
-              <li className="flex cursor-pointer gap-3 rounded-full border bg-background/75 px-4 py-3 backdrop-blur transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
-                <p>{label}</p>
+              <li className="flex cursor-pointer gap-3 rounded-full border bg-background px-4 py-3 transition-all hover:border-zinc-600 hover:shadow peer-checked:border-blue-600 peer-checked:text-blue-600">
+                <IconRenderer iconName={icon} />
+                <Paragraph size={"sm"}>{label}</Paragraph>
               </li>
             </motion.label>
           ))}
         </div>
       </div>
+
       <SpaceCreateFooter pending={pending} />
     </form>
   )

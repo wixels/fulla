@@ -22,6 +22,8 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form"
+import { Paragraph } from "@/components/ui/paragraph"
+import { Textarea } from "@/components/ui/textarea"
 import { Title } from "@/components/ui/title"
 import { ToastAction } from "@/components/ui/toast"
 
@@ -29,21 +31,20 @@ import { updateSpaceWithParsedData } from "../../actions"
 import { SpaceCreateFooter } from "../space-create-footer"
 
 const FormSchema = z.object({
-  title: z
+  description: z
     .string()
-    .min(5, {
-      message: "Title must be at least 5 characters.",
+    .min(25, {
+      message: "Description must be at least 25 characters.",
     })
-    .max(25, {
-      message: "That's a little too long",
+    .max(100, {
+      message: "Description must not be longer than 100 characters.",
     }),
 })
-
 type Props = {
   id: string
-  defaultValues: { title: string }
+  defaultValues: { description: string }
 }
-export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
+export const DescriptionForm: React.FC<Props> = ({ id, defaultValues }) => {
   const router = useRouter()
   const [pending, startTransition] = useTransition()
   const { data } = useSession()
@@ -81,23 +82,36 @@ export const TitleForm: React.FC<Props> = ({ id, defaultValues }) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="gutter z-10 flex h-screen flex-col justify-between"
       >
-        <div className="flex h-full grow flex-col items-start justify-center">
-          <Title showAs={5} className="font-medium">
-            Hi {data?.user?.name?.split(" ")[0]}! {step.label}
+        <div className="flex h-full w-full grow flex-col items-start justify-center">
+          <Title
+            style={{ marginBottom: 0 }}
+            showAs={2}
+            className="font-semibold"
+          >
+            Create your description
           </Title>
+          <Paragraph className="mt-2 text-muted-foreground">
+            Share what makes your place special.
+          </Paragraph>
           <FormField
             control={form.control}
-            name="title"
+            name="description"
             render={({ field }) => (
-              <FormItem>
+              <FormItem className="mt-8 w-full lg:w-3/4">
                 <FormControl>
-                  <input
-                    autoFocus
-                    type="text"
-                    className="bg-transparent text-5xl font-medium focus:outline-none md:text-8xl"
-                    placeholder="A Space Oddity."
+                  <Textarea
+                    placeholder="Describe your space"
+                    rows={10}
+                    className="resize-none bg-background"
                     {...field}
                   />
+                  {/* <input
+                    autoFocus
+                    type="text"
+                    // className="bg-transparent text-5xl font-medium focus:outline-none md:text-8xl"
+                    placeholder="A Space Oddity."
+                    {...field}
+                  /> */}
                 </FormControl>
                 <FormMessage />
               </FormItem>

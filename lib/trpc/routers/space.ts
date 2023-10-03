@@ -23,6 +23,7 @@ export const spaceRouter = router({
           status: "draft",
         },
         include: {
+          highlights: true,
           amenities: true,
           offerings: true,
           type: true,
