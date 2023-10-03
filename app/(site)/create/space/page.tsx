@@ -82,7 +82,7 @@ export default async function SpaceCreationPage() {
                 </Await>
               </Suspense>
 
-              <CreateButton orgId={user?.organizations[0].organization.id} />
+              <CreateButton />
             </ul>
             <CreateFromTemplate />
           </div>

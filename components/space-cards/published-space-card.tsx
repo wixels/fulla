@@ -16,6 +16,7 @@ import {
 import { useHover } from "@/hooks/use-hover"
 import { useViewportSize } from "@/hooks/use-viewport-size"
 
+import { PlaiceholderImage } from "../plaiceholder-image"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { buttonVariants } from "../ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
@@ -184,29 +185,31 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
             <HoverCard>
               <HoverCardTrigger asChild>
                 <Avatar size={"sm"}>
-                  <AvatarImage src={space.organization.logo?.fileUrl} />
+                  <AvatarImage src={space?.organization?.logo?.fileUrl} />
                   <AvatarFallback className="capitalize">
-                    {space.organization.name[0]}
+                    {space?.organization?.name[0]}
                   </AvatarFallback>
                 </Avatar>
               </HoverCardTrigger>
               <HoverCardContent className="w-80">
                 <div className="flex gap-4">
                   <Avatar size={"sm"}>
-                    <AvatarImage src={space.organization.logo?.fileUrl} />
+                    <AvatarImage src={space?.organization?.logo?.fileUrl} />
                     <AvatarFallback className="capitalize">
-                      {space.organization.name[0]}
+                      {space?.organization?.name[0]}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-1">
                     <Link
-                      href={"/orgs/" + space.organization.id}
+                      href={"/orgs/" + space?.organization?.id}
                       className="text-sm font-semibold hover:underline"
                     >
-                      @{space.organization.name}
+                      @{space?.organization?.name}
                     </Link>
 
-                    <p className="text-sm">{space.organization.description}</p>
+                    <p className="text-sm">
+                      {space?.organization?.description}
+                    </p>
                     <div className="flex items-center pt-2">
                       <CalendarDays className="mr-2 h-4 w-4 opacity-70" />{" "}
                       <span className="text-xs text-muted-foreground">

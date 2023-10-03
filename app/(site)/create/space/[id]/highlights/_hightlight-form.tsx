@@ -42,7 +42,7 @@ export const HighlightForm: React.FC<Props> = ({
   const utils = trpc.useContext()
   const { toast } = useToast()
   const { mutateAsync } = trpc.space.update.useMutation({
-    onSuccess(data, variables, context) {
+    onSuccess() {
       utils.space.draft.invalidate({ id })
       router.push("." + step.nextPath)
     },
@@ -102,7 +102,7 @@ export const HighlightForm: React.FC<Props> = ({
     >
       <div className="flex h-full grow flex-col items-start justify-center gap-2">
         <Title style={{ marginBottom: 0 }} showAs={2} className="font-semibold">
-          <Balancer>{"Next, let's describe your space"}</Balancer>
+          <Balancer>{"Next, let's highlight your space"}</Balancer>
         </Title>
         <Paragraph className="mt-2 text-muted-foreground">
           <Balancer>

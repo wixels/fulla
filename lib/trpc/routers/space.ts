@@ -23,6 +23,11 @@ export const spaceRouter = router({
           status: "draft",
         },
         include: {
+          organization: {
+            include: {
+              logo: true,
+            },
+          },
           highlights: true,
           amenities: true,
           offerings: true,
@@ -48,4 +53,22 @@ export const spaceRouter = router({
         data,
       })
     }),
+  create: privateProcedure.mutation(async (opts) => {
+    const { user } = opts.ctx
+    return await db.space.create({
+      data: {
+        status: "draft",
+        organization: {
+          connect: {
+            id: user.organizations?.[0].organizationId,
+          },
+        },
+        author: {
+          connect: {
+            id: user.organizations?.[0].id,
+          },
+        },
+      },
+    })
+  }),
 })

@@ -3,11 +3,10 @@
 import { useEffect, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Prisma, Space } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { useCompletion } from "ai/react"
 import { motion } from "framer-motion"
-import { ArrowRight, Info, Loader2, Star } from "lucide-react"
-import { useSession } from "next-auth/react"
+import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
 
@@ -34,8 +33,6 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Title } from "@/components/ui/title"
 import { ToastAction } from "@/components/ui/toast"
-import { Icons } from "@/components/icons"
-import { Spin } from "@/components/spin"
 
 import { SpaceCreateFooter } from "../space-create-footer"
 
@@ -102,8 +99,6 @@ export const DescriptionForm: React.FC<Props> = ({
   const { complete, completion, isLoading } = useCompletion({
     api: "/api/ai/completion",
     onResponse: (res) => {
-      // trigger something when the response starts streaming in
-      // e.g. if the user is rate limited, you can show a toast
       if (res.status === 429) {
         toast({
           variant: "destructive",
@@ -111,11 +106,7 @@ export const DescriptionForm: React.FC<Props> = ({
         })
       }
     },
-    onFinish: () => {
-      // alert("Successfully generated completion!")
-      // do something with the completion result
-      // toast.success("Successfully generated completion!")
-    },
+    onFinish: () => {},
   })
 
   useEffect(() => {
@@ -164,6 +155,7 @@ export const DescriptionForm: React.FC<Props> = ({
             <Button
               type="button"
               aria-disabled={isLoading}
+              className="w-[200px]"
               onClick={() =>
                 complete(
                   "generate a property description in a " +
@@ -174,7 +166,7 @@ export const DescriptionForm: React.FC<Props> = ({
               }
               rounded={"full"}
             >
-              Ask AI
+              <span>Ask AI</span>
               <motion.div
                 animate={
                   isLoading

@@ -20,8 +20,16 @@ export const spaceCreationSteps = [
     path: "/category",
     name: "Category",
     label: "What category is your space?",
-    nextPath: "/address",
+    nextPath: "/basics",
     previousPath: "/type",
+  },
+  {
+    keys: "basics",
+    path: "/basics",
+    name: "Basics",
+    label: "What category is your space?",
+    nextPath: "/address",
+    previousPath: "/category",
   },
   {
     keys: ["province", "street", "unitNumber", "city", "suburb", "postalCode"],
@@ -67,7 +75,7 @@ export const spaceCreationSteps = [
     path: "/price",
     name: "Price",
     label: "How much does your space cost?",
-    nextPath: null,
+    nextPath: "/publish",
     previousPath: "/highlights",
   },
 ]

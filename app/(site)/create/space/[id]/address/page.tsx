@@ -13,7 +13,7 @@ const AddressPage: React.FC<Props> = async ({ params: { id } }) => {
 
   return (
     <div className="gutter mt-36 flex h-screen flex-col">
-      <div className="rounded-xl bg-background px-8 pb-8 shadow-xl">
+      <div className="rounded-xl bg-background px-8 shadow-xl">
         <Title showAs={2} className="font-semibold">
           Confirm your address
         </Title>
