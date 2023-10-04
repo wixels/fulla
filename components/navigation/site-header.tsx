@@ -125,7 +125,7 @@ export function SiteHeader() {
       </CommandDialog>
       <header
         className={cn(
-          "gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 bg-background py-2",
+          "gutter sticky top-0 z-50 grid grid-cols-3 items-center gap-3 bg-background py-2",
           {
             hidden: hideMe,
           }
@@ -207,9 +207,6 @@ export function SiteHeader() {
           </kbd>
         </div>
         <div className="flex items-center justify-end gap-3">
-          <Button size={"sm"} className="hidden lg:flex" rounded={"full"}>
-            Rent your space
-          </Button>
           <ProfileAvatar />
         </div>
       </header>

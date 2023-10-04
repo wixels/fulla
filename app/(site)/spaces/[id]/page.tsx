@@ -17,6 +17,7 @@ import { Title } from "@/components/ui/title"
 import { Await } from "@/components/await"
 import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
+import { Gallery } from "./_gallery"
 import { SpaceActions } from "./_space-actions"
 import { StatCard } from "./_stat-card"
 
@@ -56,7 +57,7 @@ const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
               <Paragraph className="mt-8">
                 <Balancer>{space?.description}</Balancer>
               </Paragraph>
-              <ul className="flex w-full flex-wrap gap-2 lg:w-1/2">
+              <ul className="flex w-full flex-wrap gap-2 lg:w-3/4">
                 {space?.highlights.map((high) => (
                   <li
                     className={badgeVariants({ variant: "secondary" })}
@@ -92,6 +93,9 @@ const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
           />
         </div>
       </div>
+      {space?.images && space?.images?.length > 2 ? (
+        <Gallery images={space?.images} />
+      ) : null}
     </div>
   )
 }
