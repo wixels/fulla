@@ -22,7 +22,7 @@ export const PlaiceholderImage: React.FC<Props> = async ({
   return (
     <div
       style={type === "color" ? { backgroundColor: color.hex } : {}}
-      className={cn("relative", className)}
+      className={cn("relative overflow-hidden", className)}
     >
       <Image
         src={src}

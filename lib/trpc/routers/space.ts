@@ -5,6 +5,34 @@ import { db } from "@/lib/db"
 import { privateProcedure, publicProcedure, router } from "../trpc"
 
 export const spaceRouter = router({
+  published: publicProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async (opts) => {
+      const { id } = opts.input
+      return await db.space.findFirst({
+        where: {
+          id,
+          status: "published",
+        },
+        include: {
+          organization: {
+            include: {
+              logo: true,
+            },
+          },
+          highlights: true,
+          amenities: true,
+          offerings: true,
+          type: true,
+          category: true,
+          images: true,
+        },
+      })
+    }),
   draft: privateProcedure
     .input(
       z.object({

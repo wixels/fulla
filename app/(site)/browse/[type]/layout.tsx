@@ -1,3 +1,4 @@
+import { serverClient } from "@/lib/trpc/server"
 import { SiteTypeFilters } from "@/components/site-type-filters"
 
 import { TypeCategoryFilters } from "./_type-category-filters"
@@ -32,40 +33,9 @@ export default async function Layout({
     amenities,
   ] = await Promise.all([
     await getCounts(type),
-    await (async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/offerings`,
-        {
-          next: {
-            revalidate: 60 * 30,
-          },
-        }
-      )
-      return res.json()
-    })(),
-    await (async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/highlights`,
-        {
-          next: {
-            revalidate: 60 * 30,
-          },
-        }
-      )
-      return res.json()
-    })(),
-
-    await (async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/amenities`,
-        {
-          next: {
-            revalidate: 60 * 30,
-          },
-        }
-      )
-      return res.json()
-    })(),
+    await serverClient.offerings(),
+    await serverClient.highlights(),
+    await serverClient.amenities(),
   ])
 
   return (

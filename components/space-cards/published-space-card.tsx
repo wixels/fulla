@@ -200,12 +200,9 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-1">
-                    <Link
-                      href={"/orgs/" + space?.organization?.id}
-                      className="text-sm font-semibold hover:underline"
-                    >
+                    <p className="text-sm font-semibold hover:underline">
                       @{space?.organization?.name}
-                    </Link>
+                    </p>
 
                     <p className="text-sm">
                       {space?.organization?.description}
@@ -221,7 +218,7 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
               </HoverCardContent>
             </HoverCard>
 
-            <div className="">
+            <Link href={"/spaces/" + space.id} className="">
               <p className="line-clamp-1 text-sm font-medium transition-all group-hover:underline">
                 {space.title}
                 {/* {space.id} */}
@@ -229,7 +226,7 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
               <p className="line-clamp-1 text-xs text-muted-foreground">
                 Suburb, Province
               </p>
-            </div>
+            </Link>
           </div>
           <div className="flex items-center gap-2 transition-opacity delay-150">
             <TooltipProvider delayDuration={100} skipDelayDuration={10}>

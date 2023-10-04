@@ -1,24 +1,25 @@
-import type { BaseCompProps } from '@/types'
-import { cva, VariantProps } from 'class-variance-authority'
+import type { BaseCompProps } from "@/types"
+import { VariantProps, cva } from "class-variance-authority"
 
-const paragraphVariants = cva('', {
+const paragraphVariants = cva("", {
   variants: {
     size: {
-      sm: 'text-xs lg:text-sm xl:text-base',
-      md: 'text-sm lg:text-base xl:text-lg',
-      lg: 'text-base lg:text-lg xl:text-xl',
+      xs: "text-xs lg:text-xs xl:text-sm",
+      sm: "text-xs lg:text-sm xl:text-base",
+      md: "text-sm lg:text-base xl:text-lg",
+      lg: "text-base lg:text-lg xl:text-xl",
     },
     clamp: {
-      1: 'line-clamp-1',
-      2: 'line-clamp-2',
-      3: 'line-clamp-3',
-      4: 'line-clamp-4',
-      5: 'line-clamp-5',
-      6: 'line-clamp-6',
+      1: "line-clamp-1",
+      2: "line-clamp-2",
+      3: "line-clamp-3",
+      4: "line-clamp-4",
+      5: "line-clamp-5",
+      6: "line-clamp-6",
     },
   },
   defaultVariants: {
-    size: 'md',
+    size: "md",
   },
 })
 
@@ -27,7 +28,13 @@ export interface ParagraphProps
     BaseCompProps,
     VariantProps<typeof paragraphVariants> {}
 
-const Paragraph: React.FC<ParagraphProps> = ({ children, size, className, clamp, ...rest }) => {
+const Paragraph: React.FC<ParagraphProps> = ({
+  children,
+  size,
+  className,
+  clamp,
+  ...rest
+}) => {
   return (
     <p {...rest} className={paragraphVariants({ className, size, clamp })}>
       {children}
@@ -35,5 +42,5 @@ const Paragraph: React.FC<ParagraphProps> = ({ children, size, className, clamp,
   )
 }
 
-Paragraph.displayName = 'Paragraph'
+Paragraph.displayName = "Paragraph"
 export { Paragraph, paragraphVariants }
