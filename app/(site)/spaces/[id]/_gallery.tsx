@@ -19,13 +19,13 @@ export const Gallery: React.FC<Props> = ({ images }) => {
           Show All ({images.length})
         </Button>
       </div>
-      <Grid gap={"sm"} className="w-full">
+      <Grid gap={"xs"} className="w-full">
         <PlaiceholderImage
           className="col-span-7 h-full rounded-xl"
           src={images[0].fileUrl}
           alt={images[0].fileUrl + "image"}
         />
-        <div className="col-span-5 flex h-full flex-col gap-2 md:gap-4 lg:gap-6 xl:gap-8">
+        <div className="col-span-5 flex h-full flex-col gap-1 md:gap-2 lg:gap-4 xl:gap-6">
           <PlaiceholderImage
             className="aspect-video w-full rounded-xl"
             src={images[1].fileUrl}
