@@ -29,7 +29,7 @@ export const Magnetic: React.FC<Props> = ({ children }) => {
       onMouseMove={handleMouse}
       onMouseLeave={reset}
       animate={{ x, y }}
-      transition={{ type: "spring", stiffness: 350, damping: 5, mass: 0.5 }}
+      transition={{ type: "spring", stiffness: 350, damping: 2, mass: 0.5 }}
     >
       {children}
     </motion.div>
