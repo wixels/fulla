@@ -15,14 +15,6 @@ export const SpaceActions: React.FC<Props> = ({}) => {
 
   return (
     <div className="flex gap-5">
-      {/* <motion.div
-        style={{ left: smoothMouse.x, top: smoothMouse.y }}
-        animate={{
-          width: cursorSize,
-          height: cursorSize,
-        }}
-        className="pointer-events-none fixed h-4 w-4 rounded-full bg-red-200"
-      ></motion.div> */}
       <StickyCursor stickyElement={applyRef} />
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -47,7 +39,6 @@ export const SpaceActions: React.FC<Props> = ({}) => {
           Apply
         </Paragraph>
       </motion.div>
-
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
