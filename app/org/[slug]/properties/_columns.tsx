@@ -1,10 +1,13 @@
 "use client"
 
+import Link from "next/link"
 import { Prisma, Properties } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
+import { motion } from "framer-motion"
+import { ChevronDown, MoreHorizontal } from "lucide-react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   DropdownMenu,
@@ -33,27 +36,49 @@ export const columns = [
     id: "name",
     header: "Name",
     cell: (props) => {
-      console.log("props::: ", props.row)
       return (
-        <div className="flex items-center gap-2">
+        <Link
+          href={"./properties/" + props.row.original.id}
+          className="group flex items-center gap-2"
+        >
           <Avatar size={"sm"}>
             <AvatarFallback>{props?.row?.original?.name?.[0]}</AvatarFallback>
             <AvatarImage src={props?.row?.original?.logo?.fileUrl} />
           </Avatar>
-          <span
-          // className={paragraphVariants({
-          //   size: "xs",
-          //   className: "text-muted-foreground",
-          // })}
-          >
+          <span className="group-hover:text-blue-500 group-hover:underline">
             {props?.row?.original?.name}
           </span>
-        </div>
+        </Link>
       )
     },
   }),
+  helper.display({
+    header: "Private",
+    id: "private",
+    cell: (props) => <Badge>{props?.row?.original?.private}</Badge>,
+  }),
   helper.accessor("createdAt", {
-    header: "Created",
+    header: ({ column }) => {
+      return (
+        <div
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+          className="flex cursor-pointer items-center gap-2"
+        >
+          <span>Created</span>
+          <motion.div
+            animate={
+              column.getIsSorted() === "asc" ? { rotate: 180 } : { rotate: 0 }
+            }
+            transition={{
+              duration: 0.3,
+              ease: [0.165, 0.84, 0.44, 1],
+            }}
+          >
+            <ChevronDown className="w- h-3" />
+          </motion.div>
+        </div>
+      )
+    },
     cell: (row) => (
       <span>
         {new Intl.DateTimeFormat("en-US", {
@@ -81,16 +106,4 @@ export const columns = [
       </DropdownMenu>
     ),
   }),
-
-  //   {
-  //     accessorKey: "name",
-  //   },
-  //   {
-  //     // id: "collaborators",
-  //     accessorKey: "author",
-  //     accessorFn: (row) => {
-  //       console.log("row::: ", row)
-  //       return "Hello World"
-  //     },
-  //   },
 ]

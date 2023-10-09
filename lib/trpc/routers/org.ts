@@ -6,6 +6,16 @@ import { db } from "@/lib/db"
 import { privateProcedure, publicProcedure, router } from "../trpc"
 
 export const orgRouter = router({
+  property: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async (opts) => {
+      const { id } = opts.input
+      return await db.properties.findFirst({
+        where: {
+          id,
+        },
+      })
+    }),
   properties: privateProcedure
     .input(
       z.object({
