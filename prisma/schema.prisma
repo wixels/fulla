@@ -179,8 +179,8 @@ model Space {
   organization    Organization  @relation(fields: [organizationId], references: [id])
   organizationId  String
 
-  property    Properties  @relation(fields: [propertyId], references: [id])
-  propertyId  String
+  property    Properties?  @relation(fields: [propertyId], references: [id])
+  propertyId  String?
 
   authorId        String?
   author          OrganizationUser?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
