@@ -32,7 +32,7 @@ export const SpaceCreateFooter: React.FC<Props> = ({
         ) : null}
 
         <Button
-          disabled={pending}
+          aria-disabled={pending}
           onClick={onClick}
           type="submit"
           rounded={"full"}

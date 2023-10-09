@@ -40,6 +40,7 @@ const selectVariants = cva(selectBaseClass, {
       xl: "h-14 px-7 py-6",
     },
     variant: {
+      secondary: "bg-secondary text-secondary-foreground",
       ghost: "border-none",
     },
   },

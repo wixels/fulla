@@ -57,7 +57,6 @@ model User {
   sessions               Session[]
 
   organizations           OrganizationUser[]
-  spaces                  SpaceUser[]
 
   @@map("users")
 }
@@ -69,22 +68,6 @@ model VerificationToken {
 
   @@unique([identifier, token])
   @@map("verification_tokens")
-}
-model Organization {
-  id          String    @id @default(cuid())
-  name        String
-  description String?
-  logo        Image?    @relation(fields: [logoId], references: [id])
-  logoId      String?
-
-  spaces      Space[]
-  users       OrganizationUser[]
-
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
-
-  @@index([logoId])
-  @@map("organizations")
 }
 
 enum PersonRoles {
@@ -100,6 +83,7 @@ model OrganizationUser {
   organizationId  String
 
   spaces Space[]
+  properties Properties[]
 
   role            PersonRoles @default(user)
   createdAt       DateTime                @default(now())
@@ -109,12 +93,63 @@ model OrganizationUser {
   @@index([userId])
   @@map("organization_users")
 }
+model Organization {
+  id          String    @id @default(cuid())
+  name        String    @unique
+  slug        String?    @unique
+  description String?
+
+  logo        Image?    @relation(fields: [logoId], references: [id])
+  logoId      String?
+
+  users       OrganizationUser[]
+
+  properties Properties[]
+  spaces Space[]
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([logoId])
+  @@map("organizations")
+}
+model Properties {
+  id String @id @default(cuid())
+  name String 
+  description     String? @db.Text
+
+  logo        Image?    @relation(fields: [logoId], references: [id])
+  logoId     String?
+
+  organization    Organization  @relation(fields: [organizationId], references: [id])
+  organizationId  String
+
+  authorId        String?
+  author          OrganizationUser?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  spaces      Space[]
+
+  private     Boolean  @default(false)
+
+  createdAt   DateTime?  @default(now())
+  updatedAt   DateTime?  @updatedAt
+
+  @@index([logoId])
+  @@index([organizationId])
+  @@index([authorId])
+  @@map("properties")
+}
 model Image {
   id            String    @id @default(cuid())
   fileKey       String
   fileUrl       String
+  property      Properties[]
   organization  Organization[]
   space         Space[]
+
+  createdAt   DateTime?  @default(now())
+  updatedAt   DateTime?  @updatedAt
+
   @@map("images")
 }
 
@@ -122,21 +157,6 @@ model Image {
 enum ListingStatus {
   draft
   published
-}
-
-model SpaceUser {
-  id              String                  @id @default(cuid())
-  user            User                    @relation(fields: [userId], references: [id])
-  userId          String
-  space    Space            @relation(fields: [spaceId], references: [id])
-  spaceId  String
-  role            PersonRoles @default(user)
-  createdAt       DateTime                @default(now())
-  updatedAt       DateTime                @updatedAt
-
-  @@index([userId])
-  @@index([spaceId])
-  @@map("space_users")
 }
 model Space {
   id              String  @id @default(cuid())
@@ -159,7 +179,8 @@ model Space {
   organization    Organization  @relation(fields: [organizationId], references: [id])
   organizationId  String
 
-  users SpaceUser[]
+  property    Properties  @relation(fields: [propertyId], references: [id])
+  propertyId  String
 
   authorId        String?
   author          OrganizationUser?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -183,12 +204,11 @@ model Space {
 
   @@index([categoryId])
   @@index([typeId])
-  @@index([organizationId])
-  @@map("spaces")
   @@index([authorId])
+  @@index([propertyId])
+  @@map("spaces")
+  @@index([organizationId])
 }
-
-
 model Category {
   id          String    @id @default(cuid())
   label       String

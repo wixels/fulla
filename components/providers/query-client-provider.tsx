@@ -29,7 +29,7 @@ export default function QueryClientProvider({
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryProvider client={queryClient}>
         {children}
-        <ReactQueryDevtools initialIsOpen={false} />
+        {/* <ReactQueryDevtools initialIsOpen={false} /> */}
       </QueryProvider>
     </trpc.Provider>
   )

@@ -1,4 +1,5 @@
 import { db } from "../db"
+import { orgRouter } from "./routers/org"
 import { spaceRouter } from "./routers/space"
 import { spacesRouter } from "./routers/spaces"
 import { publicProcedure, router } from "./trpc"
@@ -6,6 +7,7 @@ import { publicProcedure, router } from "./trpc"
 export const appRouter = router({
   spaces: spacesRouter,
   space: spaceRouter,
+  org: orgRouter,
   highlights: publicProcedure.query(async () => {
     return await db.highlight.findMany()
   }),

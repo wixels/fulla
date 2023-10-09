@@ -11,8 +11,6 @@ import { toast, useToast } from "@/hooks/use-toast"
 import { Button } from "@/components/ui/button"
 import { ToastAction } from "@/components/ui/toast"
 
-import { createDraftSpace } from "./actions"
-
 type Props = {}
 export const CreateButton: React.FC<Props> = ({}) => {
   const [pending, startTransition] = useTransition()

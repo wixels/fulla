@@ -16,7 +16,6 @@ import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { ToastAction } from "@/components/ui/toast"
 
-import { updateSpaceWithParsedData } from "../../actions"
 import { SpaceCreateFooter } from "../space-create-footer"
 
 type Props = {
