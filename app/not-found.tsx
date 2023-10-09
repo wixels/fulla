@@ -96,7 +96,7 @@ const NotFound: React.FC<Props> = ({}) => {
             duration: 0.95,
             ease: [0.165, 0.84, 0.44, 1],
           }}
-          href={"/feed"}
+          href={"/"}
           className={cn(
             buttonVariants({ variant: "link" }),
             "w-fit px-0 underline"

@@ -151,7 +151,8 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                                       "/org/" +
                                         prop.organization.slug +
                                         "/properties/" +
-                                        prop.id
+                                        prop.id +
+                                        "/overview"
                                     )
                                   )
                                 }
