@@ -38,7 +38,7 @@ export const columns = [
     cell: (props) => {
       return (
         <Link
-          href={"./properties/" + props.row.original.id}
+          href={"./properties/" + props.row.original.id + "/overview"}
           className="group flex items-center gap-2"
         >
           <Avatar size={"sm"}>
@@ -55,7 +55,14 @@ export const columns = [
   helper.display({
     header: "Private",
     id: "private",
-    cell: (props) => <Badge>{props?.row?.original?.private}</Badge>,
+    cell: (props) => {
+      const isPrivate = props?.row?.original?.private
+      return (
+        <Badge variant={isPrivate ? "destructive" : "default"}>
+          {isPrivate ? "Private" : "Public"}
+        </Badge>
+      )
+    },
   }),
   helper.accessor("createdAt", {
     header: ({ column }) => {

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 const gridVariants = cva("grid grid-cols-12", {
   variants: {
     gap: {
+      none: "gap-0",
       xs: "gap-1 md:gap-2 lg:gap-4 xl:gap-6",
       sm: "gap-2 md:gap-4 lg:gap-6 xl:gap-8",
       md: "gap-4 md:gap-6 lg:gap-8 xl:gap-10",

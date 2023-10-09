@@ -11,6 +11,15 @@ export const orgRouter = router({
     .query(async (opts) => {
       const { id } = opts.input
       return await db.properties.findFirst({
+        include: {
+          logo: true,
+          author: {
+            include: {
+              user: true,
+            },
+          },
+          organization: true,
+        },
         where: {
           id,
         },
@@ -31,6 +40,7 @@ export const orgRouter = router({
               user: true,
             },
           },
+          organization: true,
           logo: true,
         },
         where: {

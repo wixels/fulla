@@ -8,22 +8,21 @@ type Props = {
   src: string
   alt: string
   type?: "blur" | "color"
+  hasParent?: boolean
 }
 export const PlaiceholderImage: React.FC<Props> = async ({
   className,
   type = "blur",
   src,
+  hasParent = false,
   alt,
 }) => {
   const buffer = await fetch(src).then(async (res) =>
     Buffer.from(await res.arrayBuffer())
   )
   const { base64, color } = await getPlaiceholder(buffer)
-  return (
-    <div
-      style={type === "color" ? { backgroundColor: color.hex } : {}}
-      className={cn("relative overflow-hidden", className)}
-    >
+  if (type === "blur" && hasParent) {
+    return (
       <Image
         src={src}
         alt={alt}
@@ -33,6 +32,22 @@ export const PlaiceholderImage: React.FC<Props> = async ({
           ? { placeholder: "blur", blurDataURL: base64 }
           : {})}
       />
-    </div>
-  )
+    )
+  } else
+    return (
+      <div
+        style={type === "color" ? { backgroundColor: color.hex } : {}}
+        className={cn("relative overflow-hidden", className)}
+      >
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className={cn("object-cover")}
+          {...(type === "blur"
+            ? { placeholder: "blur", blurDataURL: base64 }
+            : {})}
+        />
+      </div>
+    )
 }

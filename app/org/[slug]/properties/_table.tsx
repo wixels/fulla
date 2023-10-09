@@ -69,7 +69,6 @@ export function DataTable<TData, TValue>({
               data-state={row.getIsSelected() && "selected"}
             >
               {row.getVisibleCells().map((cell) => {
-                console.log("cell::: ", cell)
                 return (
                   <TableCell
                     className={cn({
