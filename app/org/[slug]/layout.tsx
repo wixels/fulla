@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 import { siteConfig } from "@/config/site"
@@ -17,12 +18,14 @@ const Layout: React.FC<Props> = async ({ children, params: { slug } }) => {
         <div className="flex flex-col items-center gap-1">
           <Link href={"/org/" + org?.slug} className="mb-6">
             {org?.logo?.fileUrl ? (
-              <PlaiceholderImage
-                src={org?.logo?.fileUrl}
-                alt={org?.logo?.fileKey}
-                type="color"
-                className="aspect-square w-8 rounded-full"
-              />
+              <div className="relative aspect-square w-8 rounded-full">
+                <Image
+                  fill
+                  src={org?.logo?.fileUrl}
+                  alt={org?.logo?.fileKey}
+                  className="object-cover"
+                />
+              </div>
             ) : (
               <Icons.logo className="h-6 w-6" />
             )}

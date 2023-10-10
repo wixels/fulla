@@ -12,6 +12,7 @@ const TypePage: React.FC<Props> = async ({ params: { id } }) => {
     await db.type.findMany(),
   ])
 
+  // console.log("types::: ", types)
   return (
     <TypeForm
       id={id}

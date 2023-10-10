@@ -59,9 +59,10 @@ const PropertyPage: React.FC<Props> = async ({
               <>
                 <div className="relative flex aspect-square w-full max-w-[100px] items-center justify-center overflow-hidden rounded-full bg-gradient-to-tl from-cyan-400 to-red-300">
                   {property?.logo?.fileUrl ? (
-                    <PlaiceholderImage
-                      hasParent
+                    <Image
                       src={property?.logo?.fileUrl}
+                      fill
+                      className="object-cover"
                       alt="property alt text"
                     />
                   ) : (

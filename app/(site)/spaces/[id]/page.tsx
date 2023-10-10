@@ -1,4 +1,5 @@
 import { Suspense } from "react"
+import Image from "next/image"
 import {
   Check,
   ChevronRight,
@@ -27,11 +28,14 @@ const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
   return (
     <div>
       <div className="relative">
-        <PlaiceholderImage
-          src={space?.featureImageUrl!}
-          alt={space?.title! + "feature image"}
-          className="aspect-video max-h-[50vh] w-screen overflow-hidden"
-        />
+        <div className="relative aspect-video max-h-[50vh] w-screen overflow-hidden">
+          <Image
+            fill
+            src={space?.featureImageUrl!}
+            alt={space?.title! + "feature image"}
+            className="object-cover"
+          />
+        </div>
         <div className="absolute inset-x-0 bottom-0 z-10 h-3/4 bg-gradient-to-t from-background to-transparent"></div>
       </div>
       <div className="gutter relative z-10 mx-auto -mt-16 flex max-w-screen-xl flex-col">

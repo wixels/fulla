@@ -1,12 +1,15 @@
 const categories = [
   {
     label: "Agile",
+    key: "agile",
   },
   {
     label: "Furnished",
+    key: "furnished",
   },
   {
     label: "Private",
+    key: "private",
   },
 ]
 
@@ -16,17 +19,20 @@ const types = [
     description:
       "Tenants use a desk or common area that may be shared with you or others.",
     icon: "LampDesk",
+    key: "desks",
   },
   {
     label: "A Room",
     description:
       "Tenants have their own room in an office, plus access to shared spaces.",
     icon: "BedSingle",
+    key: "rooms",
   },
   {
     label: "An Entire Floor",
     description: "Tenants will have the whole floor to themselves",
     icon: "Home",
+    key: "floors",
   },
 ]
 
