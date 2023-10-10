@@ -17,7 +17,7 @@ const Layout: React.FC<Props> = async ({ children, params: { slug } }) => {
         <div className="flex flex-col items-center gap-1">
           <Link href={"/org/" + org?.slug} className="mb-6">
             {org?.logo?.fileUrl ? (
-              <div className="relative aspect-square w-8 rounded-full">
+              <div className="relative aspect-square w-8 overflow-hidden rounded-full">
                 <Image
                   fill
                   src={org?.logo?.fileUrl}
