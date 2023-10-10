@@ -16,7 +16,6 @@ import {
 import { useHover } from "@/hooks/use-hover"
 import { useViewportSize } from "@/hooks/use-viewport-size"
 
-import { PlaiceholderImage } from "../plaiceholder-image"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { buttonVariants } from "../ui/button"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
