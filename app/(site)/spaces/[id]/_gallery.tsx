@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"
 import { Grid } from "@/components/grid"
-import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
 type Props = { images: ImageType[] }
 export const Gallery: React.FC<Props> = ({ images }) => {

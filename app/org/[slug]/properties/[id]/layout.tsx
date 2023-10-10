@@ -22,7 +22,6 @@ import { Title } from "@/components/ui/title"
 import { Await } from "@/components/await"
 // import { FancyBox } from "@/components/fancy-box"
 import { Grid } from "@/components/grid"
-import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
 import { Tabs } from "./_tabs"
 

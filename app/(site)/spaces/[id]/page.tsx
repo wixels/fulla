@@ -16,7 +16,6 @@ import { Badge, badgeVariants } from "@/components/ui/badge"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { Await } from "@/components/await"
-import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
 import { Gallery } from "./_gallery"
 import { SpaceActions } from "./_space-actions"

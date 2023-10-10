@@ -4,7 +4,6 @@ import Link from "next/link"
 import { siteConfig } from "@/config/site"
 import { serverClient } from "@/lib/trpc/server"
 import { Icons } from "@/components/icons"
-import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
 type Props = {
   children: React.ReactNode
