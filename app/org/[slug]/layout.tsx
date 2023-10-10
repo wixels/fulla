@@ -1,11 +1,7 @@
 import Link from "next/link"
-import { Building } from "lucide-react"
-import slugify from "slugify"
 
 import { siteConfig } from "@/config/site"
-import { db } from "@/lib/db"
 import { serverClient } from "@/lib/trpc/server"
-import { Paragraph } from "@/components/ui/paragraph"
 import { Icons } from "@/components/icons"
 import { PlaiceholderImage } from "@/components/plaiceholder-image"
 

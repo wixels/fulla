@@ -26,10 +26,15 @@ import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
 import { Tabs } from "./_tabs"
 
-type Props = { params: { id: string; slug: string }; children: React.ReactNode }
+type Props = {
+  params: { id: string; slug: string }
+  children: React.ReactNode
+  modal: React.ReactNode
+}
 const PropertyPage: React.FC<Props> = async ({
   params: { slug, id },
   children,
+  modal,
 }) => {
   return (
     <Grid className="gutter section-top">
@@ -68,9 +73,16 @@ const PropertyPage: React.FC<Props> = async ({
                 </Title>
 
                 <div className="flex flex-col gap-4">
-                  <Button className="w-fit" size={"xs"} variant={"secondary"}>
+                  <Link
+                    href={"./manage"}
+                    className={buttonVariants({
+                      size: "xs",
+                      variant: "secondary",
+                      className: "w-fit",
+                    })}
+                  >
                     <User className="mr-2 h-3 w-3" />1 Member
-                  </Button>
+                  </Link>
                   <Input
                     placeholder="Enter a description"
                     sizing={"sm"}
@@ -100,6 +112,7 @@ const PropertyPage: React.FC<Props> = async ({
           </div>
         </div>
         <Separator className="my-6" />
+        {modal}
         {children}
       </div>
     </Grid>

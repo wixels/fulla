@@ -25,6 +25,17 @@ export const orgRouter = router({
         },
       })
     }),
+  updateProperty: privateProcedure
+    .input(z.object({ id: z.string(), data: z.any() }))
+    .mutation(async (opts) => {
+      const { id, data } = opts.input
+      return await db.properties.update({
+        where: {
+          id,
+        },
+        data,
+      })
+    }),
   properties: privateProcedure
     .input(
       z.object({
@@ -118,6 +129,21 @@ export const orgRouter = router({
         },
         include: {
           logo: true,
+        },
+      })
+    }),
+  people: privateProcedure
+    .input(z.object({ slug: z.string() }))
+    .query(async (opts) => {
+      const { slug } = opts.input
+      return await db.organizationUser.findMany({
+        where: {
+          organization: {
+            slug,
+          },
+        },
+        include: {
+          user: true,
         },
       })
     }),

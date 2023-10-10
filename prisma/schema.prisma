@@ -74,6 +74,10 @@ enum PersonRoles {
   user
   admin
 }
+enum PropertyRoles {
+  admin
+  owner
+}
 model OrganizationUser {
   id              String                  @id @default(cuid())
   user            User                    @relation(fields: [userId], references: [id])
@@ -113,10 +117,18 @@ model Organization {
   @@index([logoId])
   @@map("organizations")
 }
+
 model Properties {
   id String @id @default(cuid())
   name String 
   description     String? @db.Text
+
+  address String?
+  type String?
+  size String?
+
+  // adminId        String?
+  // admin          OrganizationUser?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
 
   logo        Image?    @relation(fields: [logoId], references: [id])
   logoId     String?

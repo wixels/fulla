@@ -5,6 +5,7 @@ import Link from "next/link"
 import { motion } from "framer-motion"
 
 import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button"
 
 type Props = {
   id: string
@@ -39,7 +40,7 @@ export const Tabs: React.FC<Props> = ({ id }) => {
     >
       {tabsList.map(({ title, value }) => (
         <Link
-          href={"./" + value}
+          href={"." + value}
           key={value}
           onClick={() => setActiveTab(value)}
           className={cn(
@@ -50,10 +51,11 @@ export const Tabs: React.FC<Props> = ({ id }) => {
             {activeTab === value && (
               <motion.div
                 layoutId="pill"
-                className="absolute inset-0 bg-foreground"
-                style={{
-                  borderRadius: 9999,
-                }}
+                className={buttonVariants({
+                  rounded: "lg",
+                  size: "xs",
+                  className: "absolute inset-0 z-10",
+                })}
                 transition={{
                   type: "spring",
                   bounce: 0.2,
@@ -64,10 +66,12 @@ export const Tabs: React.FC<Props> = ({ id }) => {
             {hoveredTab === value && (
               <motion.div
                 layoutId="hover"
-                className="absolute inset-0 bg-stone-600/10"
-                style={{
-                  borderRadius: 9998,
-                }}
+                className={buttonVariants({
+                  rounded: "lg",
+                  size: "xs",
+                  className: "absolute inset-0",
+                  variant: "secondary",
+                })}
                 animate={{
                   opacity: 1,
                 }}
