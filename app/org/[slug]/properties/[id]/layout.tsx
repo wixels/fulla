@@ -84,11 +84,11 @@ const PropertyPage: React.FC<Props> = async ({
                     <User className="mr-2 h-3 w-3" />1 Member
                   </Link>
                   <Input
+                    defaultValue={property?.description ?? ""}
                     placeholder="Enter a description"
                     sizing={"sm"}
                     variant={"ghost"}
                   />
-                  {/* <FancyBox /> */}
                 </div>
               </>
             )}

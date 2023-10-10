@@ -7,6 +7,8 @@ import { Drawer } from "vaul"
 
 import { trpc } from "@/lib/trpc/client"
 import { cn } from "@/lib/utils"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import {
   Command,
   CommandDialog,
@@ -18,10 +20,18 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const tabs = ["details", "people", "integrations"]
-type Props = { params: { slug: string } }
-const ManagePageModal: React.FC<Props> = ({ params: { slug } }) => {
+type Props = { params: { id: string; slug: string } }
+const ManagePageModal: React.FC<Props> = ({ params: { slug, id } }) => {
   const router = useRouter()
   const [open, setOpen] = useState(true)
   const [activeTab, setActiveTab] = useState(tabs[1])
@@ -80,23 +90,53 @@ const ManagePageModal: React.FC<Props> = ({ params: { slug } }) => {
               </div>
             ))}
           </motion.div>
-          <Command>
+          <Command className="h-fit">
             <CommandInput placeholder="Type a command or search..." />
             <CommandList>
-              <CommandEmpty>No results found.</CommandEmpty>
-              <CommandGroup heading="Suggestions">
-                <CommandItem>Calendar</CommandItem>
-                <CommandItem>Search Emoji</CommandItem>
-                <CommandItem>Calculator</CommandItem>
-              </CommandGroup>
-              <CommandSeparator />
-              <CommandGroup heading="Settings">
-                <CommandItem>Profile</CommandItem>
-                <CommandItem>Billing</CommandItem>
-                <CommandItem>Settings</CommandItem>
+              <CommandGroup className="mt-3" heading="Company People">
+                {!people.isLoading && !people.isError ? (
+                  people.data?.map((person) => (
+                    <CommandItem
+                      className="flex items-center justify-between gap-4"
+                      key={person.id}
+                    >
+                      <div className="flex items-center gap-2">
+                        <Avatar size={"sm"}>
+                          <AvatarImage src={person.image ?? undefined} />
+                          <AvatarFallback>{person.name?.[0]}</AvatarFallback>
+                        </Avatar>
+                        <span>{person.name}</span>
+                      </div>
+                      <Select
+                        defaultValue={
+                          person?.properties?.find((x) => x?.propertyId === id)
+                            ?.role ?? ""
+                        }
+                      >
+                        <SelectTrigger variant={"ghost"} sizing={"sm"}>
+                          <SelectValue className="w-fit" placeholder="Role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="owner">Owner</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="none">None</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </CommandItem>
+                  ))
+                ) : (
+                  <>
+                    <Skeleton className="h-10 w-full rounded" />
+                    <Skeleton className="h-10 w-full rounded" />
+                    <Skeleton className="h-10 w-full rounded" />
+                    <Skeleton className="h-10 w-full rounded" />
+                    <Skeleton className="h-10 w-full rounded" />
+                  </>
+                )}
               </CommandGroup>
             </CommandList>
           </Command>
+          <Button className="absolute inset-x-4 bottom-4">Save</Button>
         </Drawer.Content>
       </Drawer.Portal>
     </Drawer.Root>

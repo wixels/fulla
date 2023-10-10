@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils"
 
 const selectBaseClass = [
   "flex",
-  "w-full",
   "items-center",
   "justify-between",
   "rounded-md",
@@ -41,7 +40,7 @@ const selectVariants = cva(selectBaseClass, {
     },
     variant: {
       secondary: "bg-secondary text-secondary-foreground",
-      ghost: "border-none",
+      ghost: "border-none bg-none",
     },
   },
   defaultVariants: {

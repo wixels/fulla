@@ -52,14 +52,17 @@ type Props = {
   params: { slug: string }
 }
 const CreatePropertyPage: React.FC<Props> = ({ params: { slug } }) => {
+  const [skipBack, setSkipBack] = useState(false)
+  const [open, setOpen] = useState(true)
   const router = useRouter()
-  const { toast } = useToast()
   const utils = trpc.useContext()
+  const { toast } = useToast()
   const { mutateAsync, isLoading } = trpc.org.createProperty.useMutation({
-    onSuccess() {
+    onSuccess(data) {
       utils.org.properties.invalidate()
-      router.back()
-      // router.push("." + step.nextPath)
+      // router.back()
+      setOpen(false)
+      router.push(data.id + "/overview")
     },
     onError() {
       toast({
@@ -80,11 +83,20 @@ const CreatePropertyPage: React.FC<Props> = ({ params: { slug } }) => {
   })
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    setSkipBack(true)
     forceDelay(mutateAsync({ ...data, slug }))
   }
 
   return (
-    <Dialog defaultOpen onOpenChange={(e) => (!e ? router.back() : null)}>
+    <Dialog
+      open={open}
+      onOpenChange={(open) => {
+        setOpen(open)
+        if (!open && !skipBack) {
+          router.back()
+        }
+      }}
+    >
       <DialogContent>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>

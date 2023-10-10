@@ -101,9 +101,10 @@ export const orgRouter = router({
       return await db.properties.create({
         data: {
           ...data,
-          author: {
-            connect: {
-              id: orgFromUserBySlug.id,
+          users: {
+            create: {
+              userId: opts.ctx.user.id,
+              role: "owner",
             },
           },
           organization: {
@@ -136,14 +137,20 @@ export const orgRouter = router({
     .input(z.object({ slug: z.string() }))
     .query(async (opts) => {
       const { slug } = opts.input
-      return await db.organizationUser.findMany({
+      return await db.user.findMany({
         where: {
-          organization: {
-            slug,
+          organizations: {
+            every: {
+              organization: {
+                slug: {
+                  equals: slug,
+                },
+              },
+            },
           },
         },
         include: {
-          user: true,
+          properties: true,
         },
       })
     }),
