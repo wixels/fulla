@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Prisma, Properties } from "@prisma/client"
+import { Prisma } from "@prisma/client"
 import { ColumnDef, createColumnHelper } from "@tanstack/react-table"
 import { motion } from "framer-motion"
 import { ChevronDown, MoreHorizontal } from "lucide-react"
@@ -17,10 +17,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { paragraphVariants } from "@/components/ui/paragraph"
 
 const helper = createColumnHelper<
-  Prisma.PropertiesGetPayload<{
+  Prisma.PropertyGetPayload<{
     include: {
       author: {
         include: {

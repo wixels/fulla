@@ -10,7 +10,7 @@ export const orgRouter = router({
     .input(z.object({ id: z.string() }))
     .query(async (opts) => {
       const { id } = opts.input
-      return await db.properties.findFirst({
+      return await db.property.findFirst({
         include: {
           logo: true,
           organization: true,
@@ -24,7 +24,7 @@ export const orgRouter = router({
     .input(z.object({ id: z.string(), data: z.any() }))
     .mutation(async (opts) => {
       const { id, data } = opts.input
-      return await db.properties.update({
+      return await db.property.update({
         where: {
           id,
         },
@@ -39,7 +39,7 @@ export const orgRouter = router({
     )
     .query(async (opts) => {
       const { slug } = opts.input
-      return await db.properties.findMany({
+      return await db.property.findMany({
         include: {
           organization: true,
           logo: true,
@@ -61,7 +61,7 @@ export const orgRouter = router({
 
       // todo: more authorization here. Just getting it working for now...
 
-      return await db.properties.delete({
+      return await db.property.delete({
         where: {
           id,
         },
@@ -88,12 +88,12 @@ export const orgRouter = router({
             "You do not belong to the company you're creating a property for",
         })
       }
-      return await db.properties.create({
+      return await db.property.create({
         data: {
           ...data,
           users: {
             create: {
-              orgUserId: orgFromUserBySlug.id,
+              userId: opts.ctx.user.id,
               role: "owner",
             },
           },
@@ -127,33 +127,34 @@ export const orgRouter = router({
     .input(z.object({ slug: z.string() }))
     .query(async (opts) => {
       const { slug } = opts.input
-      return await db.organizationUser.findMany({
+      return await db.user.findMany({
+        include: {
+          properties: true,
+        },
         where: {
-          organization: {
-            slug,
+          organizations: {
+            every: {
+              organization: {
+                slug,
+              },
+            },
           },
+        },
+      })
+    }),
+  propertyPeople: privateProcedure
+    .input(z.object({ propertyId: z.string() }))
+    .query(async (opts) => {
+      return await db.propertyUser.findMany({
+        where: {
+          propertyId: opts.input.propertyId,
         },
         include: {
           user: true,
-          properties: true,
         },
       })
-      // return await db.user.findMany({
-      //   where: {
-      //     organizations: {
-      //       every: {
-      //         organization: {
-      //           slug: {
-      //             equals: slug,
-      //           },
-      //         },
-      //       },
-      //     },
-      //   },
-      //   include: {}
-      // })
     }),
-  taskCount: privateProcedure
+  propertyTodos: privateProcedure
     .input(
       z.object({
         propertyId: z.string(),
@@ -161,19 +162,51 @@ export const orgRouter = router({
       })
     )
     .query(async (opts) => {
-      const { propertyId, filter } = opts.input
-      switch (filter) {
-        case "assigned to me":
-          break
-        case "assigned by me":
-          break
-
-        default:
-          break
+      return await db.todo.findMany({
+        where: { propertyId: opts.input.propertyId },
+        include: {
+          assignedBy: true,
+          assignedTo: true,
+          children: true,
+        },
+      })
+    }),
+  addPropertyTodo: privateProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        propertyId: z.string(),
+        forMe: z.boolean().optional().nullish(),
+      })
+    )
+    .mutation(async (opts) => {
+      const forMe: { [key: string]: string } = {}
+      if (opts.input.forMe) {
+        forMe.assignedToId = opts.ctx.user.id
       }
-      return await db.todo.count({
+      return await db.todo.create({
+        data: {
+          assignedById: opts.ctx.user.id,
+          propertyId: opts.input.propertyId,
+          title: opts.input.title,
+          ...forMe,
+        },
+      })
+    }),
+  updatePropertyTodo: privateProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        data: z.any(),
+      })
+    )
+    .mutation(async (opts) => {
+      return await db.todo.update({
         where: {
-          propertyId,
+          id: opts.input.id,
+        },
+        data: {
+          ...opts.input.data,
         },
       })
     }),

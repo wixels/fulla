@@ -17,7 +17,6 @@ export default async function Page({
     category,
     type,
   })
-
   return (
     <div className="section-bottom flex grow flex-col">
       {spaces.length ? (

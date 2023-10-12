@@ -161,6 +161,7 @@ const PropertiesPage: React.FC<Props> = async ({ params: { slug } }) => {
                   />
                 </div>
               ) : (
+                // @ts-ignore
                 <DataTable columns={columns} data={properties} />
               )}
             </>

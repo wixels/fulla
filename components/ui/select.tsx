@@ -33,6 +33,7 @@ const selectVariants = cva(selectBaseClass, {
     shadow,
     rounded,
     sizing: {
+      xs: "h-6 p-2",
       sm: "h-8 p-2",
       md: "h-10 px-3 py-2",
       lg: "h-12 px-5 py-4",

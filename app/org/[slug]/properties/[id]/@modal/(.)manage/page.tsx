@@ -102,12 +102,10 @@ const ManagePageModal: React.FC<Props> = ({ params: { slug, id } }) => {
                     >
                       <div className="flex items-center gap-2">
                         <Avatar size={"sm"}>
-                          <AvatarImage src={person?.user?.image ?? undefined} />
-                          <AvatarFallback>
-                            {person?.user?.name?.[0]}
-                          </AvatarFallback>
+                          <AvatarImage src={person?.image ?? undefined} />
+                          <AvatarFallback>{person?.name?.[0]}</AvatarFallback>
                         </Avatar>
-                        <span>{person?.user?.name}</span>
+                        <span>{person?.name}</span>
                       </div>
                       <Select
                         defaultValue={
