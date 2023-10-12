@@ -13,11 +13,6 @@ export const orgRouter = router({
       return await db.properties.findFirst({
         include: {
           logo: true,
-          author: {
-            include: {
-              user: true,
-            },
-          },
           organization: true,
         },
         where: {
@@ -46,11 +41,6 @@ export const orgRouter = router({
       const { slug } = opts.input
       return await db.properties.findMany({
         include: {
-          author: {
-            include: {
-              user: true,
-            },
-          },
           organization: true,
           logo: true,
         },
@@ -103,7 +93,7 @@ export const orgRouter = router({
           ...data,
           users: {
             create: {
-              userId: opts.ctx.user.id,
+              orgUserId: orgFromUserBySlug.id,
               role: "owner",
             },
           },
@@ -137,20 +127,53 @@ export const orgRouter = router({
     .input(z.object({ slug: z.string() }))
     .query(async (opts) => {
       const { slug } = opts.input
-      return await db.user.findMany({
+      return await db.organizationUser.findMany({
         where: {
-          organizations: {
-            every: {
-              organization: {
-                slug: {
-                  equals: slug,
-                },
-              },
-            },
+          organization: {
+            slug,
           },
         },
         include: {
+          user: true,
           properties: true,
+        },
+      })
+      // return await db.user.findMany({
+      //   where: {
+      //     organizations: {
+      //       every: {
+      //         organization: {
+      //           slug: {
+      //             equals: slug,
+      //           },
+      //         },
+      //       },
+      //     },
+      //   },
+      //   include: {}
+      // })
+    }),
+  taskCount: privateProcedure
+    .input(
+      z.object({
+        propertyId: z.string(),
+        filter: z.string().optional().nullish(),
+      })
+    )
+    .query(async (opts) => {
+      const { propertyId, filter } = opts.input
+      switch (filter) {
+        case "assigned to me":
+          break
+        case "assigned by me":
+          break
+
+        default:
+          break
+      }
+      return await db.todo.count({
+        where: {
+          propertyId,
         },
       })
     }),

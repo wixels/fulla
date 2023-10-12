@@ -57,7 +57,6 @@ model User {
   sessions               Session[]
 
   organizations           OrganizationUser[]
-  properties              PropertyUser[]
 
   @@map("users")
 }
@@ -87,8 +86,9 @@ model OrganizationUser {
   organization    Organization            @relation(fields: [organizationId], references: [id])
   organizationId  String
 
+  // TODO: Make this a space user when need be
   spaces Space[]
-  properties Properties[]
+  properties PropertyUser[]
 
   role            PersonRoles @default(user)
   createdAt       DateTime                @default(now())
@@ -121,8 +121,9 @@ model Organization {
 
 model PropertyUser {
   id              String                  @id @default(cuid())
-  user            User                    @relation(fields: [userId], references: [id])
-  userId          String
+
+  orgUser            OrganizationUser @relation(fields: [orgUserId], references: [id], onDelete: Cascade)
+  orgUserId          String
 
   property    Properties            @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   propertyId  String
@@ -133,9 +134,9 @@ model PropertyUser {
   updatedAt       DateTime                @updatedAt
 
   // @@index([organizationId])
-  @@index([userId])
   @@index([propertyId])
   @@map("property_users")
+  @@index([orgUserId])
 }
 
 model Properties {
@@ -147,9 +148,7 @@ model Properties {
   type String?
   size String?
 
-  // adminId        String?
-  // admin          OrganizationUser?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  users PropertyUser[]
+  users     PropertyUser[]
 
   logo        Image?    @relation(fields: [logoId], references: [id])
   logoId     String?
@@ -157,10 +156,9 @@ model Properties {
   organization    Organization  @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   organizationId  String
 
-  authorId        String?
-  author          OrganizationUser?   @relation(fields: [authorId], references: [id], onDelete: Cascade)
-
   spaces      Space[]
+
+  todos Todo[]
 
   private     Boolean  @default(false)
 
@@ -169,7 +167,6 @@ model Properties {
 
   @@index([logoId])
   @@index([organizationId])
-  @@index([authorId])
   @@map("properties")
 }
 model Image {
@@ -226,6 +223,8 @@ model Space {
 
   images          Image[]
 
+  todos           Todo[]
+
   offerings       Offering[]
 
   highlights      Highlight[]
@@ -242,6 +241,35 @@ model Space {
   @@map("spaces")
   @@index([organizationId])
 }
+model Todo {
+  id          String      @id @default(cuid())
+  title       String
+  description String?
+
+  completed Boolean     @default(false)
+
+  parentId    String?
+  parent      Todo?       @relation("ChildTodos", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  children    Todo[]      @relation("ChildTodos")
+
+  property    Properties?   @relation(fields: [propertyId], references: [id])
+  propertyId  String?
+  
+  space       Space?      @relation(fields: [spaceId], references: [id])
+  spaceId     String?
+
+  // assignedToId String?
+  // assignedTo PropertyUser  
+
+  createdAt       DateTime? @default(now()) @map("created_at")
+  updatedAt       DateTime? @default(now()) @map("updated_at")
+
+  @@index([parentId])
+  @@index([propertyId])
+  @@index([spaceId])
+  @@map("todos")
+}
 model Category {
   id          String    @id @default(cuid())
   label       String
@@ -252,6 +280,7 @@ model Category {
   spaces      Space[]
   @@map("categories")
 }
+
 
 model Offering {
   id        String    @id @default(cuid())

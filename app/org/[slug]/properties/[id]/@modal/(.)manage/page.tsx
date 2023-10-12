@@ -102,10 +102,12 @@ const ManagePageModal: React.FC<Props> = ({ params: { slug, id } }) => {
                     >
                       <div className="flex items-center gap-2">
                         <Avatar size={"sm"}>
-                          <AvatarImage src={person.image ?? undefined} />
-                          <AvatarFallback>{person.name?.[0]}</AvatarFallback>
+                          <AvatarImage src={person?.user?.image ?? undefined} />
+                          <AvatarFallback>
+                            {person?.user?.name?.[0]}
+                          </AvatarFallback>
                         </Avatar>
-                        <span>{person.name}</span>
+                        <span>{person?.user?.name}</span>
                       </div>
                       <Select
                         defaultValue={
@@ -125,13 +127,13 @@ const ManagePageModal: React.FC<Props> = ({ params: { slug, id } }) => {
                     </CommandItem>
                   ))
                 ) : (
-                  <>
+                  <ul className="flex flex-col gap-2">
                     <Skeleton className="h-10 w-full rounded" />
                     <Skeleton className="h-10 w-full rounded" />
                     <Skeleton className="h-10 w-full rounded" />
                     <Skeleton className="h-10 w-full rounded" />
                     <Skeleton className="h-10 w-full rounded" />
-                  </>
+                  </ul>
                 )}
               </CommandGroup>
             </CommandList>

@@ -1,3 +1,5 @@
+import slugify from "slugify"
+
 import { db } from "@/lib/db"
 import { serverClient } from "@/lib/trpc/server"
 import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
