@@ -6,6 +6,7 @@ import { createColumnHelper } from "@tanstack/react-table"
 import { Checkbox } from "@/components/ui/checkbox"
 
 import { Assignees } from "./_assignees"
+import { DueDate } from "./_due-date"
 
 const helper = createColumnHelper<
   Prisma.TodoGetPayload<{
@@ -43,6 +44,16 @@ export const columns = [
     header: "Assignees",
     cell: (props) => (
       <Assignees
+        todo={props?.row?.original}
+        propertyId={props?.row?.original?.propertyId}
+      />
+    ),
+  }),
+  helper.display({
+    id: "dueDate",
+    header: "Due date",
+    cell: (props) => (
+      <DueDate
         todo={props?.row?.original}
         propertyId={props?.row?.original?.propertyId}
       />

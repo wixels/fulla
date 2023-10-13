@@ -162,7 +162,7 @@ export const Assignees: React.FC<Props> = ({ propertyId, todo }) => {
                 }}
                 className="justify-center text-center"
               >
-                Clear filters
+                Clear assignees
               </CommandItem>
             </CommandGroup>
           </CommandList>

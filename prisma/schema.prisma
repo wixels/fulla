@@ -283,6 +283,8 @@ model Todo {
   assignedBy  User? @relation("AssignedByMeTodos", fields: [assignedById], references: [id], onDelete: Cascade) 
 
   createdByPropertyUserId String?
+ 
+  dueDate   DateTime?  @map("due_date")
   
   createdAt       DateTime? @default(now()) @map("created_at")
   updatedAt       DateTime? @default(now()) @map("updated_at")
