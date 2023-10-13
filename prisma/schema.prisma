@@ -145,7 +145,6 @@ model PropertyUser {
   createdAt       DateTime                @default(now())
   updatedAt       DateTime                @updatedAt
 
-  // @@index([organizationId])
   @@map("property_users")
   @@index([userId])
   @@index([propertyId])
