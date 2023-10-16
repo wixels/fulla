@@ -310,7 +310,7 @@ model Task {
   space       Space?      @relation(fields: [spaceId], references: [id])
   spaceId     String?
 
-  statis     TaskStatus  @default(todo)
+  status     TaskStatus  @default(todo)
 
   assignees   User[] @relation("TasksForMe")
 

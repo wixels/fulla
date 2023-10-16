@@ -2,10 +2,9 @@ import Link from "next/link"
 import { createColumnHelper } from "@tanstack/react-table"
 
 import { serverClient } from "@/lib/trpc/server"
-
-import { Assignees } from "../../../properties/[id]/tasks/_assignees"
-import { Checkbox } from "../../../properties/[id]/tasks/_checkbox"
-import { DueDate } from "../../../properties/[id]/tasks/_due-date"
+import { TaskAssignees } from "@/components/task-assignees"
+import { TaskCheckbox } from "@/components/task-checbox"
+import { TaskDueDate } from "@/components/task-due-date"
 
 const helper =
   // @ts-ignore
@@ -18,7 +17,7 @@ export const columns = [
       console.log("prpos::: ", props)
       return (
         <div className="flex items-center gap-2">
-          <Checkbox task={props?.row?.original} />
+          <TaskCheckbox task={props?.row?.original} />
           {props?.row?.original?.title}
         </div>
       )
@@ -27,11 +26,13 @@ export const columns = [
   helper.display({
     id: "assignees",
     header: "Assignees",
-    cell: (props) => <Assignees withoutPortal task={props?.row?.original} />,
+    cell: (props) => (
+      <TaskAssignees withoutPortal task={props?.row?.original} />
+    ),
   }),
   helper.display({
     id: "dueDate",
     header: "Due date",
-    cell: (props) => <DueDate withoutPortal task={props?.row?.original} />,
+    cell: (props) => <TaskDueDate withoutPortal task={props?.row?.original} />,
   }),
 ]

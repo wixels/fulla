@@ -31,7 +31,10 @@ type Props = {
   // @ts-ignore
   task: Awaited<ReturnType<typeof serverClient["task.task"]>>
 }
-export const Assignees: React.FC<Props> = ({ withoutPortal = false, task }) => {
+export const TaskAssignees: React.FC<Props> = ({
+  withoutPortal = false,
+  task,
+}) => {
   const { data: people, isLoading } = trpc.org.propertyPeople.useQuery({
     propertyId: task?.propertyId as string,
   })
@@ -109,7 +112,7 @@ export const Assignees: React.FC<Props> = ({ withoutPortal = false, task }) => {
       <PopoverContent
         withoutPrtal={withoutPortal}
         className="w-[200px] p-0"
-        align="start"
+        align="end"
       >
         <Command>
           <CommandInput placeholder="Search for people..." />

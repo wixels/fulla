@@ -23,8 +23,8 @@ const DragModal: React.FC<Props> = ({ children }) => {
     >
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-10 bg-black/40" />
-        <Drawer.Content className="fixed inset-x-0 bottom-0 z-10 mx-auto h-full max-h-[96%] w-screen max-w-2xl rounded-t-[10px] bg-background p-4">
-          <div className="mx-auto mb-8 h-1 w-12 shrink-0 cursor-grab rounded-full bg-gray-300" />
+        <Drawer.Content className="fixed inset-x-0 bottom-0 z-10 mx-auto h-full max-h-[96%] w-screen max-w-2xl rounded-t-[10px] bg-background">
+          <div className="mx-auto mt-2 mb-8 h-1 w-12 shrink-0 cursor-grab rounded-full bg-gray-300" />
           {children}
         </Drawer.Content>
       </Drawer.Portal>

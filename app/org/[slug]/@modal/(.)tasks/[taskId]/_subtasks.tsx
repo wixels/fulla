@@ -88,8 +88,6 @@ export const SubTasks: React.FC<Props> = ({ initial, propertyId, taskId }) => {
               completed: false,
               assignees: [],
               comments: [],
-              createdAt: new Date(),
-              updatedAt: new Date(),
             },
           ] as Task[]
       )
@@ -116,7 +114,7 @@ export const SubTasks: React.FC<Props> = ({ initial, propertyId, taskId }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <Title level={3} showAs={6}>
+      <Title level={2} showAs={6}>
         Subtasks
       </Title>
       {todos.length > 0 ? <DataTable columns={columns} data={todos} /> : null}

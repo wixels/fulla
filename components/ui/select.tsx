@@ -73,11 +73,11 @@ const SelectTrigger = React.forwardRef<
     <SelectPrimitive.Trigger
       ref={ref}
       className={selectVariants({
+        className,
         shadow,
         rounded,
         sizing,
         variant,
-        className,
       })}
       {...props}
     >

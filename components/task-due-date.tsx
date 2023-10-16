@@ -17,7 +17,7 @@ type Props = {
   withoutPortal?: boolean
   task: Task
 }
-export const DueDate: React.FC<Props> = ({ task, withoutPortal }) => {
+export const TaskDueDate: React.FC<Props> = ({ task, withoutPortal }) => {
   const [date, setDate] = useState(task.dueDate ?? undefined)
   const utils = trpc.useContext()
   const { toast } = useToast()
@@ -46,7 +46,7 @@ export const DueDate: React.FC<Props> = ({ task, withoutPortal }) => {
         >
           {date ? (
             <>
-              {date ? format(date, "PPP") : null}{" "}
+              {format(new Date(date), "PPP")}
               {addDueDate.isLoading ? (
                 <Loader2 className="h-3 w-3 animate-spin" />
               ) : null}

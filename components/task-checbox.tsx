@@ -9,7 +9,7 @@ import { Checkbox as TodoCheckbox } from "@/components/ui/checkbox"
 type Props = {
   task: Task
 }
-export const Checkbox: React.FC<Props> = ({ task }) => {
+export const TaskCheckbox: React.FC<Props> = ({ task }) => {
   const utils = trpc.useContext()
   const { toast } = useToast()
   const completeTodo = trpc.task.updateTask.useMutation({
