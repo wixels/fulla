@@ -12,9 +12,10 @@ const Tasks: React.FC<Props> = async ({ params }) => {
   return (
     <Suspense fallback="Fetching todos...">
       <Await
-        promise={serverClient.org.propertyTodos({
-          propertyId: params.id,
-        })}
+        promise={serverClient.task.tasks([
+          { key: "propertyId", keyValue: params.id },
+          { key: "parentId", keyValue: null },
+        ])}
       >
         {(todos) => <Todos propertyId={params.id} initial={todos} />}
       </Await>

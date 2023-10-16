@@ -66,9 +66,11 @@ model User {
 
   organizations           OrganizationUser[]
   properties              PropertyUser[]
+
+  comments               Comment[]
   
-  assignedToMeTodos Todo[] @relation("AssignedToMeTodos")
-  assignedByMeTodos Todo[] @relation("AssignedByMeTodos")
+  assignedToMeTasks Task[] @relation("TasksForMe")
+  assignedByMeTasks Task[] @relation("TasksByMe")
 
   @@map("users")
 }
@@ -174,7 +176,7 @@ model Property {
 
   spaces      Space[]
 
-  todos Todo[]
+  tasks Task[]
 
   private     Boolean  @default(false)
   
@@ -240,7 +242,7 @@ model Space {
 
   images          Image[]
 
-  todos           Todo[]
+  tasks           Task[]
 
   offerings       Offering[]
 
@@ -258,7 +260,38 @@ model Space {
   @@map("spaces")
   @@index([organizationId])
 }
-model Todo {
+
+model Comment {
+  id          String    @id @default(cuid())
+  body        String
+  
+  authorId    String?
+  author      User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  taskId      String?
+  task        Task?     @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  // spaceId     String?
+  // space       Space?    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+
+  @@index([authorId])
+  @@index([taskId])
+  @@map("comments")
+}
+
+// generate me an enum of statuses that I can use I can use for the todos
+enum TaskStatus {
+  todo
+  in_progress
+  blocked
+  closed
+  archived
+}
+
+
+model Task {
   id          String      @id @default(cuid())
   title       String
   description String?
@@ -266,9 +299,10 @@ model Todo {
   completed Boolean     @default(false)
 
   parentId    String?
-  parent      Todo?       @relation("ChildTodos", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  parent      Task?       @relation("ChildTasks", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   
-  children    Todo[]      @relation("ChildTodos")
+  subTasks    Task[]      @relation("ChildTasks")
+  comments    Comment[]
 
   property    Property?   @relation(fields: [propertyId], references: [id])
   propertyId  String?
@@ -276,11 +310,12 @@ model Todo {
   space       Space?      @relation(fields: [spaceId], references: [id])
   spaceId     String?
 
-  assignedToId String?
-  assignedTo  User? @relation("AssignedToMeTodos", fields: [assignedToId], references: [id], onDelete: Cascade) 
+  statis     TaskStatus  @default(todo)
+
+  assignees   User[] @relation("TasksForMe")
 
   assignedById String?
-  assignedBy  User? @relation("AssignedByMeTodos", fields: [assignedById], references: [id], onDelete: Cascade) 
+  assignedBy  User? @relation("TasksByMe", fields: [assignedById], references: [id], onDelete: Cascade) 
 
   createdByPropertyUserId String?
  
@@ -292,9 +327,8 @@ model Todo {
   @@index([parentId])
   @@index([propertyId])
   @@index([spaceId])
-  @@index([assignedToId])
   @@index([assignedById])
-  @@map("todos")
+  @@map("tasks")
 }
 model Category {
   id          String    @id @default(cuid())

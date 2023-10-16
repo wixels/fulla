@@ -1,10 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Todo } from "@prisma/client"
 import { Check, Loader2, UserPlus } from "lucide-react"
 
 import { trpc } from "@/lib/trpc/client"
+import { serverClient } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
@@ -27,60 +27,67 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 
 type Props = {
-  propertyId: string
-  todo: Todo
+  withoutPortal?: boolean
+  // @ts-ignore
+  task: Awaited<ReturnType<typeof serverClient["task.task"]>>
 }
-export const Assignees: React.FC<Props> = ({ propertyId, todo }) => {
+export const Assignees: React.FC<Props> = ({ withoutPortal = false, task }) => {
   const { data: people, isLoading } = trpc.org.propertyPeople.useQuery({
-    propertyId,
+    propertyId: task?.propertyId as string,
   })
-  const [selected, setSelected] = useState(todo.assignedToId ?? "")
+  const identifier = "assigness"
+  const [hasChanged, setHasChanged] = useState(false)
   const [open, setOpen] = useState(false)
+  const [selected, setSelected] = useState(() => {
+    const map = new Map()
+
+    map.set(
+      identifier,
+      new Set(task?.assignees?.map((x: { id: string }) => x.id) ?? [])
+    )
+    return map
+  })
   const utils = trpc.useContext()
   const { toast } = useToast()
-  const addAssignee = trpc.org.updatePropertyTodo.useMutation({
+  const addAssignee = trpc.task.updateTask.useMutation({
     onMutate: async () => {
-      await utils.org.propertyTodos.cancel()
+      await utils.task.tasks.cancel()
+      await utils.task.task.cancel()
     },
     onSuccess: () => {
-      console.log("inside onSuccess")
       toast({
-        description: "Todo updated",
+        description: "task updated",
       })
     },
     onSettled: () => {
-      void utils.org.propertyTodos.invalidate()
+      void utils.task.tasks.invalidate()
+      void utils.task.task.invalidate()
     },
   })
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger>
-        {selected ? (
+        {selected.get(identifier).size > 0 ? (
           <Badge
             variant="secondary"
             className="flex gap-2 rounded-sm px-1 font-normal"
           >
             {!isLoading ? (
               <>
-                <Avatar size={"xs"}>
-                  <AvatarFallback>
-                    {
-                      people?.find((person) => person.user.id === selected)
-                        ?.user.name?.[0]
-                    }
-                  </AvatarFallback>
-                  <AvatarImage
-                    src={
-                      people?.find((person) => person.user.id === selected)
-                        ?.user.image ?? undefined
-                    }
-                  />
-                </Avatar>
-                {
+                {selected.get(identifier)!.size > 1 ? (
+                  <>{selected.get(identifier)!.size} selected</>
+                ) : (
+                  people
+                    ?.filter((propertyPerson) =>
+                      selected.get(identifier)!.has(propertyPerson.user.id)
+                    )
+                    .map((propertyPerson) => propertyPerson.user.name)
+                )}
+                {/* {
                   people?.find((person) => person.user.id === selected)?.user
                     .name
-                }
+                } */}
                 {addAssignee.isLoading ? (
                   <Loader2 className="h-3 w-3 animate-spin" />
                 ) : null}
@@ -99,7 +106,11 @@ export const Assignees: React.FC<Props> = ({ propertyId, todo }) => {
           </Badge>
         )}
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0" align="start">
+      <PopoverContent
+        withoutPrtal={withoutPortal}
+        className="w-[200px] p-0"
+        align="start"
+      >
         <Command>
           <CommandInput placeholder="Search for people..." />
           <CommandList>
@@ -108,20 +119,50 @@ export const Assignees: React.FC<Props> = ({ propertyId, todo }) => {
               {!isLoading ? (
                 <>
                   {people?.map((propertyPerson) => {
-                    const isSelected = selected === propertyPerson.user.id
+                    // const isSelected = selected === propertyPerson.user.id
+                    const isSelected = selected
+                      .get(identifier)
+                      ?.has(propertyPerson.user.id)
 
                     return (
                       <CommandItem
                         key={propertyPerson.id}
                         onSelect={() => {
-                          setSelected(propertyPerson.user.id)
+                          if (
+                            selected
+                              .get(identifier)!
+                              .has(propertyPerson.user.id)
+                          ) {
+                            selected
+                              .get(identifier)!
+                              .delete(propertyPerson.user.id)
+                          } else {
+                            selected
+                              .get(identifier)!
+                              .add(propertyPerson.user.id)
+                          }
+                          setHasChanged(true)
+                          setSelected(new Map(selected))
                           addAssignee.mutate({
-                            id: todo.id,
+                            id: task.id,
                             data: {
-                              assignedToId: propertyPerson.user.id,
+                              assignees: {
+                                set: Array.from(selected.get(identifier)).map(
+                                  (x) => ({ id: x })
+                                ),
+                              },
                             },
                           })
                         }}
+                        // onSelect={() => {
+                        //   setSelected(propertyPerson.user.id)
+                        //   addAssignee.mutate({
+                        //     id: task.id,
+                        //     data: {
+                        //       assignedToId: propertyPerson.user.id,
+                        //     },
+                        //   })
+                        // }}
                       >
                         <div
                           className={cn(
@@ -152,11 +193,17 @@ export const Assignees: React.FC<Props> = ({ propertyId, todo }) => {
             <CommandGroup>
               <CommandItem
                 onSelect={() => {
-                  setSelected("")
+                  const map = new Map()
+                  map.set(identifier, new Set())
+
+                  setHasChanged(true)
+                  setSelected(map)
                   addAssignee.mutate({
-                    id: todo.id,
+                    id: task.id,
                     data: {
-                      assignedToId: null,
+                      assignees: {
+                        set: [],
+                      },
                     },
                   })
                 }}

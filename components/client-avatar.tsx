@@ -4,7 +4,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar"
 
 type Props = {
-  src: string | null | undefined
+  src: string | undefined
   fallback: string
   size?: "xs" | "sm" | "md" | "lg" | "xl"
 }

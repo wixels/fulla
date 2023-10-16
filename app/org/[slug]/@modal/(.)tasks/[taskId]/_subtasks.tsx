@@ -1,8 +1,5 @@
 "use client"
 
-import { experimental_useOptimistic as useOptimistic } from "react"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Prisma, Task } from "@prisma/client"
 import { CheckCircle } from "lucide-react"
@@ -12,6 +9,7 @@ import * as z from "zod"
 
 import { trpc } from "@/lib/trpc/client"
 import { serverClient } from "@/lib/trpc/server"
+import { useToast } from "@/hooks/use-toast"
 import {
   Form,
   FormControl,
@@ -20,28 +18,29 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { Title } from "@/components/ui/title"
+import { ToastAction } from "@/components/ui/toast"
+import { DataTable } from "@/components/data-table"
 
 import { columns } from "./_columns"
-import { DataTable } from "./_table"
 
 type Props = {
   // @ts-ignore
   initial: Awaited<ReturnType<typeof serverClient["task.tasks"]>>
   propertyId: string
+  taskId: string
 }
 const FormSchema = z.object({
   title: z.string().min(2, {
     message: "Todo must be at least 2 characters.",
   }),
 })
-
-export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
-  const { data: session } = useSession()
+export const SubTasks: React.FC<Props> = ({ initial, propertyId, taskId }) => {
   const { data: todos } = trpc.task.tasks.useQuery(
     [
       {
-        key: "propertyId",
-        keyValue: propertyId,
+        key: "parentId",
+        keyValue: taskId,
       },
     ],
     {
@@ -50,6 +49,7 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
       refetchOnReconnect: false,
     }
   )
+  const { data: session } = useSession()
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -57,6 +57,7 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
     },
   })
   const utils = trpc.useContext()
+  const { toast } = useToast()
   const addTodo = trpc.task.createTask.useMutation({
     onMutate: async (newTodo) => {
       form.resetField("title")
@@ -82,6 +83,7 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
             ...(oldQueryData ?? []),
             {
               title: newTodo?.data?.title,
+              parentId: taskId,
               propertyId,
               completed: false,
               assignees: [],
@@ -92,20 +94,7 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
           ] as Task[]
       )
 
-      // Return a context object with the snapshotted value
       return { previousTodos }
-    },
-    onError: (err, _newTodo, context) => {
-      // Rollback to the previous value if mutation fails
-      utils.task.tasks.setData(
-        [
-          {
-            key: "propertyId",
-            keyValue: propertyId,
-          },
-        ],
-        context?.previousTodos
-      )
     },
     onSuccess: () => {
       console.log("inside onSuccess")
@@ -119,17 +108,21 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
     addTodo.mutate({
       data: {
         propertyId: propertyId,
+        parentId: taskId,
         title: data.title,
       },
     })
   }
+
   return (
     <div className="flex flex-col gap-4">
-      {/* @ts-ignore */}
+      <Title level={3} showAs={6}>
+        Subtasks
+      </Title>
       {todos.length > 0 ? <DataTable columns={columns} data={todos} /> : null}
 
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <form className="z-0" onSubmit={form.handleSubmit(onSubmit)}>
           <FormField
             control={form.control}
             name="title"

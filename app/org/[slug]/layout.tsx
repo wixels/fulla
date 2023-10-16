@@ -7,12 +7,17 @@ import { Icons } from "@/components/icons"
 
 type Props = {
   children: React.ReactNode
+  modal: React.ReactNode
   params: { slug: string }
 }
-const Layout: React.FC<Props> = async ({ children, params: { slug } }) => {
+const Layout: React.FC<Props> = async ({
+  children,
+  modal,
+  params: { slug },
+}) => {
   const org = await serverClient.org.bySlug({ slug })
   return (
-    <div className="relative">
+    <div id="drag-modal-portal-element" className="relative">
       <div className="fixed inset-y-0 left-0 flex h-screen w-20 flex-col items-center justify-between bg-accent py-6">
         <div className="flex flex-col items-center gap-1">
           <Link href={"/org/" + org?.slug} className="mb-6">
@@ -44,6 +49,7 @@ const Layout: React.FC<Props> = async ({ children, params: { slug } }) => {
         <div>ORF</div>
       </div>
       <div className="ml-20">{children}</div>
+      {modal}
     </div>
   )
 }
