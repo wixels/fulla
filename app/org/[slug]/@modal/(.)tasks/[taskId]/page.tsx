@@ -31,7 +31,11 @@ const TaskPage: React.FC<Props> = async ({ params: { taskId } }) => {
         <Title level={1} showAs={4}>
           {task?.title}
         </Title>
-        <Description description={task?.description ?? ""} id={task?.id!} />
+        <Description
+          propertyId={task?.propertyId as string}
+          description={task?.description ?? ""}
+          id={task?.id!}
+        />
         <Suspense fallback="Fetching sub tasks...">
           <Await
             promise={serverClient.task.tasks([
@@ -63,36 +67,6 @@ const TaskPage: React.FC<Props> = async ({ params: { taskId } }) => {
           <Label>Assignees</Label>
           <TaskAssignees task={task} withoutPortal />
         </li>
-        {/* <li className={cn(listItemStyles)}>
-                  <Label>Property</Label>
-                  <Link
-                    className={badgeVariants({ rounded: "md" })}
-                    href={`../properties/${task?.propertyId}/overview`}
-                  >
-                    <Suspense
-                      fallback={
-                        <>
-                          Fetching Property
-                          <Loader2 className="ml-2 h-3 w-3 animate-spin" />
-                        </>
-                      }
-                    >
-                      <Await
-                        promise={db.property.findFirst({
-                          where: {
-                            id: task?.propertyId!,
-                          },
-                          select: {
-                            name: true,
-                            id: true,
-                          },
-                        })}
-                      >
-                        {(property) => <span>{property?.name ?? ""}</span>}
-                      </Await>
-                    </Suspense>
-                  </Link>
-                </li> */}
       </div>
     </DragModal>
   )

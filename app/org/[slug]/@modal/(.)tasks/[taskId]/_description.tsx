@@ -11,13 +11,23 @@ import { Input } from "@/components/ui/input"
 
 type Props = {
   description: string
+  propertyId: string
   id: string
 }
-const Description: React.FC<Props> = ({ description, id }) => {
+const Description: React.FC<Props> = ({ description, propertyId, id }) => {
   const [value, setValue] = useDebouncedState(description, 500)
   const { data: session } = useSession()
   const utils = trpc.useContext()
   const { toast } = useToast()
+  const addActivity = trpc.activity.createActivity.useMutation({
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! There was a problem saving your activity.",
+        description: "Don't worry, we've already notified our engineers.",
+      })
+    },
+  })
   const updateDescription = trpc.task.updateTask.useMutation({
     onMutate: async () => {
       await utils.task.tasks.cancel()
@@ -26,6 +36,14 @@ const Description: React.FC<Props> = ({ description, id }) => {
     onSuccess: () => {
       toast({
         description: "task updated",
+      })
+      addActivity.mutate({
+        data: {
+          propertyId,
+          verb: "updated",
+          taskId: id,
+          descriptor: " the task's description",
+        },
       })
     },
     onSettled: () => {

@@ -93,6 +93,15 @@ const OverviewForm: React.FC<Props> = ({ id, defaultValues }) => {
   const [type, setType] = useDebouncedState(defaultValues.type, 1000)
   const [size, setSize] = useDebouncedState(defaultValues.size, 1000)
   const { toast } = useToast()
+  const addActivity = trpc.activity.createActivity.useMutation({
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! There was a problem saving your activity.",
+        description: "Don't worry, we've already notified our engineers.",
+      })
+    },
+  })
   const { mutateAsync } = trpc.org.updateProperty.useMutation({
     onSuccess() {
       // utils.space.draft.invalidate({ id })
@@ -121,6 +130,13 @@ const OverviewForm: React.FC<Props> = ({ id, defaultValues }) => {
         },
         id,
       })
+      addActivity.mutate({
+        data: {
+          propertyId: id,
+          verb: "updated",
+          descriptor: "the property's address",
+        },
+      })
     }
     runUpdate()
   }, [address])
@@ -133,6 +149,13 @@ const OverviewForm: React.FC<Props> = ({ id, defaultValues }) => {
         },
         id,
       })
+      addActivity.mutate({
+        data: {
+          propertyId: id,
+          verb: "updated",
+          descriptor: "the property's type",
+        },
+      })
     }
     runUpdate()
   }, [type])
@@ -144,6 +167,13 @@ const OverviewForm: React.FC<Props> = ({ id, defaultValues }) => {
           size,
         },
         id,
+      })
+      addActivity.mutate({
+        data: {
+          propertyId: id,
+          verb: "updated",
+          descriptor: "the property's size",
+        },
       })
     }
     runUpdate()

@@ -58,6 +58,15 @@ export const SubTasks: React.FC<Props> = ({ initial, propertyId, taskId }) => {
   })
   const utils = trpc.useContext()
   const { toast } = useToast()
+  const addActivity = trpc.activity.createActivity.useMutation({
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! There was a problem saving your activity.",
+        description: "Don't worry, we've already notified our engineers.",
+      })
+    },
+  })
   const addTodo = trpc.task.createTask.useMutation({
     onMutate: async (newTodo) => {
       form.resetField("title")
@@ -96,6 +105,14 @@ export const SubTasks: React.FC<Props> = ({ initial, propertyId, taskId }) => {
     },
     onSuccess: () => {
       console.log("inside onSuccess")
+      addActivity.mutate({
+        data: {
+          propertyId,
+          verb: "updated",
+          taskId,
+          descriptor: " sub-tasks",
+        },
+      })
     },
     onSettled: () => {
       void utils.task.tasks.invalidate()

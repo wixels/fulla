@@ -14,6 +14,7 @@ export const ClientAvatar: React.FC<Props> = ({
   fallback,
   size = "md",
 }) => {
+  console.log("src::: ", src)
   return (
     <Avatar size={size}>
       <AvatarImage src={src} />

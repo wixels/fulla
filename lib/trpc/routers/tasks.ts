@@ -65,15 +65,32 @@ export const taskRouter = router({
       })
     }),
   updateTask: privateProcedure
-    .input(z.object({ id: z.string(), data: z.any() }))
+    .input(
+      z.object({
+        id: z.string(),
+        data: z.any(),
+        descriptor: z.string().optional().nullable(),
+      })
+    )
     .mutation(async (opts) => {
-      const { id, data } = opts.input
-      return await db.task.update({
+      const { id, data, descriptor } = opts.input
+
+      const task = await db.task.update({
         where: {
           id,
         },
         data,
       })
+      await db.activity.create({
+        data: {
+          verb: "updated",
+          authorId: opts.ctx.user?.id,
+          taskId: task.id,
+          propertyId: task.propertyId,
+          descriptor: descriptor ? descriptor : "the " + task.title + " task",
+        },
+      })
+      return task
     }),
   deleteTask: privateProcedure
     .input(z.object({ id: z.string() }))
@@ -85,19 +102,39 @@ export const taskRouter = router({
         throw new TRPCError({ code: "UNAUTHORIZED" })
       }
 
-      return await db.task.delete({
+      const task = await db.task.delete({
         where: {
           id,
         },
       })
+
+      await db.activity.create({
+        data: {
+          verb: "deleted",
+          authorId: opts.ctx.user?.id,
+          taskId: task.id,
+          propertyId: task.propertyId,
+          descriptor: "the " + task.title + " task",
+        },
+      })
+      return task
     }),
   createTask: privateProcedure
     .input(z.object({ data: z.any() }))
     .mutation(async (opts) => {
       const { data } = opts.input
-
-      return await db.task.create({
+      const task = await db.task.create({
         data,
       })
+      await db.activity.create({
+        data: {
+          verb: "created",
+          authorId: opts.ctx.user?.id,
+          taskId: task.id,
+          propertyId: task.propertyId,
+          descriptor: "the " + task.title + " task",
+        },
+      })
+      return task
     }),
 })
