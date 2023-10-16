@@ -43,6 +43,10 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
         key: "propertyId",
         keyValue: propertyId,
       },
+      {
+        key: "parentId",
+        keyValue: null,
+      },
     ],
     {
       initialData: initial,
@@ -74,6 +78,10 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
           {
             key: "propertyId",
             keyValue: propertyId,
+          },
+          {
+            key: "parentId",
+            keyValue: null,
           },
         ],
         // @ts-ignore

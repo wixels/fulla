@@ -73,8 +73,8 @@ export const SubTasks: React.FC<Props> = ({ initial, propertyId, taskId }) => {
       utils.task.tasks.setData(
         [
           {
-            key: "propertyId",
-            keyValue: propertyId,
+            key: "parentId",
+            keyValue: taskId,
           },
         ],
         // @ts-ignore
