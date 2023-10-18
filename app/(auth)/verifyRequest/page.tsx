@@ -1,6 +1,7 @@
 "use client"
 
 import { AnimatePresence, motion } from "framer-motion"
+import Balancer from "react-wrap-balancer"
 
 import { Button } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
@@ -22,7 +23,7 @@ export default function Home() {
             className="font-inter relative z-[100] text-[16vw] font-extrabold leading-[0.9] tracking-[-2px] text-[#1E2B3A] md:mb-[37px] md:ml-[-10px] md:text-[130px]"
           >
             Get yourself a <br />
-            <span className="text-[#407BBF]">Fulla Home</span>
+            <span className="text-[#407BBF]">Fulla Space</span>
             <span className="font-inter text-[#407BBF]">.</span>
           </motion.h1>
           <motion.div
@@ -33,123 +34,17 @@ export default function Home() {
               duration: 0.95,
               ease: [0.165, 0.84, 0.44, 1],
             }}
-            className="z-20 mx-0 mb-0 mt-8 flex max-w-2xl flex-row justify-center md:mb-[35px] md:mt-0 md:space-x-8"
           >
-            <div className="w-1/2">
-              <Title
-                level={2}
-                showAs={4}
-                className="flex items-center font-semibold "
-              >
-                Tenant Management
-              </Title>
-              <Paragraph size={"sm"}>
-                Full access to our platform, with tenant management and
-                automations
-              </Paragraph>
-            </div>
-            <div className="w-1/2">
-              <Title
-                level={2}
-                showAs={4}
-                className="flex items-center font-semibold "
-              >
-                Community
-              </Title>
-              <Paragraph size={"sm"}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis
-                error sapiente nisi libero.
-              </Paragraph>
-            </div>
+            <Title
+              level={2}
+              showAs={4}
+              className="flex w-1/2 items-center font-semibold "
+            >
+              <Balancer>
+                Check your email for a link to verify your account...
+              </Balancer>
+            </Title>
           </motion.div>
-
-          <div className="mt-8 flex gap-[15px] md:mt-0">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 0.55,
-                duration: 0.55,
-                ease: [0.075, 0.82, 0.965, 1],
-              }}
-            >
-              <Button size={"lg"} rounded={"full"}>
-                Register Now
-              </Button>
-              {/* <Link
-                href="https://github.com/Tameyer41/liftoff"
-                target="_blank"
-                className="hover:[linear-gradient(0deg, rgba(255, 255, 0.1), rgba(255, 255, 0.1)), #0D2247] group flex min-w-[180px] scale-100 items-center justify-center gap-x-2 rounded-full bg-[#1E2B3A] py-2 pl-[8px] pr-4 text-[13px] font-semibold text-white no-underline  transition-all duration-75 active:scale-95"
-                style={{
-                  boxShadow:
-                    "0px 1px 4px rgba(13, 34, 71, 0.17), inset 0px 0px 0px 1px #061530, inset 0px 0px 0px 2px rgba(255, 255, 255, 0.1)",
-                }}
-              >
-                <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#407BBF]">
-                  <svg
-                    className="h-[16px] w-[16px] text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M4.75 7.75C4.75 6.64543 5.64543 5.75 6.75 5.75H17.25C18.3546 5.75 19.25 6.64543 19.25 7.75V16.25C19.25 17.3546 18.3546 18.25 17.25 18.25H6.75C5.64543 18.25 4.75 17.3546 4.75 16.25V7.75Z"
-                    ></path>
-                    <path
-                      stroke="currentColor"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M5.5 6.5L12 12.25L18.5 6.5"
-                    ></path>
-                  </svg>
-                </span>
-                Star on Github
-              </Link> */}
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{
-                delay: 0.65,
-                duration: 0.55,
-                ease: [0.075, 0.82, 0.965, 1],
-              }}
-            >
-              <Button
-                size={"lg"}
-                variant={"outline"}
-                rounded={"full"}
-                className="flex items-center gap-2"
-              >
-                <span>Login</span>
-                <svg
-                  className="h-5 w-5"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13.75 6.75L19.25 12L13.75 17.25"
-                    stroke="#1E2B3A"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                  <path
-                    d="M19 12H4.75"
-                    stroke="#1E2B3A"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </Button>
-            </motion.div>
-          </div>
         </main>
 
         <div

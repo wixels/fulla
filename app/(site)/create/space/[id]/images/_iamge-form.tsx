@@ -103,10 +103,12 @@ export const ImageForm = ({
   })
   const { startUpload, isUploading } = useUploadThing("imageUploader", {
     onClientUploadComplete: () => {
-      alert("uploaded successfully!")
+      toast({
+        description: "uploaded successfully!",
+      })
     },
     onUploadError: () => {
-      alert("error occurred while uploading")
+      toast({ description: "error occurred while uploading" })
     },
   })
   const removeImage = (index: number) => {

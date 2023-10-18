@@ -4,6 +4,7 @@ import { orgRouter } from "./routers/org"
 import { spaceRouter } from "./routers/space"
 import { spacesRouter } from "./routers/spaces"
 import { taskRouter } from "./routers/tasks"
+import { userRouter } from "./routers/user"
 import { publicProcedure, router } from "./trpc"
 
 export const appRouter = router({
@@ -12,6 +13,7 @@ export const appRouter = router({
   org: orgRouter,
   task: taskRouter,
   activity: activityRouter,
+  user: userRouter,
   highlights: publicProcedure.query(async () => {
     return await db.highlight.findMany()
   }),
