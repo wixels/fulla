@@ -27,9 +27,10 @@ export const metadata: Metadata = {
 
 interface RootLayoutProps {
   children: React.ReactNode
+  modal: React.ReactNode
 }
 
-export default async function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children, modal }: RootLayoutProps) {
   return (
     <>
       <html lang="en" suppressHydrationWarning>
@@ -43,6 +44,7 @@ export default async function RootLayout({ children }: RootLayoutProps) {
           {/* @ts-ignore */}
           <Providers>
             {children}
+            {modal}
             <Toaster />
             <TailwindIndicator />
           </Providers>

@@ -191,9 +191,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
             <DropdownMenuTrigger>
               <Avatar size={"sm"}>
                 <AvatarImage src={session?.user?.image ?? undefined} />
-                <AvatarFallback>
-                  <Icons.user />
-                </AvatarFallback>
+                <AvatarFallback>{session?.user?.name?.[0]}</AvatarFallback>
               </Avatar>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-56" align="end" forceMount>
