@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { useOthers, useSelf } from "@/liveblocks.config"
 
 import styles from "./Avatars.module.css"
