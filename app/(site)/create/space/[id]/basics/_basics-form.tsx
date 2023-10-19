@@ -4,7 +4,6 @@ import React, { useReducer, useTransition } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 
-import { compareObjects } from "@/lib/compareObjects"
 import { forceDelay } from "@/lib/forceDelay"
 import { trpc } from "@/lib/trpc/client"
 import { cn } from "@/lib/utils"
@@ -20,8 +19,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { ListingFooter } from "@/components/listing-footer"
-import { Spin } from "@/components/spin"
 
 import { SpaceCreateFooter } from "../space-create-footer"
 import { BasicsType } from "./page"

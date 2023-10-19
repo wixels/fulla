@@ -71,6 +71,8 @@ model User {
 
   activities             Activity[]
   activitiesAboutMe      Activity[] @relation("ActivitiesAboutMe")
+
+  pages                 Page[]  
   
   assignedToMeTasks Task[] @relation("TasksForMe")
   assignedByMeTasks Task[] @relation("TasksByMe")
@@ -239,6 +241,7 @@ model Image {
   property      Property[]
   organization  Organization[]
   space         Space[]
+  page          Page[]
 
   createdAt   DateTime?  @default(now())
   updatedAt   DateTime?  @updatedAt
@@ -376,6 +379,33 @@ model Task {
   @@index([assignedById])
   @@map("tasks")
 }
+
+model Page {
+  id          String    @id @default(cuid())
+  title       String
+
+  coverImageId String? 
+  coverImage  Image?    @relation(fields: [coverImageId], references: [id])
+
+  icon        String?
+  
+  parentId    String?
+  parent      Page?       @relation("ChildPages", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  
+  subPages    Page[]      @relation("ChildPages")
+  
+  authorId    String?
+  author      User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+
+  @@index([authorId])
+  @@index([parentId])
+  @@index([coverImageId])
+  @@map("pages")
+}
+
 model Category {
   id          String    @id @default(cuid())
   label       String

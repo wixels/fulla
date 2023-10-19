@@ -23,6 +23,7 @@ import { Await } from "@/components/await"
 // import { FancyBox } from "@/components/fancy-box"
 import { Grid } from "@/components/grid"
 
+import { NewPageButton } from "./_new-page-button"
 import { Tabs } from "./_tabs"
 
 type Props = {
@@ -71,7 +72,6 @@ const PropertyPage: React.FC<Props> = async ({
                 <Title showAs={3}>
                   <Balancer>{property?.name}</Balancer>
                 </Title>
-
                 <div className="flex flex-col gap-4">
                   <Link
                     href={"./manage"}
@@ -94,6 +94,9 @@ const PropertyPage: React.FC<Props> = async ({
             )}
           </Await>
         </Suspense>
+        <div className="mt-6 flex flex-col gap-4">
+          <NewPageButton />
+        </div>
       </div>
 
       <div className="col-span-9">
