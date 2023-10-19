@@ -133,7 +133,7 @@ export const orgRouter = router({
         },
         where: {
           organizations: {
-            every: {
+            some: {
               organization: {
                 slug,
               },

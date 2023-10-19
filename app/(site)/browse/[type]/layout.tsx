@@ -46,7 +46,7 @@ export default async function Layout({
         private={privateCount}
         space={type}
       />
-      <div className="gutter sticky top-[3.6rem] z-10 flex items-center justify-between bg-background/90 py-2 backdrop-blur-md">
+      <div className="gutter sticky top-[3.6rem] z-[5] flex items-center justify-between bg-background/90 py-2 backdrop-blur-md">
         <TypeCategoryFilters
           offerings={offerings}
           amenities={amenities}

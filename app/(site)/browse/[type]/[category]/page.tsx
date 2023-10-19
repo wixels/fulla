@@ -1,6 +1,3 @@
-import slugify from "slugify"
-
-import { db } from "@/lib/db"
 import { serverClient } from "@/lib/trpc/server"
 import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
 
@@ -17,6 +14,7 @@ export default async function Page({
     category,
     type,
   })
+
   return (
     <div className="section-bottom flex grow flex-col">
       {spaces.length ? (

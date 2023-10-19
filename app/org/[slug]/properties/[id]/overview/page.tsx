@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Paragraph } from "@/components/ui/paragraph"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Title } from "@/components/ui/title"
 import { Await } from "@/components/await"
 import { ClientAvatar } from "@/components/client-avatar"
@@ -53,7 +54,26 @@ const OverviewPage: React.FC<Props> = async ({ params: { id } }) => {
         Latest Activity
       </Title>
       <div className="relative">
-        <Suspense fallback="Fetching activity...">
+        <Suspense
+          fallback={
+            <ul className="flex flex-col gap-4">
+              {Array(10)
+                .fill(Math.floor(Math.random() * 100))
+                .map((number) => (
+                  <li
+                    style={{
+                      width:
+                        Math.floor(Math.random() * (90 - 40 + 1)) + 40 + "%",
+                    }}
+                    className="flex items-center gap-2"
+                  >
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                    <Skeleton className="h-6 w-full rounded-xl grow" />
+                  </li>
+                ))}
+            </ul>
+          }
+        >
           <Await promise={serverClient.activity.propertyActivity({ id })}>
             {(activity) => (
               <ul className="flex flex-col gap-4">
@@ -92,17 +112,25 @@ const OverviewPage: React.FC<Props> = async ({ params: { id } }) => {
             )}
           </Await>
         </Suspense>
-        <Suspense>
-          <Await promise={serverClient.activity.propertyActivityCount({ id })}>
-            {(count) => (
-              <div className="absolute inset-x-0 bottom-0 flex h-1/5 w-full items-end justify-center bg-gradient-to-t from-background to-transparent">
+        <div className="absolute inset-x-0 bottom-0 flex h-1/5 w-full items-end justify-center bg-gradient-to-t from-background to-transparent">
+          <Suspense
+            fallback={
+              <Button variant="link" size={"sm"} className="text-blue-500">
+                Fetching Activity...
+              </Button>
+            }
+          >
+            <Await
+              promise={serverClient.activity.propertyActivityCount({ id })}
+            >
+              {(count) => (
                 <Button variant="link" size={"sm"} className="text-blue-500">
                   See All Activity ({count})
                 </Button>
-              </div>
-            )}
-          </Await>
-        </Suspense>
+              )}
+            </Await>
+          </Suspense>
+        </div>
       </div>
     </div>
   )
