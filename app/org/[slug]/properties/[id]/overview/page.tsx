@@ -3,6 +3,7 @@ import { formatDistance } from "date-fns"
 
 import { serverClient } from "@/lib/trpc/server"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
@@ -51,45 +52,58 @@ const OverviewPage: React.FC<Props> = async ({ params: { id } }) => {
       <Title level={2} showAs={5}>
         Latest Activity
       </Title>
-      <Suspense fallback="Fetching activity...">
-        <Await promise={serverClient.activity.propertyActivity({ id })}>
-          {(activity) => (
-            <ul className="flex flex-col gap-4">
-              {activity.map((activity) => (
-                <li className="flex items-center gap-2">
-                  <ClientAvatar
-                    size="sm"
-                    src={activity.author?.image ?? undefined}
-                    fallback={activity?.author?.name?.[0] as string}
-                  />
-                  <p>
-                    <span className="font-semibold">
-                      {formatName(activity.author?.name)}{" "}
-                    </span>
-                    <span className="text-accent-foreground/50">
-                      {activity.verb}{" "}
-                    </span>
-                    <span className="font-semibold">
-                      {activity.task?.title}{" "}
-                    </span>
-                    <span className="font-semibold">
-                      {activity.descriptor}{" "}
-                    </span>
-                    <span className="ml-4 text-xs text-accent-foreground/50">
-                      {"    "}
-                      {formatDistance(
-                        new Date(activity.createdAt ?? Date.now()),
-                        new Date(),
-                        { addSuffix: true }
-                      )}
-                    </span>
-                  </p>
-                </li>
-              ))}
-            </ul>
-          )}
-        </Await>
-      </Suspense>
+      <div className="relative">
+        <Suspense fallback="Fetching activity...">
+          <Await promise={serverClient.activity.propertyActivity({ id })}>
+            {(activity) => (
+              <ul className="flex flex-col gap-4">
+                {activity.map((activity) => (
+                  <li className="flex items-center gap-2">
+                    <ClientAvatar
+                      size="xs"
+                      src={activity.author?.image ?? undefined}
+                      fallback={activity?.author?.name?.[0] as string}
+                    />
+                    <p className="text-xs">
+                      <span className="font-semibold">
+                        {formatName(activity.author?.name)}{" "}
+                      </span>
+                      <span className="text-accent-foreground/50">
+                        {activity.verb}{" "}
+                      </span>
+                      <span className="font-semibold">
+                        {activity.task?.title}{" "}
+                      </span>
+                      <span className="font-semibold">
+                        {activity.descriptor}{" "}
+                      </span>
+                      <span className="ml-4 text-xs text-accent-foreground/50">
+                        {"    "}
+                        {formatDistance(
+                          new Date(activity.createdAt ?? Date.now()),
+                          new Date(),
+                          { addSuffix: true }
+                        )}
+                      </span>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Await>
+        </Suspense>
+        <Suspense>
+          <Await promise={serverClient.activity.propertyActivityCount({ id })}>
+            {(count) => (
+              <div className="absolute inset-x-0 bottom-0 flex h-1/5 w-full items-end justify-center bg-gradient-to-t from-background to-transparent">
+                <Button variant="link" size={"sm"} className="text-blue-500">
+                  See All Activity ({count})
+                </Button>
+              </div>
+            )}
+          </Await>
+        </Suspense>
+      </div>
     </div>
   )
 }

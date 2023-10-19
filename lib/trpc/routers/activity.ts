@@ -10,6 +10,7 @@ export const activityRouter = router({
     .input(
       z.object({
         id: z.string(),
+        take: z.number().optional().default(10),
       })
     )
     .query(async (opts) => {
@@ -17,6 +18,7 @@ export const activityRouter = router({
         where: {
           propertyId: opts.input.id,
         },
+        take: opts.input.take,
         include: {
           about: true,
           author: true,
@@ -25,6 +27,19 @@ export const activityRouter = router({
         },
         orderBy: {
           createdAt: "desc",
+        },
+      })
+    }),
+  propertyActivityCount: privateProcedure
+    .input(
+      z.object({
+        id: z.string(),
+      })
+    )
+    .query(async (opts) => {
+      return await db.activity.count({
+        where: {
+          propertyId: opts.input.id,
         },
       })
     }),
