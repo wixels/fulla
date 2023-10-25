@@ -84,7 +84,6 @@ export const pageRouter = router({
         },
         include: {
           author: true,
-          coverImage: true,
         },
       })
     }),

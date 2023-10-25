@@ -50,6 +50,7 @@ function TiptapEditor({ doc, provider }: EditorProps) {
         <Avatars />
       </div> */}
       <Editor
+        defaultValue={doc}
         disableLocalStorage
         extensions={[
           Collaboration.configure({

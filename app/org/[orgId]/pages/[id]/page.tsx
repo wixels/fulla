@@ -11,8 +11,6 @@ import Emjoi from "./_emoji"
 import { CollaborativeEditor } from "./_live-editor"
 import { PageContainer } from "./_title"
 
-export const dynamic = "force-dynamic"
-
 type Props = {
   params: {
     id: string

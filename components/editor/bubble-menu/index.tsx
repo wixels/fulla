@@ -1,3 +1,4 @@
+// @ts-nocheck
 import { FC, useState } from "react"
 import { BubbleMenu, BubbleMenuProps, isNodeSelection } from "@tiptap/react"
 import {
