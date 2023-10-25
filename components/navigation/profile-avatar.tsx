@@ -56,7 +56,10 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
 
   useHotkeys([["mod+j", () => setTheme(theme === "light" ? "dark" : "light")]])
   const properties = trpc.org.properties.useQuery(
-    { slug: session?.user.organizations?.[0]?.organization?.slug as string },
+    {
+      organizationId: session?.user.organizations?.[0]
+        ?.organizationId as string,
+    },
     { enabled: !!session }
   )
   const runCommand = useCallback((command: () => unknown) => {
@@ -122,7 +125,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                                     runCommand(() =>
                                       router.push(
                                         "/org/" +
-                                          org.organization.slug +
+                                          org.organization.id +
                                           "/properties"
                                       )
                                     )
@@ -154,7 +157,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                                     runCommand(() =>
                                       router.push(
                                         "/org/" +
-                                          prop.organization.slug +
+                                          prop.organization.id +
                                           "/properties/" +
                                           prop.id +
                                           "/overview"

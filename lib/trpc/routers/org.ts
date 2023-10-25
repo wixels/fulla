@@ -34,22 +34,18 @@ export const orgRouter = router({
   properties: privateProcedure
     .input(
       z.object({
-        slug: z.string(),
+        organizationId: z.string(),
       })
     )
     .query(async (opts) => {
-      const { slug } = opts.input
+      const { organizationId } = opts.input
       return await db.property.findMany({
         include: {
           organization: true,
           logo: true,
         },
         where: {
-          organization: {
-            slug: {
-              equals: slug,
-            },
-          },
+          organizationId,
         },
       })
     }),
@@ -70,25 +66,16 @@ export const orgRouter = router({
   createProperty: privateProcedure
     .input(
       z.object({
-        slug: z.string(),
+        orgId: z.string(),
         name: z.string(),
         description: z.string(),
         private: z.boolean().default(false).optional(),
       })
     )
     .mutation(async (opts) => {
-      const { slug, ...data } = opts.input
-      const orgFromUserBySlug = opts.ctx.user.organizations.find(
-        (x) => x.organization.slug === slug
-      )
-      if (!orgFromUserBySlug) {
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message:
-            "You do not belong to the company you're creating a property for",
-        })
-      }
-      return await db.property.create({
+      const { orgId, ...data } = opts.input
+
+      const prop = await db.property.create({
         data: {
           ...data,
           users: {
@@ -97,26 +84,23 @@ export const orgRouter = router({
               role: "owner",
             },
           },
-          organization: {
-            connect: {
-              slug,
-            },
-          },
+          organizationId: orgId,
         },
       })
+      return prop
     }),
-  bySlug: privateProcedure
+  byId: privateProcedure
     .input(
       z.object({
-        slug: z.string(),
+        id: z.string(),
       })
     )
     .query(async (opts) => {
-      const { slug } = opts.input
+      const { id } = opts.input
 
       return await db.organization.findFirst({
         where: {
-          slug,
+          id,
         },
         include: {
           logo: true,
@@ -124,9 +108,9 @@ export const orgRouter = router({
       })
     }),
   people: privateProcedure
-    .input(z.object({ slug: z.string() }))
+    .input(z.object({ orgId: z.string() }))
     .query(async (opts) => {
-      const { slug } = opts.input
+      const { orgId } = opts.input
       return await db.user.findMany({
         include: {
           properties: true,
@@ -134,9 +118,7 @@ export const orgRouter = router({
         where: {
           organizations: {
             some: {
-              organization: {
-                slug,
-              },
+              organizationId: orgId,
             },
           },
         },

@@ -128,7 +128,10 @@ model Organization {
   users       OrganizationUser[]
 
   properties Property[]
+
   spaces Space[]
+
+  pages Page[]
 
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -185,6 +188,9 @@ model Activity {
   aboutId String?
   about   User? @relation("ActivitiesAboutMe", fields: [aboutId], references: [id], onDelete: Cascade)
 
+  pageId String?
+  page Page? @relation(fields: [pageId], references: [id], onDelete: Cascade)
+
   createdAt   DateTime?  @default(now())
   updatedAt   DateTime?  @updatedAt
 
@@ -194,6 +200,7 @@ model Activity {
   @@index([aboutId])
   @@index([taskId])
   @@map("activities")
+  @@index([pageId])
 }
 
 model Property {
@@ -221,6 +228,8 @@ model Property {
   spaces      Space[]
 
   tasks Task[]
+
+  pages Page[]
 
   activities Activity[]
 
@@ -389,6 +398,12 @@ model Page {
 
   icon        String?
   
+  propertyId  String?
+  property    Property? @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  organizationId  String?
+  organization    Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  
   parentId    String?
   parent      Page?       @relation("ChildPages", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
   
@@ -396,6 +411,8 @@ model Page {
   
   authorId    String?
   author      User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  activities    Activity[]
   
   createdAt   DateTime? @default(now()) @map("created_at")
   updatedAt   DateTime? @default(now()) @map("updated_at")
@@ -403,6 +420,8 @@ model Page {
   @@index([authorId])
   @@index([parentId])
   @@index([coverImageId])
+  @@index([propertyId])
+  @@index([organizationId])
   @@map("pages")
 }
 

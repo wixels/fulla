@@ -34,10 +34,10 @@ export const LoaderButton: React.FC<ButtonProps> = ({
     const IconComponent = iconMapping[iconName]
 
     if (!IconComponent) {
-      return <Circle className="ml-2 h-2 w-3" />
+      return <Circle className="ml-2 h-3 w-3" />
     }
 
-    return <IconComponent className="ml-2 h-2 w-3" />
+    return <IconComponent className="ml-2 h-3 w-3" />
   }
   return (
     <button
@@ -52,7 +52,7 @@ export const LoaderButton: React.FC<ButtonProps> = ({
             : { y: "100%", opacity: 0, display: "none" }
         }
       >
-        <Loader2 className="ml-2 h-2 w-3 animate-spin" />
+        <Loader2 className="ml-2 h-3 w-3 animate-spin" />
       </motion.div>
       <motion.div
         animate={

@@ -24,7 +24,7 @@ const createWord = (text: string, index: number) => {
 type Props = {
   orgId: string | undefined
 }
-export const GradPanel: React.FC<Props> = ({ orgId }) => {
+export const GradPanel: React.FC<Props> = ({ orgId: }) => {
   const [hovering, setHovering] = useState(false)
 
   useEffect(() => {

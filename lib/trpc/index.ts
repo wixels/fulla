@@ -1,6 +1,7 @@
 import { db } from "../db"
 import { activityRouter } from "./routers/activity"
 import { orgRouter } from "./routers/org"
+import { pageRouter } from "./routers/pages"
 import { spaceRouter } from "./routers/space"
 import { spacesRouter } from "./routers/spaces"
 import { taskRouter } from "./routers/tasks"
@@ -14,6 +15,19 @@ export const appRouter = router({
   task: taskRouter,
   activity: activityRouter,
   user: userRouter,
+  page: pageRouter,
+  randomImage: publicProcedure.query(async () => {
+    const image = await fetch(
+      "https://api.unsplash.com/photos/random?query=abstract&client_id=" +
+        process.env.UNSPALSH_ACCESS_KEY
+    )
+    if (!image.ok) {
+      throw new Error("Error fetching image")
+    }
+    const imageRes = await image.json()
+
+    return imageRes
+  }),
   highlights: publicProcedure.query(async () => {
     return await db.highlight.findMany()
   }),
