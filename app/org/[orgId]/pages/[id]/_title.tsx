@@ -153,7 +153,7 @@ export const PageContainer: React.FC<Props> = ({
     updatePage.mutate({
       id: initial.id,
       data: {
-        icon: emoji,
+        icon: emojiData.unified,
       },
     })
   }
