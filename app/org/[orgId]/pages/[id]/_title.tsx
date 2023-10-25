@@ -37,8 +37,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Textarea } from "@/components/ui/textarea"
 
-import Cover from "./_cover"
-
 type Props = {
   // @ts-ignore
   initial: Awaited<ReturnType<typeof serverClient["page.single"]>>
