@@ -18,6 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Label } from "@/components/ui/label"
+import { ScrollArea } from "@/components/ui/scroll-area"
 import {
   Tooltip,
   TooltipContent,
@@ -129,8 +130,8 @@ export default function Layout({
         </div>
         <Resizer className="absolute inset-y-0 right-0 transition-colors hover:bg-blue-400" />
       </Panel>
-      <Panel defaultSize={defaultLayout?.[1]} className="h-screen">
-        {children}
+      <Panel defaultSize={defaultLayout?.[1]}>
+        <ScrollArea className="h-screen w-full">{children}</ScrollArea>
       </Panel>
     </Panels>
   )

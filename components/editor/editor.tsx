@@ -20,7 +20,7 @@ import { getPrevText } from "./utils/editor"
 export default function Editor({
   completionApi = "/api/ai/generate",
   className = "relative min-h-[500px] w-full",
-  defaultValue = {},
+  defaultValue = defaultEditorContent,
   extensions = [],
   editorProps = {},
   onUpdate = () => {},

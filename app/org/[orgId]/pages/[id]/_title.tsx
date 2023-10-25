@@ -362,7 +362,7 @@ export const PageContainer: React.FC<Props> = ({
                       }
                       placeholder="Untitled"
                       style={{ padding: 0 }}
-                      className="w-full mb-7 border-none text-2xl lg:text-3xl xl:text-4xl"
+                      className="mb-7 w-full border-none text-2xl lg:text-3xl xl:text-4xl"
                       {...field}
                     />
                   </FormControl>

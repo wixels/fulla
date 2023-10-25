@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button"
 import { Await } from "@/components/await"
 import { Room } from "@/components/liveblocks/room"
 
-import Cover from "./_cover"
-import Emjoi from "./_emoji"
 import { CollaborativeEditor } from "./_live-editor"
 import { PageContainer } from "./_title"
 
