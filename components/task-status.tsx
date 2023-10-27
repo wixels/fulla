@@ -53,7 +53,11 @@ export const TaskStatus: React.FC<Props> = ({ task }) => {
         })
       }}
     >
-      <SelectTrigger sizing={"xs"} variant={"secondary"}>
+      <SelectTrigger
+        className="border-none"
+        sizing={"xs"}
+        variant={"secondary"}
+      >
         <SelectValue placeholder="Theme" />
         {updateStatus.isLoading ? (
           <Loader2 className="mx-2 h-3 w-3 animate-spin" />

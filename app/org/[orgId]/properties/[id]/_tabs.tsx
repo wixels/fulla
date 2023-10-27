@@ -20,10 +20,10 @@ const tabsList = [
     title: "Tasks",
     value: "/tasks",
   },
-  {
-    title: "Resources",
-    value: "/resources",
-  },
+  // {
+  //   title: "Resources",
+  //   value: "/resources",
+  // },
   {
     title: "Spaces",
     value: "/spaces",

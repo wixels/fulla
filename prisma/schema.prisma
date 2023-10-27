@@ -73,6 +73,8 @@ model User {
   activitiesAboutMe      Activity[] @relation("ActivitiesAboutMe")
 
   pages                 Page[]  
+
+  proposals             Proposal[]
   
   assignedToMeTasks Task[] @relation("TasksForMe")
   assignedByMeTasks Task[] @relation("TasksByMe")
@@ -257,7 +259,35 @@ model Image {
   @@map("images")
 }
 
+enum ProposalStatus {
+  pending      // The proposal is awaiting review.
+  approved     // The proposal has been accepted by the landlord.
+  rejected     // The proposal has been declined by the landlord.
+  withdrawn    // The applicant has withdrawn their proposal.
+  expired      // The proposal has expired (e.g., if the applicant didn't respond in time).
+  canceled     // The landlord or applicant has canceled the proposal.
+  waitlisted   // The applicant has been placed on a waiting list.
+  in_progress  // The proposal is in the process of being reviewed or negotiated.
+  completed    // The proposal has been successfully completed (e.g., lease signed).
+}
+model Proposal {
+  id          String    @id @default(cuid())
 
+  status     ProposalStatus @default(pending)
+
+  spaceId     String?
+  space       Space?    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  
+  applicantId String?
+  applicant  User?     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
+
+  createdAt   DateTime?  @default(now())
+  updatedAt   DateTime?  @updatedAt
+
+  @@index([spaceId])
+  @@index([applicantId])
+  @@map("proposals")
+}
 enum ListingStatus {
   draft
   published
@@ -304,6 +334,8 @@ model Space {
   highlights      Highlight[]
 
   amenities       Amenity[]
+
+  proposals       Proposal[]  
 
   createdAt       DateTime? @default(now()) @map("created_at")
   updatedAt       DateTime? @default(now()) @map("updated_at")

@@ -92,6 +92,7 @@ export const Todos: React.FC<Props> = ({ initial, propertyId }) => {
               title: newTodo?.data?.title,
               propertyId,
               completed: false,
+              status: "todo",
               assignees: [],
               comments: [],
               createdAt: new Date(),

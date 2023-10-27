@@ -26,6 +26,7 @@ import { Await } from "@/components/await"
 import { Grid } from "@/components/grid"
 
 import { NewPageButton } from "./_new-page-button"
+import { PropertyImage } from "./_property-image"
 import { Tabs } from "./_tabs"
 
 type Props = {
@@ -59,18 +60,12 @@ const PropertyPage: React.FC<Props> = async ({
           <Await promise={serverClient.org.property({ id })}>
             {(property) => (
               <>
-                <div className="relative flex aspect-square w-full max-w-[100px] items-center justify-center overflow-hidden rounded-full bg-gradient-to-tl from-cyan-400 to-red-300">
-                  {property?.logo?.fileUrl ? (
-                    <Image
-                      src={property?.logo?.fileUrl}
-                      fill
-                      className="object-cover"
-                      alt="property alt text"
-                    />
-                  ) : (
-                    <p className="text-4xl text-white">{property?.name?.[0]}</p>
-                  )}
-                </div>
+                <PropertyImage
+                  id={id}
+                  url={property?.logo?.fileUrl}
+                  alt={property?.logo?.fileKey}
+                  fallback={property?.name?.[0]}
+                />
                 <Title showAs={3}>
                   <Balancer>{property?.name}</Balancer>
                 </Title>

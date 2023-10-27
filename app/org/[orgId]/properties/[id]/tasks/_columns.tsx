@@ -6,6 +6,7 @@ import { serverClient } from "@/lib/trpc/server"
 import { TaskAssignees } from "@/components/task-assignees"
 import { TaskCheckbox } from "@/components/task-checbox"
 import { TaskDueDate } from "@/components/task-due-date"
+import { TaskStatus } from "@/components/task-status"
 
 const helper =
   // @ts-ignore
@@ -27,6 +28,11 @@ export const columns = [
         </div>
       )
     },
+  }),
+  helper.display({
+    id: "status",
+    header: "Status",
+    cell: (props) => <TaskStatus task={props?.row?.original} />,
   }),
   helper.accessor("subTaskCount", {
     header: "Sub-tasks",

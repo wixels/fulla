@@ -1,27 +1,18 @@
-import { Suspense } from "react"
 import Image from "next/image"
-import {
-  Check,
-  ChevronRight,
-  Circle,
-  CircleDot,
-  DollarSign,
-  Loader2,
-} from "lucide-react"
 import Balancer from "react-wrap-balancer"
 
-import { db } from "@/lib/db"
 import { serverClient } from "@/lib/trpc/server"
-import { Badge, badgeVariants } from "@/components/ui/badge"
+import { badgeVariants } from "@/components/ui/badge"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
-import { Await } from "@/components/await"
 
 import { Gallery } from "./_gallery"
 import { SpaceActions } from "./_space-actions"
 import { StatCard } from "./_stat-card"
 
-type Props = { params: { id: string } }
+type Props = {
+  params: { id: string }
+}
 const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
   const space = await serverClient.space.published({ id })
   return (
@@ -86,7 +77,7 @@ const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
                   </li>
                 ))}
               </ul>
-              <SpaceActions />
+              <SpaceActions id={id} />
             </div>
           </div>
           <StatCard

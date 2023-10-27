@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
+import Link from "next/link"
 import { motion, useMotionValue, useSpring } from "framer-motion"
 import { Bookmark, Check, Heart, Share, Star } from "lucide-react"
 
@@ -8,15 +9,19 @@ import { Paragraph } from "@/components/ui/paragraph"
 import { Magnetic } from "@/components/magnectic"
 import { StickyCursor } from "@/components/sticky-cursor"
 
-type Props = {}
+type Props = {
+  id: string
+}
 
-export const SpaceActions: React.FC<Props> = ({}) => {
+export const SpaceActions: React.FC<Props> = ({ id }) => {
   const applyRef = useRef<HTMLDivElement | null>(null)
 
+  const MotionLink = motion(Link, { forwardMotionProps: true })
   return (
     <div className="flex gap-5">
       <StickyCursor stickyElement={applyRef} />
-      <motion.div
+      <MotionLink
+        href={`/spaces/${id}/apply`}
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{
@@ -38,7 +43,7 @@ export const SpaceActions: React.FC<Props> = ({}) => {
         <Paragraph className="text-muted-foreground" size={"xs"}>
           Apply
         </Paragraph>
-      </motion.div>
+      </MotionLink>
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
