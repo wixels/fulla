@@ -30,7 +30,6 @@ export const ApplicationForm: React.FC<Props> = ({}) => {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       rate: "",
-      fee: 500,
     },
   })
   function onSubmit(data: z.infer<typeof FormSchema>) {

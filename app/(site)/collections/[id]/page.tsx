@@ -29,7 +29,7 @@ const CollectionPage: React.FC<Props> = async ({ params: { id } }) => {
           >
             Collections
             <Suspense fallback={<Loader2 className="w-3 h-3 animate-spin" />}>
-              <Await promise={serverClient.collections()}>
+              <Await promise={serverClient.collections({})}>
                 {(collections) => <> ({collections?.length ?? 0})</>}
               </Await>
             </Suspense>

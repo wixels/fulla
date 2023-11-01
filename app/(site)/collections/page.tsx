@@ -17,7 +17,6 @@ export default async function Page({
 }: {
   searchParams: QueryParams
 }) {
-  const collections = await serverClient.collections(searchParams)
   return (
     <div className=" section">
       <Title showAs={2} className="gutter font-semibold">
@@ -37,7 +36,7 @@ export default async function Page({
       </div>
       <ul className="mt-4 w-full lg:mt-8">
         <Suspense
-          key="collections"
+          key={(searchParams["q"] as string) ?? ""}
           fallback={
             <>
               <li className="gutter mb-1">
@@ -52,69 +51,78 @@ export default async function Page({
             </>
           }
         >
-          {collections.length ? (
-            <>
-              <li className="gutter flex w-full items-center">
-                <span className="w-3/4 text-xs text-accent-foreground/50">
-                  Title
-                </span>
-                <span className="w-1/4 text-xs text-accent-foreground/50">
-                  Spaces
-                </span>
-                <span className="w-1/4 text-xs text-accent-foreground/50">
-                  Last Updated
-                </span>
-              </li>
-              {collections?.map((collection) => (
-                <li key={collection.id} className="flex w-full items-center">
-                  <Link
-                    className="group gutter flex w-full grow cursor-pointer items-center py-3 hover:bg-accent"
-                    href={`/collections/${collection?.id}`}
-                  >
-                    <span className="w-3/4 font-semibold group-hover:underline">
-                      {collection.title}
-                    </span>
-                    <span className="w-1/4 font-semibold">
-                      {collection?.spaceCount ?? 0}
-                    </span>
-                    <span className="w-1/4 font-semibold">
-                      {new Intl.DateTimeFormat("en-US", {
-                        year: "numeric",
-                        month: "long",
-                        day: "numeric",
-                      }).format(new Date(collection?.updatedAt!))}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </>
-          ) : (
-            <div className="gutter">
-              <div className="gutter relative mt-4 flex w-full flex-col gap-2 overflow-hidden rounded-xl bg-accent py-16">
-                <Title level={2} showAs={4} style={{ margin: 0 }}>
-                  Get started with Collections
-                </Title>
-                <Paragraph size={"sm"}>
-                  Manage your favourite spaces by creating collections.
-                </Paragraph>
-                <Link
-                  scroll={false}
-                  href={"/collections/create"}
-                  className={buttonVariants({
-                    size: "xs",
-                    className: "w-fit",
-                  })}
-                >
-                  <Plus className="mr-2 h-3 w-3" />
-                  Create a Collection
-                </Link>
-                <Bookmark
-                  className="absolute right-[25%] top-0 rotate-[-20deg] text-muted-foreground/25"
-                  size={300}
-                />
-              </div>
-            </div>
-          )}
+          <Await promise={serverClient.collections(searchParams)}>
+            {(collections) => (
+              <>
+                {collections.length ? (
+                  <>
+                    <li className="gutter flex w-full items-center">
+                      <span className="w-3/4 text-xs text-accent-foreground/50">
+                        Title
+                      </span>
+                      <span className="w-1/4 text-xs text-accent-foreground/50">
+                        Spaces
+                      </span>
+                      <span className="w-1/4 text-xs text-accent-foreground/50">
+                        Last Updated
+                      </span>
+                    </li>
+                    {collections?.map((collection) => (
+                      <li
+                        key={collection.id}
+                        className="flex w-full items-center"
+                      >
+                        <Link
+                          className="group gutter flex w-full grow cursor-pointer items-center py-3 hover:bg-accent"
+                          href={`/collections/${collection?.id}`}
+                        >
+                          <span className="w-3/4 font-semibold group-hover:underline">
+                            {collection.title}
+                          </span>
+                          <span className="w-1/4 font-semibold">
+                            {collection?.spaceCount ?? 0}
+                          </span>
+                          <span className="w-1/4 font-semibold">
+                            {new Intl.DateTimeFormat("en-US", {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }).format(new Date(collection?.updatedAt!))}
+                          </span>
+                        </Link>
+                      </li>
+                    ))}
+                  </>
+                ) : (
+                  <div className="gutter">
+                    <div className="gutter relative mt-4 flex w-full flex-col gap-2 overflow-hidden rounded-xl bg-accent py-16">
+                      <Title level={2} showAs={4} style={{ margin: 0 }}>
+                        Get started with Collections
+                      </Title>
+                      <Paragraph size={"sm"}>
+                        Manage your favourite spaces by creating collections.
+                      </Paragraph>
+                      <Link
+                        scroll={false}
+                        href={"/collections/create"}
+                        className={buttonVariants({
+                          size: "xs",
+                          className: "w-fit",
+                        })}
+                      >
+                        <Plus className="mr-2 h-3 w-3" />
+                        Create a Collection
+                      </Link>
+                      <Bookmark
+                        className="absolute right-[25%] top-0 rotate-[-20deg] text-muted-foreground/25"
+                        size={300}
+                      />
+                    </div>
+                  </div>
+                )}
+              </>
+            )}
+          </Await>
         </Suspense>
       </ul>
     </div>

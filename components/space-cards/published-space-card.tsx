@@ -70,7 +70,7 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
   const { width } = useViewportSize()
 
   const { data: collections, ...collectionsQuery } = trpc.collections.useQuery(
-    undefined,
+    {},
     { enabled: open }
   )
   const utils = trpc.useContext()
