@@ -42,13 +42,41 @@ export const appRouter = router({
   amenities: publicProcedure.query(async () => {
     return await db.amenity.findMany()
   }),
-  collections: privateProcedure.query(async (opts) => {
-    return await db.collection.findMany({
-      where: {
-        authorId: opts.ctx.user.id,
-      },
-    })
-  }),
+  collections: privateProcedure
+    .input(
+      z.object({
+        q: z.string().optional().nullable(),
+      })
+    )
+    .query(async (opts) => {
+      const collections = await db.collection.findMany({
+        where: {
+          authorId: opts.ctx.user.id,
+          ...(opts.input.q
+            ? {
+                title: {
+                  contains: opts.input.q,
+                },
+              }
+            : {}),
+        },
+        include: {
+          spaces: {
+            select: {
+              id: true,
+            },
+          },
+        },
+      })
+      const collectionsWithSpaces = collections.map((collection) => {
+        return {
+          ...collection,
+          spaceCount: collection.spaces.length,
+          spaces: undefined,
+        }
+      })
+      return collectionsWithSpaces
+    }),
   collection: privateProcedure
     .input(z.object({ id: z.string() }))
     .query(async (opts) => {
