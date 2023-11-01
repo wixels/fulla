@@ -4,6 +4,7 @@ import { useCallback } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
+  Bookmark,
   CreditCard,
   LogOut,
   Moon,
@@ -217,11 +218,12 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                     <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
                   </DropdownMenuItem>
                 </Link>
-                <DropdownMenuItem>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  <span>Billing</span>
-                  <DropdownMenuShortcut>⌘B</DropdownMenuShortcut>
-                </DropdownMenuItem>
+                <Link href={"/collections"}>
+                  <DropdownMenuItem>
+                    <Bookmark className="mr-2 h-4 w-4" />
+                    <span>Collections</span>
+                  </DropdownMenuItem>
+                </Link>
                 <DropdownMenuItem>
                   <Settings className="mr-2 h-4 w-4" />
                   <span>Settings</span>

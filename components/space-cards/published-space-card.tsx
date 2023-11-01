@@ -8,17 +8,33 @@ import { AnimatePresence, MotionConfig, motion } from "framer-motion"
 import {
   Bookmark,
   CalendarDays,
+  CheckIcon,
   ChevronLeft,
   ChevronRight,
+  Loader2,
   MoreHorizontal,
+  PlusCircle,
 } from "lucide-react"
 
+import { trpc } from "@/lib/trpc/client"
+import { cn } from "@/lib/utils"
 import { useHover } from "@/hooks/use-hover"
+import { useToast } from "@/hooks/use-toast"
 import { useViewportSize } from "@/hooks/use-viewport-size"
 
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
 import { buttonVariants } from "../ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+} from "../ui/command"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "../ui/hover-card"
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
+import { Skeleton } from "../ui/skeleton"
+import { ToastAction } from "../ui/toast"
 import {
   Tooltip,
   TooltipContent,
@@ -45,19 +61,63 @@ type Props = {
 }
 
 export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
+  const [open, setOpen] = useState(false)
+  const [value, setValue] = useState("")
+  const [search, setSearch] = useState("")
+
   const [index, setIndex] = useState(0)
   const { hovered, ref } = useHover()
   const { width } = useViewportSize()
+
+  const { data: collections, ...collectionsQuery } = trpc.collections.useQuery(
+    undefined,
+    { enabled: open }
+  )
+  const utils = trpc.useContext()
+  const { toast } = useToast()
+  const addToCollection = trpc.updateCollection.useMutation({
+    onMutate: async () => {
+      await utils.collection.cancel()
+      await utils.collections.cancel()
+    },
+    onSuccess: () => {
+      toast({
+        description: "Space saved to collection",
+        title: "Success",
+        action: (
+          <Link href={"/collections/" + value}>
+            <ToastAction altText="Go to collection">
+              Go to collection
+            </ToastAction>
+          </Link>
+        ),
+      })
+    },
+    onSettled: () => {
+      void utils.collection.invalidate()
+      void utils.collections.invalidate()
+    },
+  })
+  const { mutateAsync, isLoading } = trpc.createCollection.useMutation({
+    onSuccess(data) {
+      utils.collection.invalidate()
+      utils.collections.invalidate()
+    },
+    onError() {
+      toast({
+        variant: "destructive",
+        title: "Uh oh! Something went wrong.",
+        description: "There was a problem creating a new collection.",
+      })
+    },
+  })
 
   useEffect(() => {
     if (space.images.length > 0) {
       const intervalId = setInterval(() => {
         if (hovered && index + 1 < space.images.length) {
-          console.log("Logging something every one second...")
-
           setIndex(index + 1)
         } else {
-          console.log("You're at the end")
           setIndex(0)
         }
       }, 2000)
@@ -67,6 +127,8 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
       }
     }
   }, [hovered, index])
+
+  console.log("value::: ", value)
 
   return (
     <MotionConfig transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
@@ -228,35 +290,111 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
             </Link>
           </div>
           <div className="flex items-center gap-2 transition-opacity delay-150">
-            <TooltipProvider delayDuration={100} skipDelayDuration={10}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {width <= 1024 || (width > 1024 && hovered) ? (
-                    <motion.button
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, pointerEvents: "none" }}
-                      transition={{
-                        delay: 0.15,
-                        duration: 0.95,
-                        ease: [0.165, 0.84, 0.44, 1],
+            <Popover open={open} onOpenChange={setOpen}>
+              <PopoverTrigger asChild>
+                {open || width <= 1024 || (width > 1024 && hovered) ? (
+                  <motion.button
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, pointerEvents: "none" }}
+                    transition={{
+                      delay: 0.15,
+                      duration: 0.95,
+                      ease: [0.165, 0.84, 0.44, 1],
+                    }}
+                    className={buttonVariants({
+                      size: "icon",
+                      className: "h-9 w-9 rounded-xl",
+                    })}
+                  >
+                    <Bookmark size={12} />
+                  </motion.button>
+                ) : null}
+              </PopoverTrigger>
+              <PopoverContent align="end" className="h-52 p-0">
+                <Command>
+                  <CommandInput
+                    value={search}
+                    onValueChange={setSearch}
+                    placeholder="Search collections..."
+                    className="h-9"
+                  />
+
+                  <CommandGroup>
+                    {collectionsQuery.isLoading ? (
+                      <>
+                        <Skeleton className="mb-1 h-9 w-full rounded-lg" />
+                        <Skeleton className="mb-1 h-9 w-full rounded-lg" />
+                        <Skeleton className="mb-1 h-9 w-full rounded-lg" />
+                        <Skeleton className="mb-1 h-9 w-full rounded-lg" />
+                      </>
+                    ) : (
+                      <>
+                        {collections?.map((framework) => (
+                          <CommandItem
+                            key={framework.id}
+                            value={framework.id}
+                            onSelect={(currentValue) => {
+                              setOpen(false)
+                              setValue(currentValue)
+                              addToCollection.mutate({
+                                id: currentValue,
+                                data: {
+                                  spaces: {
+                                    connect: {
+                                      id: space.id,
+                                    },
+                                  },
+                                },
+                              })
+                            }}
+                          >
+                            {framework.title}
+                          </CommandItem>
+                        ))}
+                      </>
+                    )}
+                  </CommandGroup>
+
+                  {!collectionsQuery.isLoading ? (
+                    <CommandEmpty
+                      onClick={async () => {
+                        const col = await mutateAsync({ title: search })
+                        setValue(col.id)
+                        await addToCollection.mutateAsync({
+                          id: col.id,
+                          data: {
+                            spaces: {
+                              connect: {
+                                id: space.id,
+                              },
+                            },
+                          },
+                        })
+                        setOpen(false)
                       }}
-                      className={buttonVariants({
-                        size: "icon",
-                        className: "h-9 w-9 rounded-xl",
-                      })}
+                      className="m-1 flex items-center justify-between rounded-md px-2 py-1.5 hover:bg-accent"
                     >
-                      <Bookmark size={12} />
-                    </motion.button>
+                      <span className="flex items-center rounded-sm text-sm ">
+                        <PlusCircle className="mr-2 h-3 w-3" />
+                        {search}
+                      </span>
+                      <span className="text-xs text-muted-foreground/50">
+                        {isLoading || addToCollection.isLoading ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          "CREATE"
+                        )}
+                      </span>
+                    </CommandEmpty>
                   ) : null}
-                </TooltipTrigger>
-                <TooltipContent>Bookmark to collection</TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
+                </Command>
+              </PopoverContent>
+            </Popover>
             <TooltipProvider delayDuration={100} skipDelayDuration={10}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  {width <= 1024 || (width > 1024 && hovered) ? (
+                  {open || width <= 1024 || (width > 1024 && hovered) ? (
                     <motion.button
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}

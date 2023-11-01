@@ -1,3 +1,5 @@
+import * as z from "zod"
+
 import { db } from "../db"
 import { activityRouter } from "./routers/activity"
 import { orgRouter } from "./routers/org"
@@ -6,7 +8,7 @@ import { spaceRouter } from "./routers/space"
 import { spacesRouter } from "./routers/spaces"
 import { taskRouter } from "./routers/tasks"
 import { userRouter } from "./routers/user"
-import { publicProcedure, router } from "./trpc"
+import { privateProcedure, publicProcedure, router } from "./trpc"
 
 export const appRouter = router({
   spaces: spacesRouter,
@@ -40,6 +42,71 @@ export const appRouter = router({
   amenities: publicProcedure.query(async () => {
     return await db.amenity.findMany()
   }),
+  collections: privateProcedure.query(async (opts) => {
+    return await db.collection.findMany({
+      where: {
+        authorId: opts.ctx.user.id,
+      },
+    })
+  }),
+  collection: privateProcedure
+    .input(z.object({ id: z.string() }))
+    .query(async (opts) => {
+      const { id } = opts.input
+      return await db.collection.findFirst({
+        where: {
+          id,
+        },
+        include: {
+          spaces: {
+            include: {
+              organization: {
+                include: {
+                  logo: true,
+                },
+              },
+              highlights: true,
+              amenities: true,
+              offerings: true,
+              type: true,
+              category: true,
+              images: true,
+            },
+          },
+        },
+      })
+    }),
+  createCollection: privateProcedure
+    .input(
+      z.object({
+        title: z.string(),
+        description: z.string().optional().nullable(),
+      })
+    )
+    .mutation(async (opts) => {
+      return await db.collection.create({
+        data: {
+          title: opts.input.title,
+          description: opts.input.description,
+          authorId: opts.ctx.user.id,
+        },
+      })
+    }),
+  updateCollection: privateProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        data: z.any(),
+      })
+    )
+    .mutation(async (opts) => {
+      return await db.collection.update({
+        where: {
+          id: opts.input.id,
+        },
+        data: opts.input.data,
+      })
+    }),
 })
 
 export type AppRouter = typeof appRouter

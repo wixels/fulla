@@ -79,6 +79,8 @@ model User {
   assignedToMeTasks Task[] @relation("TasksForMe")
   assignedByMeTasks Task[] @relation("TasksByMe")
 
+  collections          Collection[]
+
   @@map("users")
 }
 
@@ -335,7 +337,9 @@ model Space {
 
   amenities       Amenity[]
 
-  proposals       Proposal[]  
+  proposals       Proposal[] 
+
+  collections     Collection[] 
 
   createdAt       DateTime? @default(now()) @map("created_at")
   updatedAt       DateTime? @default(now()) @map("updated_at")
@@ -346,6 +350,24 @@ model Space {
   @@index([propertyId])
   @@map("spaces")
   @@index([organizationId])
+}
+
+model Collection {
+  id          String    @id @default(cuid())
+
+  title       String
+  description String?
+
+  spaces      Space[]
+  
+  authorId    String?
+  author      User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+
+  @@map("collections")
+  @@index([authorId])
 }
 
 model Comment {

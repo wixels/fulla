@@ -63,7 +63,6 @@ const ApplyPage: React.FC<Props> = async ({ params: { id } }) => {
           )}
         </ul>
         <ApplicationForm />
-        <Title level={6}>Companies Recent History</Title>
         <Title level={6}>Other Spaces from this company</Title>
         <Title level={6}>Similar Spaces</Title>
       </div>

@@ -1,8 +1,9 @@
 import "@/styles/globals.css"
 import { Metadata } from "next"
+import { GeistMono, GeistSans } from "geist/font"
 
 import { siteConfig } from "@/config/site"
-import { fontSans } from "@/lib/fonts"
+// import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
 import { Providers } from "@/components/providers"
@@ -33,14 +34,16 @@ interface RootLayoutProps {
 export default async function RootLayout({ children, modal }: RootLayoutProps) {
   return (
     <>
-      <html lang="en" suppressHydrationWarning>
+      <html
+        lang="en"
+        suppressHydrationWarning
+        className={cn(
+          "bg-background font-sans antialiased",
+          `${GeistSans.variable} ${GeistMono.variable}`
+        )}
+      >
         <head />
-        <body
-          className={cn(
-            "bg-background font-sans antialiased",
-            fontSans.variable
-          )}
-        >
+        <body>
           {/* @ts-ignore */}
           <Providers>
             {children}
