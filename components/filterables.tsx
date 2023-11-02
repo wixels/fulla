@@ -1,12 +1,14 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useMemo, useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter, useSearchParams } from "next/navigation"
-import { useQueryClient } from "@tanstack/react-query"
+import { usePathname } from "next/navigation"
 import { Check, Plus, X } from "lucide-react"
+import { useDebouncedCallback } from "use-debounce"
+import * as z from "zod"
 
 import { cn } from "@/lib/utils"
+import { queryStringArray, useTypedQuery } from "@/hooks/use-typed-query"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
@@ -39,30 +41,15 @@ export const Filterables: React.FC<Props> = ({
   className,
   position = "start",
 }) => {
-  const searchParams = useSearchParams()
-  const path = usePathname()
-
-  const [selected, setSelected] = useState(() => {
-    const map = new Map()
-    filterables.forEach((filterable) => {
-      map.set(
-        filterable.identifier,
-        new Set(
-          searchParams
-            .get(filterable.identifier)
-            ?.split(",")
-            ?.filter((x) => x !== "")
-        )
-      )
-    })
-
-    return map
-  })
-
-  const hasValues = useMemo(() => {
-    return Array.from(selected.values()).some((set) => set.size > 0)
-  }, [selected])
-
+  const schema = z.object(
+    Object.fromEntries(
+      filterables.map(({ identifier }) => [
+        identifier,
+        queryStringArray.optional().nullable(),
+      ])
+    )
+  )
+  const { data, removeAllQueryParams } = useTypedQuery(schema)
   return (
     <div className={cn("flex items-center gap-2", className)}>
       {filterables.map(({ identifier, options }) => (
@@ -71,110 +58,76 @@ export const Filterables: React.FC<Props> = ({
           options={options}
           filterables={filterables}
           identifier={identifier}
-          selected={selected}
-          setSelected={setSelected}
           position={position}
+          schema={schema}
         />
       ))}
-      {hasValues ? (
+      {Object.keys(data).length > 0 ? (
         <Button
-          asChild
-          onClick={() => {
-            const map = new Map()
-            filterables.forEach((x) => map.set(x.identifier, new Set([])))
-
-            setSelected(map)
-          }}
+          onClick={() => removeAllQueryParams()}
           className="h-8"
           variant="ghost"
           size="sm"
         >
-          <Link href={path}>
-            Reset
-            <X size={12} className="ml-2" />
-          </Link>
+          Reset
+          <X size={12} className="ml-2" />
         </Button>
       ) : null}
     </div>
   )
 }
 
-export const FilterDropwdown: React.FC<{
+type FilterDropwdownProps<T extends z.ZodSchema> = {
+  schema: T
   options: { id: string; label: string }[]
   filterables: Filterables
   identifier: string
-  selected: Map<string, Set<any>>
   position: "center" | "end" | "start"
-  setSelected: React.Dispatch<React.SetStateAction<Map<string, Set<any>>>>
-}> = ({ options, identifier, selected, setSelected, position }) => {
-  const [hasOpened, setHasOpened] = useState(false)
-  const [open, setOpen] = useState(false)
+}
 
-  const path = usePathname()
-  const router = useRouter()
-  const queryClient = useQueryClient()
-  const searchParams = useSearchParams()
-
-  useEffect(() => {
-    if (!open && hasOpened) {
-      let params: Record<string, string | string[]> = {}
-      searchParams.forEach((value, key) => {
-        if (value && key !== identifier) {
-          params[key] = value
-        }
-      })
-
-      if (selected.get(identifier)!.size > 0) {
-        params[identifier] = Array.from(selected.get(identifier)!) as string[]
-      }
-      // @ts-ignore
-      const newSearchParams = new URLSearchParams(params).toString()
-
-      queryClient.clear()
-      router.push(
-        `${path}${
-          newSearchParams && newSearchParams?.length
-            ? `?${newSearchParams}`
-            : ""
-        }`,
-        {
-          scroll: false,
-        }
-      )
-    }
-    if (open) {
-      setHasOpened(true)
-    }
-  }, [open, hasOpened])
-
+export function FilterDropwdown<T extends z.ZodSchema>({
+  options,
+  identifier,
+  position,
+  filterables,
+  schema,
+}: FilterDropwdownProps<T>) {
+  const {
+    data: queryData,
+    setQuery,
+    pushItemToKey,
+    removeByKey,
+    removeItemByKeyAndValue,
+    // @ts-ignore
+  } = useTypedQuery(schema)
+  const data = queryData?.[identifier] ?? []
+  console.log("data::: ", data)
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover>
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8 border-dashed">
           <Plus size={12} className="mr-2" />
           <span className="capitalize">{identifier}</span>
-          {selected.get(identifier)!.size > 0 && (
+          {data?.length > 0 && (
             <>
               <Separator orientation="vertical" className="mx-2 h-4" />
               <Badge
                 variant="secondary"
                 className="rounded-sm px-1 font-normal lg:hidden"
               >
-                {selected.get(identifier)!.size}
+                {data?.length}
               </Badge>
               <div className="hidden space-x-1 lg:flex">
-                {selected.get(identifier)!.size > 2 ? (
+                {data?.length > 2 ? (
                   <Badge
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {selected.get(identifier)!.size} selected
+                    {data?.length} selected
                   </Badge>
                 ) : (
                   options
-                    .filter((option) =>
-                      selected.get(identifier)!.has(option.label)
-                    )
+                    .filter((option) => data?.includes(option.label))
                     .map((option) => (
                       <Badge
                         variant="secondary"
@@ -192,23 +145,22 @@ export const FilterDropwdown: React.FC<{
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0" align={position}>
         <Command>
-          <CommandInput placeholder="Filter by amenities..." />
+          <CommandInput placeholder={`Filter by ${identifier}...`} />
           <CommandList>
             <CommandEmpty>No results found.</CommandEmpty>
             <CommandGroup>
               {options.map(({ id, label }) => {
-                const isSelected = selected.get(identifier)?.has(label)
+                const isSelected = data?.includes(label)
 
                 return (
                   <CommandItem
                     key={id}
                     onSelect={() => {
-                      if (selected.get(identifier)!.has(label)) {
-                        selected.get(identifier)!.delete(label)
+                      if (data?.includes(label)) {
+                        removeItemByKeyAndValue(identifier, label)
                       } else {
-                        selected.get(identifier)!.add(label)
+                        pushItemToKey(identifier, label)
                       }
-                      setSelected(new Map(selected))
                     }}
                   >
                     <div
@@ -221,7 +173,7 @@ export const FilterDropwdown: React.FC<{
                     >
                       <Check className={cn("h-4 w-4")} aria-hidden="true" />
                     </div>
-                    <span>{label}</span>
+                    <span className="capitalize">{label}</span>
                   </CommandItem>
                 )
               })}
@@ -230,11 +182,7 @@ export const FilterDropwdown: React.FC<{
             <CommandGroup>
               <CommandItem
                 onSelect={() => {
-                  const map = new Map(selected)
-
-                  map.set(identifier, new Set([]))
-
-                  setSelected(map)
+                  removeByKey(identifier)
                 }}
                 className="justify-center text-center"
               >

@@ -128,15 +128,13 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
     }
   }, [hovered, index])
 
-  console.log("value::: ", value)
-
   return (
     <MotionConfig transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
       <motion.div
         ref={ref}
         className="group flex w-full grid-cols-1 flex-col gap-4"
       >
-        <div className="relative overflow-hidden rounded-lg">
+        <div className="relative aspect-[16/11] overflow-hidden rounded-lg bg-muted">
           <motion.div animate={{ x: `-${index * 100}%` }} className="flex">
             {space.images
               .map((image) => image.fileUrl)

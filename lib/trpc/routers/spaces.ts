@@ -141,4 +141,46 @@ export const spacesRouter = router({
       },
     })
   }),
+  forCollection: privateProcedure
+    .input(
+      z.object({
+        collectionId: z.string(),
+        q: z.string().optional().nullable(),
+      })
+    )
+    .query(async (opts) => {
+      return await db.space.findMany({
+        where: {
+          collections: {
+            some: {
+              id: {
+                equals: opts.input.collectionId,
+              },
+            },
+          },
+          ...(opts.input.q
+            ? {
+                title: {
+                  contains: opts.input.q,
+                },
+              }
+            : {}),
+        },
+        include: {
+          property: true,
+          proposals: true,
+          organization: {
+            include: {
+              logo: true,
+            },
+          },
+          highlights: true,
+          amenities: true,
+          offerings: true,
+          type: true,
+          category: true,
+          images: true,
+        },
+      })
+    }),
 })

@@ -85,23 +85,6 @@ export const appRouter = router({
         where: {
           id,
         },
-        include: {
-          spaces: {
-            include: {
-              organization: {
-                include: {
-                  logo: true,
-                },
-              },
-              highlights: true,
-              amenities: true,
-              offerings: true,
-              type: true,
-              category: true,
-              images: true,
-            },
-          },
-        },
       })
     }),
   createCollection: privateProcedure

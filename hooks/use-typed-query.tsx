@@ -37,7 +37,6 @@ export function useTypedQuery<T extends z.AnyZodObject>(schema: T) {
   type ArrayOutputKeys = keyof ArrayOutput
 
   const unparsedQuery = useSearchParams()
-  console.log("unparedQ::: ", unparsedQuery.get("q"))
 
   const path = usePathname()
   const router = useRouter()
