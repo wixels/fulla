@@ -122,6 +122,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                             <CommandGroup heading="Companies">
                               {session.user?.organizations.map((org) => (
                                 <CommandItem
+                                  key={org.id}
                                   onSelect={() =>
                                     runCommand(() =>
                                       router.push(
@@ -154,6 +155,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                             <CommandGroup heading="Properties">
                               {properties.data?.map((prop) => (
                                 <CommandItem
+                                  key={prop.id}
                                   onSelect={() =>
                                     runCommand(() =>
                                       router.push(

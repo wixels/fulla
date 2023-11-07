@@ -280,6 +280,7 @@ model Proposal {
   spaceId     String?
   space       Space?    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   
+  // applicants   User[]
   applicantId String?
   applicant  User?     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 
@@ -287,8 +288,8 @@ model Proposal {
   updatedAt   DateTime?  @updatedAt
 
   @@index([spaceId])
-  @@index([applicantId])
   @@map("proposals")
+  @@index([applicantId])
 }
 enum ListingStatus {
   draft

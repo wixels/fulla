@@ -35,20 +35,25 @@ type Props = {
   filterables: Filterables
   className?: string
   position?: "center" | "end" | "start"
+  zodSchema: z.ZodSchema
 }
 export const Filterables: React.FC<Props> = ({
   filterables,
   className,
   position = "start",
+  zodSchema,
 }) => {
-  const schema = z.object(
-    Object.fromEntries(
-      filterables.map(({ identifier }) => [
-        identifier,
-        queryStringArray.optional().nullable(),
-      ])
+  const schema =
+    zodSchema ||
+    z.object(
+      Object.fromEntries(
+        filterables.map(({ identifier }) => [
+          identifier,
+          queryStringArray.optional().nullable(),
+        ])
+      )
     )
-  )
+  // @ts-ignore
   const { data, removeAllQueryParams } = useTypedQuery(schema)
   return (
     <div className={cn("flex items-center gap-2", className)}>
@@ -89,19 +94,16 @@ export function FilterDropwdown<T extends z.ZodSchema>({
   options,
   identifier,
   position,
-  filterables,
   schema,
 }: FilterDropwdownProps<T>) {
   const {
     data: queryData,
-    setQuery,
     pushItemToKey,
-    removeByKey,
     removeItemByKeyAndValue,
+    removeAllQueryParams,
     // @ts-ignore
   } = useTypedQuery(schema)
   const data = queryData?.[identifier] ?? []
-  console.log("data::: ", data)
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -182,7 +184,8 @@ export function FilterDropwdown<T extends z.ZodSchema>({
             <CommandGroup>
               <CommandItem
                 onSelect={() => {
-                  removeByKey(identifier)
+                  // removeByKey(identifier)
+                  removeAllQueryParams()
                 }}
                 className="justify-center text-center"
               >

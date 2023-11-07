@@ -23,11 +23,13 @@ import {
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
+  className?: string
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  className,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSetsorting] = useState<SortingState>([])
   const table = useReactTable({
@@ -42,7 +44,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <Table>
+    <Table className={cn(className)}>
       <TableHeader>
         {table.getHeaderGroups().map((headerGroup) => (
           <TableRow key={headerGroup.id}>

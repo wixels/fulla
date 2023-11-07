@@ -1,6 +1,9 @@
+import { Title } from "@/components/ui/title"
+import { Icons } from "@/components/icons"
+
 type Props = {}
 const Apply: React.FC<Props> = ({}) => {
-  return <div className="bg-red-200 h-screen">Apply</div>
+  return <div>Testing the first page of the form</div>
 }
 
 export default Apply

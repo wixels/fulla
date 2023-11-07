@@ -4,21 +4,36 @@ import { ProposalStatus } from "@prisma/client"
 import { useDebouncedCallback } from "use-debounce"
 import * as z from "zod"
 
-import { useTypedQuery } from "@/hooks/use-typed-query"
-import { Button } from "@/components/ui/button"
+import { queryStringArray, useTypedQuery } from "@/hooks/use-typed-query"
 import { Input } from "@/components/ui/input"
 import { Filterables } from "@/components/filterables"
 
 type Props = {}
-const schema = z.object({
-  q: z.string().optional().nullable(),
-})
-type SchemaKeys = keyof typeof schema.shape
-
-type FilterData = {
-  [K in SchemaKeys]?: typeof schema.shape[K]["_input"]
-}
+const filterables = [
+  {
+    identifier: "status",
+    options: Object.entries(ProposalStatus).map(([key, value]) => ({
+      id: key,
+      value: key,
+      label: value.replace(/_/g, " "),
+    })),
+  },
+]
 export const Filters: React.FC<Props> = ({}) => {
+  const schema = z.object({
+    q: z.string().optional().nullable(),
+    ...Object.fromEntries(
+      filterables.map(({ identifier }) => [
+        identifier,
+        queryStringArray.optional().nullable(),
+      ])
+    ),
+  })
+  type SchemaKeys = keyof typeof schema.shape
+
+  type FilterData = {
+    [K in SchemaKeys]?: typeof schema.shape[K]["_input"]
+  }
   const {
     setQuery,
     data: { q },
@@ -55,17 +70,9 @@ export const Filters: React.FC<Props> = ({}) => {
         sizing={"sm"}
       />
       <Filterables
+        zodSchema={schema}
         position="end"
-        filterables={[
-          {
-            identifier: "Status",
-            options: Object.entries(ProposalStatus).map(([key, value]) => ({
-              id: key,
-              value: key,
-              label: value.replace(/_/g, " "),
-            })),
-          },
-        ]}
+        filterables={filterables}
       />
     </div>
   )

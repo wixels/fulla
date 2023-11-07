@@ -3,9 +3,11 @@
     "scope": "typescriptreact",
     "prefix": "npage",
     "body": [
-      "export default async function $1() {",
-      "return <div>$2</div>",
-      "}"
+      "type Props = {}",
+      "const $1: React.FC<Props> = ({}) => {",
+      " return <div>$1</div>",
+      "}",
+      "export default $1"
     ],
     "description": "Log output to console"
   }

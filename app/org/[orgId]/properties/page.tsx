@@ -1,8 +1,10 @@
 import { Suspense } from "react"
 import Link from "next/link"
 import { AlignJustify, Building, LayoutGrid, Plus } from "lucide-react"
+import * as z from "zod"
 
 import { serverClient } from "@/lib/trpc/server"
+import { queryStringArray } from "@/hooks/use-typed-query"
 import { Button, buttonVariants } from "@/components/ui/button"
 import { Paragraph } from "@/components/ui/paragraph"
 import {
@@ -55,6 +57,9 @@ const PropertiesPage: React.FC<Props> = async ({ params: { orgId } }) => {
             </SelectContent>
           </Select>
           <Filterables
+            zodSchema={z.object({
+              filers: queryStringArray.optional().nullable(),
+            })}
             filterables={[
               {
                 identifier: "filters",

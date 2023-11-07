@@ -1,22 +1,32 @@
 import { Suspense } from "react"
 import Link from "next/link"
-import { Bookmark, Building, Loader2, Plus, Search, X } from "lucide-react"
+import { Bookmark, Loader2, Search, X } from "lucide-react"
 
 import { serverClient } from "@/lib/trpc/server"
-import { Button, buttonVariants } from "@/components/ui/button"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { buttonVariants } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Title } from "@/components/ui/title"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { Await } from "@/components/await"
 import {
   Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
 } from "@/components/breadcrumb"
-import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
+import { ClientAvatar } from "@/components/client-avatar"
+import { DataTable } from "@/components/data-table"
 import { SpaceCardSkeleton } from "@/components/space-cards/space-card-skeleton"
 
+import { columns } from "./_columns"
 import { Filters } from "./_filters"
 
 type Props = {
@@ -27,11 +37,12 @@ const CollectionPage: React.FC<Props> = async ({
   params: { id },
   searchParams,
 }) => {
+  console.log("search params::: ", searchParams)
   return (
-    <div className="gutter section">
+    <div className="section">
       <Suspense
         fallback={
-          <>
+          <div className="gutter">
             <Breadcrumb>
               <BreadcrumbItem>
                 <BreadcrumbLink className="flex items-center gap-2">
@@ -53,12 +64,12 @@ const CollectionPage: React.FC<Props> = async ({
                 sizing={"sm"}
               />
             </div>
-          </>
+          </div>
         }
       >
         <Await promise={serverClient.collection({ id })}>
           {(collection) => (
-            <>
+            <div className="gutter">
               <Breadcrumb>
                 <BreadcrumbItem>
                   <BreadcrumbLink
@@ -83,14 +94,14 @@ const CollectionPage: React.FC<Props> = async ({
               </Breadcrumb>
               <Title showAs={2}>{collection?.title}</Title>
               <Filters />
-            </>
+            </div>
           )}
         </Await>
       </Suspense>
       <Suspense
-        key={(searchParams["q"] as string) ?? ""}
+        key={JSON.stringify(searchParams)}
         fallback={
-          <div className="my-6 grid w-full grid-cols-1 gap-x-6 gap-y-10 lg:my-7 lg:grid-cols-2 xl:my-8 xl:grid-cols-3 2xl:grid-cols-4">
+          <div className="gutter my-6 grid w-full grid-cols-1 gap-x-6 gap-y-10 lg:my-7 lg:grid-cols-2 xl:my-8 xl:grid-cols-3 2xl:grid-cols-4">
             <SpaceCardSkeleton />
             <SpaceCardSkeleton />
             <SpaceCardSkeleton />
@@ -104,13 +115,85 @@ const CollectionPage: React.FC<Props> = async ({
           })}
         >
           {(spaces) => (
-            <>
+            <div className="gutter">
+              <ul className="mt-4 w-full lg:mt-8">
+                {spaces.map((space) => (
+                  <li
+                    key={space.id}
+                    className="group gutter flex w-full grow cursor-pointer items-center justify-between py-3 hover:bg-accent"
+                  >
+                    <span>{space.title}</span>
+                    <span className="flex items-center gap-2">
+                      <ClientAvatar
+                        size={"xs"}
+                        src={space.organization.logo?.fileUrl}
+                        fallback={space.organization.name[0]}
+                      />
+                      {space.organization.name}
+                    </span>
+                    <span>
+                      {space.proposals.length ? (
+                        space.proposals?.map((propo) => (
+                          <Badge key={propo.id}>{propo.status}</Badge>
+                        ))
+                      ) : (
+                        <Link
+                          className="text-blue-500 hover:underline"
+                          href={`/spaces/${space.id}/apply`}
+                        >
+                          Apply Now
+                        </Link>
+                      )}
+                    </span>
+                    <span className="flex items-center gap-2">
+                      <Badge>{space.type?.key}</Badge>
+                      <Badge>{space.category?.key}</Badge>
+                    </span>
+                    <TooltipProvider>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          Amenities: {space.amenities.length}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <ul className="flex flex-wrap gap-2">
+                            {space.amenities.map((amenity) => (
+                              <li
+                                key={amenity.id}
+                                className="flex items-center gap-1"
+                              >
+                                <Badge>{amenity.label}</Badge>
+                              </li>
+                            ))}
+                          </ul>
+                        </TooltipContent>
+                      </Tooltip>
+                      <Tooltip>
+                        <TooltipTrigger>
+                          Features: {space.highlights.length}
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <ul className="flex flex-wrap gap-2">
+                            {space.highlights.map((feature) => (
+                              <li
+                                key={feature.id}
+                                className="flex items-center gap-1"
+                              >
+                                <Badge>{feature.label}</Badge>
+                              </li>
+                            ))}
+                          </ul>
+                        </TooltipContent>
+                      </Tooltip>
+                    </TooltipProvider>
+                  </li>
+                ))}
+              </ul>
               {spaces.length ? (
-                <div className="my-6 grid w-full grid-cols-1 gap-x-6 gap-y-10 lg:my-7 lg:grid-cols-2 xl:my-8 xl:grid-cols-3 2xl:grid-cols-4">
-                  {spaces.map((space) => (
-                    <PublishedSpaceCard key={space.id} space={space} />
-                  ))}
-                </div>
+                <DataTable
+                  className="mt-4 w-full lg:mt-8"
+                  data={spaces}
+                  columns={columns}
+                />
               ) : searchParams?.q ? (
                 <div className="gutter relative my-6 flex w-full flex-col gap-2 overflow-hidden rounded-xl bg-accent py-16 lg:my-7 xl:my-8">
                   <Title level={2} showAs={4} style={{ margin: 0 }}>
@@ -162,7 +245,7 @@ const CollectionPage: React.FC<Props> = async ({
                   />
                 </div>
               )}
-            </>
+            </div>
           )}
         </Await>
       </Suspense>

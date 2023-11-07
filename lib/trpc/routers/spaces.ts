@@ -1,6 +1,8 @@
+import { ProposalStatus } from "@prisma/client"
 import * as z from "zod"
 
 import { db } from "@/lib/db"
+import { queryStringArray } from "@/hooks/use-typed-query"
 
 import { privateProcedure, publicProcedure, router } from "../trpc"
 
@@ -146,6 +148,11 @@ export const spacesRouter = router({
       z.object({
         collectionId: z.string(),
         q: z.string().optional().nullable(),
+        status: z
+          .preprocess((a) => z.string().parse(a).split(","), z.string().array())
+          .or(z.string().array())
+          .optional()
+          .nullable(),
       })
     )
     .query(async (opts) => {
@@ -165,10 +172,25 @@ export const spacesRouter = router({
                 },
               }
             : {}),
+          ...(opts.input.status?.length
+            ? {
+                proposals: {
+                  some: {
+                    status: {
+                      in: opts.input.status as ProposalStatus[],
+                    },
+                  },
+                },
+              }
+            : {}),
         },
         include: {
           property: true,
-          proposals: true,
+          proposals: {
+            where: {
+              applicantId: opts.ctx.user.id,
+            },
+          },
           organization: {
             include: {
               logo: true,

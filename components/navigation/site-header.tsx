@@ -45,6 +45,7 @@ export function SiteHeader() {
 
   const hideMe = useMemo(() => {
     if (path?.includes("/create/space")) return true
+    if (path?.includes("/apply")) return true
     return false
   }, [path])
 
