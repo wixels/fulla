@@ -1,5 +1,6 @@
 import { Suspense } from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { CheckCircle, Loader2 } from "lucide-react"
 
 import { db } from "@/lib/db"
@@ -181,7 +182,54 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
                         </Title>
                       </AccordionTrigger>
                       <AccordionContent>
-                        Yes. It adheres to the WAI-ARIA design pattern.
+                        <Suspense
+                          fallback={
+                            <div className="flex w-full items-center justify-center p-6">
+                              <Spin />
+                            </div>
+                          }
+                        >
+                          <Await
+                            promise={db.space.findMany({
+                              where: {
+                                organizationId: space?.organizationId,
+                                status: "published",
+                                id: { not: space?.id },
+                              },
+                              take: 5,
+                            })}
+                          >
+                            {(spaces) => {
+                              return (
+                                <ul>
+                                  {spaces.length === 0 ? (
+                                    <li className="flex w-full items-center justify-center p-4 text-muted-foreground/50">
+                                      No other spaces
+                                    </li>
+                                  ) : null}
+                                  {spaces.map((space) => (
+                                    <li
+                                      className="flex items-center gap-2"
+                                      key={space.id}
+                                    >
+                                      <ClientAvatar
+                                        src={space.featureImageUrl || undefined}
+                                        fallback={space.title?.[0]!}
+                                        size="xs"
+                                      />
+                                      <Link
+                                        className="hover:text-blue-500 hover:underline"
+                                        href={`/spaces/${space.id}`}
+                                      >
+                                        {space.title}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )
+                            }}
+                          </Await>
+                        </Suspense>
                       </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="similar">
@@ -191,7 +239,59 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
                         </Title>
                       </AccordionTrigger>
                       <AccordionContent>
-                        Yes. It adheres to the WAI-ARIA design pattern.
+                        <Suspense
+                          fallback={
+                            <div className="flex w-full items-center justify-center p-6">
+                              <Spin />
+                            </div>
+                          }
+                        >
+                          <Await
+                            promise={db.space.findMany({
+                              where: {
+                                category: {
+                                  id: space?.categoryId!,
+                                },
+                                type: {
+                                  id: space?.typeId!,
+                                },
+                                status: "published",
+                                id: { not: space?.id },
+                              },
+                              take: 5,
+                            })}
+                          >
+                            {(spaces) => {
+                              return (
+                                <ul>
+                                  {spaces.length === 0 ? (
+                                    <li className="flex w-full items-center justify-center p-4 text-muted-foreground/50">
+                                      No other spaces
+                                    </li>
+                                  ) : null}
+                                  {spaces.map((space) => (
+                                    <li
+                                      className="flex items-center gap-2"
+                                      key={space.id}
+                                    >
+                                      <ClientAvatar
+                                        src={space.featureImageUrl || undefined}
+                                        fallback={space.title?.[0]!}
+                                        size="xs"
+                                      />
+                                      <Link
+                                        className="hover:text-blue-500 hover:underline"
+                                        href={`/spaces/${space.id}`}
+                                      >
+                                        {space.title}
+                                      </Link>
+                                    </li>
+                                  ))}
+                                </ul>
+                              )
+                            }}
+                          </Await>
+                        </Suspense>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
