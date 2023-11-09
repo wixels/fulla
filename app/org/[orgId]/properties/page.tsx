@@ -57,9 +57,6 @@ const PropertiesPage: React.FC<Props> = async ({ params: { orgId } }) => {
             </SelectContent>
           </Select>
           <Filterables
-            // zodSchema={z.object({
-            //   filers: queryStringArray.optional().nullable(),
-            // })}
             filterables={[
               {
                 identifier: "filters",

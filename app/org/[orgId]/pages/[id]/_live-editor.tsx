@@ -56,7 +56,7 @@ function TiptapEditor({ doc, provider }: EditorProps) {
   const hasMoreUsers = users.length - 1 > 3
   return (
     <div className="relative">
-      <div className="fixed inset-x-0 bottom-6 z-10 mx-auto flex h-11 w-fit items-center gap-2 rounded-full bg-foreground/30 p-[6px] backdrop-blur">
+      {/* <div className="fixed inset-x-0 bottom-6 z-10 mx-auto flex h-11 w-fit items-center gap-2 rounded-full bg-foreground/30 p-[6px] backdrop-blur">
         <TooltipProvider delayDuration={100}>
           <Tooltip>
             <TooltipTrigger>
@@ -75,13 +75,10 @@ function TiptapEditor({ doc, provider }: EditorProps) {
           <Tooltip>
             <TooltipTrigger>
               <Avatar className="border-2 border-red-700" size={"sm"}>
-                {/* @ts-ignore */}
                 <AvatarFallback>{currentUser?.info?.name}</AvatarFallback>
-                {/* @ts-ignore */}
                 <AvatarImage src={currentUser.info?.image as string} />
               </Avatar>
             </TooltipTrigger>
-            {/* @ts-ignore */}
             <TooltipContent>{currentUser?.info?.name}</TooltipContent>
           </Tooltip>
 
@@ -90,13 +87,10 @@ function TiptapEditor({ doc, provider }: EditorProps) {
               <Tooltip>
                 <TooltipTrigger>
                   <Avatar key={connectionId} size={"sm"}>
-                    {/* @ts-ignore */}
                     <AvatarFallback>{info?.name}</AvatarFallback>
-                    {/* @ts-ignore */}
                     <AvatarImage src={info?.image as string} />
                   </Avatar>
                 </TooltipTrigger>
-                {/* @ts-ignore */}
                 <TooltipContent>{info?.name}</TooltipContent>
               </Tooltip>
             )
@@ -107,19 +101,21 @@ function TiptapEditor({ doc, provider }: EditorProps) {
             </Avatar>
           )}
         </TooltipProvider>
-      </div>
+      </div> */}
       <Editor
         defaultValue={doc}
         disableLocalStorage
-        extensions={[
-          Collaboration.configure({
-            document: doc,
-          }),
-          // Attach provider and user info
-          CollaborationCursor.configure({
-            provider: provider,
-          }),
-        ]}
+        extensions={
+          [
+            // Collaboration.configure({
+            //   document: doc,
+            // }),
+            // // Attach provider and user info
+            // CollaborationCursor.configure({
+            //   provider: provider,
+            // }),
+          ]
+        }
       />
       {/* <EditorContent editor={editor} className={styles.editorContainer} /> */}
     </div>

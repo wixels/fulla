@@ -4,6 +4,7 @@ import { Image } from "lucide-react"
 import { serverClient } from "@/lib/trpc/server"
 import { Button } from "@/components/ui/button"
 import { Await } from "@/components/await"
+import { Editor } from "@/components/editor"
 import { Room } from "@/components/liveblocks/room"
 
 import { CollaborativeEditor } from "./_live-editor"
@@ -18,22 +19,17 @@ type Props = {
   }
 }
 const Page: React.FC<Props> = async ({ params: { id, orgId } }) => {
+  const page = await serverClient.page.single({
+    id,
+  })
+  console.log("page::: ", page)
   return (
-    <Suspense fallback="Fetching page content...">
-      <Await
-        promise={serverClient.page.single({
-          id,
-        })}
-      >
-        {(page) => (
-          <PageContainer orgId={orgId} initial={page}>
-            <Room roomId={page.id}>
-              <CollaborativeEditor />
-            </Room>
-          </PageContainer>
-        )}
-      </Await>
-    </Suspense>
+    <PageContainer orgId={orgId} initial={page}>
+      <Editor />
+      {/* <Room roomId={id}>
+        <CollaborativeEditor />
+      </Room> */}
+    </PageContainer>
   )
 }
 export default Page

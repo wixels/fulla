@@ -39,7 +39,7 @@ import { Textarea } from "@/components/ui/textarea"
 
 type Props = {
   // @ts-ignore
-  initial: Awaited<ReturnType<typeof serverClient["page.single"]>>
+  initial?: Awaited<ReturnType<typeof serverClient["page.single"]>>
   children?: React.ReactNode
   orgId: string
 }
