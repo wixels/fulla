@@ -38,9 +38,9 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
           <div className="h-2 w-2 rounded-full bg-foreground/25"></div>
         </div>
       </header>
-      <Grid className="gutter section-padding z-10 mx-auto w-full max-w-7xl grow">
-        <div className="col-span-7 flex h-full">{children}</div>
-        <div className="col-span-5 flex h-fit flex-col overflow-hidden rounded-xl border shadow-md">
+      <div className="gutter section-padding relative z-10 mx-auto flex w-full max-w-7xl grow">
+        <div className="flex h-full w-3/5">{children}</div>
+        <div className="sticky top-40 flex h-fit w-2/5 flex-col overflow-hidden rounded-xl border shadow-md">
           <Suspense
             fallback={
               <>
@@ -322,7 +322,7 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
             </Await>
           </Suspense>
         </div>
-      </Grid>
+      </div>
     </div>
   )
 }

@@ -37,7 +37,6 @@ const CollectionPage: React.FC<Props> = async ({
   params: { id },
   searchParams,
 }) => {
-  console.log("search params::: ", searchParams)
   return (
     <div className="section">
       <Suspense
@@ -116,78 +115,6 @@ const CollectionPage: React.FC<Props> = async ({
         >
           {(spaces) => (
             <div className="gutter">
-              <ul className="mt-4 w-full lg:mt-8">
-                {spaces.map((space) => (
-                  <li
-                    key={space.id}
-                    className="group gutter flex w-full grow cursor-pointer items-center justify-between py-3 hover:bg-accent"
-                  >
-                    <span>{space.title}</span>
-                    <span className="flex items-center gap-2">
-                      <ClientAvatar
-                        size={"xs"}
-                        src={space.organization.logo?.fileUrl}
-                        fallback={space.organization.name[0]}
-                      />
-                      {space.organization.name}
-                    </span>
-                    <span>
-                      {space.proposals.length ? (
-                        space.proposals?.map((propo) => (
-                          <Badge key={propo.id}>{propo.status}</Badge>
-                        ))
-                      ) : (
-                        <Link
-                          className="text-blue-500 hover:underline"
-                          href={`/spaces/${space.id}/apply`}
-                        >
-                          Apply Now
-                        </Link>
-                      )}
-                    </span>
-                    <span className="flex items-center gap-2">
-                      <Badge>{space.type?.key}</Badge>
-                      <Badge>{space.category?.key}</Badge>
-                    </span>
-                    <TooltipProvider>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          Amenities: {space.amenities.length}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <ul className="flex flex-wrap gap-2">
-                            {space.amenities.map((amenity) => (
-                              <li
-                                key={amenity.id}
-                                className="flex items-center gap-1"
-                              >
-                                <Badge>{amenity.label}</Badge>
-                              </li>
-                            ))}
-                          </ul>
-                        </TooltipContent>
-                      </Tooltip>
-                      <Tooltip>
-                        <TooltipTrigger>
-                          Features: {space.highlights.length}
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <ul className="flex flex-wrap gap-2">
-                            {space.highlights.map((feature) => (
-                              <li
-                                key={feature.id}
-                                className="flex items-center gap-1"
-                              >
-                                <Badge>{feature.label}</Badge>
-                              </li>
-                            ))}
-                          </ul>
-                        </TooltipContent>
-                      </Tooltip>
-                    </TooltipProvider>
-                  </li>
-                ))}
-              </ul>
               {spaces.length ? (
                 <DataTable
                   className="mt-4 w-full lg:mt-8"

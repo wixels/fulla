@@ -35,7 +35,7 @@ type Props = {
   filterables: Filterables
   className?: string
   position?: "center" | "end" | "start"
-  zodSchema: z.ZodSchema
+  zodSchema?: z.ZodSchema
 }
 export const Filterables: React.FC<Props> = ({
   filterables,
