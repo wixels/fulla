@@ -21,9 +21,6 @@ import { Title } from "@/components/ui/title"
 import { Filters } from "./_filters"
 
 export default function Page({ searchParams }: { searchParams: QueryParams }) {
-  console.log("searchParams::: ", searchParams)
-  // const search = useSearchParams()
-  // console.log("sear::: ", search)
   const [offset, setOffset] = useState<number | undefined>()
   const [list, setList] = useState<HTMLUListElement | null>(null)
   const [value, setValue] = useState<string>("")

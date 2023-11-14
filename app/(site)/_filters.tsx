@@ -1,17 +1,18 @@
 "use client"
 
+import { on } from "events"
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CircleDot, Sliders } from "lucide-react"
-import { useForm, useWatch } from "react-hook-form"
+import { CircleDot, Sliders, X } from "lucide-react"
+import { useForm } from "react-hook-form"
 import Balancer from "react-wrap-balancer"
 import { Drawer } from "vaul"
 import * as z from "zod"
 
-import { generateUrlWithSafeParams } from "@/lib/generate-url-with-safe-params"
 import { trpc } from "@/lib/trpc/client"
 import { cn } from "@/lib/utils"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
@@ -26,27 +27,29 @@ import {
   FormField,
   FormItem,
   FormLabel,
+  FormMessage,
 } from "@/components/ui/form"
 import { Paragraph } from "@/components/ui/paragraph"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Separator } from "@/components/ui/separator"
 import { Slider } from "@/components/ui/slider"
 import { Title } from "@/components/ui/title"
-import DragModal from "@/components/drag-modal"
 import { Grid, gridVariants } from "@/components/grid"
 
 type Props = {
   defaultValues?: {}
 }
+
 const FormSchema = z.object({
-  type: z.string().optional().nullable(),
-  //   price: z.array(z.number()).optional().nullable(),
-  //   rooms: z.string().optional().nullable(),
-  //   desks: z.string().optional().nullable(),
-  //   floors: z.string().optional().nullable(),
-  //   highlights: z.array(z.string()).optional().nullish(),
-  //   amenities: z.array(z.string()).optional().nullish(),
-  //   offerings: z.array(z.string()).optional().nullish(),
+  type: z.string().optional(),
+  price: z.array(z.number()).optional(),
+  rooms: z.string().optional(),
+  desks: z.string().optional(),
+  floors: z.string().optional(),
+  items: z.array(z.string()).optional(),
+  offerings: z.array(z.string()).optional(),
+  highlights: z.array(z.string()).optional(),
+  amenities: z.array(z.string()).optional(),
 })
 export const Filters: React.FC<Props> = ({ defaultValues }) => {
   const urlSearchParams = useSearchParams()
@@ -61,22 +64,61 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      //   price: [0, 100],
-      //   rooms: "0",
-      //   desks: "0",
-      //   floors: "0",
-      //   highlights: [""],
-      //   offerings: [""],
-      //   amenities: [""],
-      //   ...defaultValues,
+      type: "",
+      price: [1500, 8000],
+      rooms: "0",
+      desks: "0",
+      floors: "0",
+      offerings: [],
+      highlights: [],
+      amenities: [],
+      ...defaultValues,
     },
   })
 
   const watchPrice = form.watch("price")
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
+    const params = new URLSearchParams()
+    for (const [key, value] of Object.entries(data)) {
+      if (Array.isArray(value)) {
+        if (key === "price") {
+          if (value[0] === 1500 && value[1] === 8000) {
+          } else {
+            for (const item of value) {
+              if (item !== "") {
+                params.append(key, item.toString())
+              }
+            }
+          }
+        } else {
+          for (const item of value) {
+            if (item !== "") {
+              params.append(key, item.toString())
+            }
+          }
+        }
+      } else {
+        if (value && value !== "" && value !== "0") params.set(key, value)
+      }
+    }
     setOpen(false)
-    // router.replace(generateUrlWithSafeParams(urlSearchParams, data))
+    const queryString = params.toString()
+    router.replace(`/${queryString ? `?${queryString}` : ""}`)
+  }
+  function onReset() {
+    form.reset({
+      price: [1500, 8000],
+      rooms: "0",
+      desks: "0",
+      floors: "0",
+      offerings: [],
+      highlights: [],
+      amenities: [],
+      type: "",
+    })
+    setOpen(false)
+    router.replace("/")
   }
   const formLabelClassName =
     "flex aspect-square cursor-pointer flex-col justify-between gap-2 rounded-lg border bg-background p-4 transition-all hover:border-zinc-600 hover:shadow peer-aria-checked:border-blue-500 peer-aria-checked:text-blue-600 peer-aria-checked:ring-1 peer-aria-checked:ring-blue-500"
@@ -85,17 +127,54 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
     "inline-flex h-9 px-5 items-center justify-center text-sm rounded-full border border-input hover:bg-accent hover:text-accent-foreground peer-aria-checked:bg-primary peer-aria-checked:text-primary-foreground peer-aria-checked:hover:bg-primary/90"
   return (
     <Drawer.Root shouldScaleBackground open={open} onOpenChange={setOpen}>
-      <Drawer.Trigger asChild>
-        <Button
-          size={"xs"}
-          variant={"secondary"}
-          className="flex items-center gap-2"
-          onClick={() => setOpen(true)}
-        >
-          <Sliders className="h-4 w-4" />
-          Filters
-        </Button>
-      </Drawer.Trigger>
+      <div className="flex items-center gap-1">
+        <Drawer.Trigger asChild>
+          <Button
+            size={"xs"}
+            variant={"outline"}
+            className="flex items-center gap-2 border-dashed"
+            onClick={() => setOpen(true)}
+          >
+            <Sliders className="h-4 w-4" />
+            Filters
+            {Object.entries(defaultValues ?? {}).length ? (
+              <>
+                <Separator orientation="vertical" className="mx-2 h-4" />
+                {Object.entries(defaultValues ?? {}).length < 2 ? (
+                  <div className="hidden space-x-2 lg:flex">
+                    {Object.entries(defaultValues ?? {}).map(([key, value]) => (
+                      <Badge
+                        key={key}
+                        className="rounded-sm px-1 font-normal capitalize"
+                      >
+                        {key}
+                      </Badge>
+                    ))}
+                  </div>
+                ) : (
+                  <Badge className="rounded-sm px-1 font-normal capitalize">
+                    {Object.entries(defaultValues ?? {}).length} Filters
+                  </Badge>
+                )}
+              </>
+            ) : null}
+          </Button>
+        </Drawer.Trigger>
+        {Object.entries(defaultValues ?? {}).length > 0 ? (
+          <Button
+            onClick={(e) => {
+              setOpen(false)
+              onReset()
+            }}
+            className="flex items-center gap-2 border border-dashed border-red-300 hover:bg-destructive/90 hover:text-destructive-foreground"
+            variant={"ghost"}
+            size="xs"
+          >
+            Clear
+            <X size={12} className="ml-2" />
+          </Button>
+        ) : null}
+      </div>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 z-10 bg-black/40" />
         <Drawer.Content className="fixed inset-0 z-10 mx-auto flex w-screen max-w-2xl flex-col justify-end">
@@ -106,12 +185,6 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                 onSubmit={form.handleSubmit(onSubmit)}
                 className="relative flex w-full flex-col justify-center gap-6 p-6 pb-24"
               >
-                <footer className="fixed inset-x-0 bottom-0 flex w-full items-center justify-between border-t border-border bg-background/70 p-6 backdrop-blur">
-                  <Button size={"sm"} variant={"link"}>
-                    Clear All
-                  </Button>
-                  <Button size={"sm"}>Save</Button>
-                </footer>
                 <Title
                   style={{ marginBottom: 0 }}
                   showAs={3}
@@ -130,7 +203,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                       <FormControl className={gridVariants({ gap: "xs" })}>
                         <RadioGroup
                           onValueChange={field.onChange}
-                          defaultValue={field.value}
+                          value={field.value}
                         >
                           {types &&
                             !typesLoading &&
@@ -158,6 +231,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                             ))}
                         </RadioGroup>
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )}
                 />
@@ -179,6 +253,8 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                     <FormItem className="space-y-2">
                       <FormControl>
                         <Slider
+                          min={0}
+                          max={10000}
                           defaultValue={field.value!}
                           onValueChange={field.onChange}
                           {...field}
@@ -190,7 +266,6 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                     </FormItem>
                   )}
                 />
-
                 <Separator />
                 <FormField
                   control={form.control}
@@ -202,7 +277,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                         <RadioGroup
                           className="flex flex-wrap items-center gap-3"
                           onValueChange={field.onChange}
-                          defaultValue={field.value ?? "0"}
+                          value={field.value}
                         >
                           {Array(9)
                             .fill(null)
@@ -236,7 +311,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                         <RadioGroup
                           className="flex flex-wrap items-center gap-3"
                           onValueChange={field.onChange}
-                          defaultValue={field.value ?? "0"}
+                          value={field.value}
                         >
                           {Array(9)
                             .fill(null)
@@ -270,7 +345,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                         <RadioGroup
                           className="flex flex-wrap items-center gap-3"
                           onValueChange={field.onChange}
-                          defaultValue={field.value ?? "0"}
+                          value={field.value}
                         >
                           {Array(9)
                             .fill(null)
@@ -325,7 +400,6 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                                     <FormItem
                                       key={item.id}
                                       className="col-span-6 flex items-center gap-2"
-                                      //   className="flex flex-row items-start space-x-3 space-y-0"
                                     >
                                       <FormControl>
                                         <Checkbox
@@ -335,7 +409,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                                           onCheckedChange={(checked) => {
                                             return checked
                                               ? field.onChange([
-                                                  ...field.value!,
+                                                  ...(field.value ?? []),
                                                   item.id,
                                                 ])
                                               : field.onChange(
@@ -395,7 +469,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                                             onCheckedChange={(checked) => {
                                               return checked
                                                 ? field.onChange([
-                                                    ...field.value!,
+                                                    ...(field.value ?? []),
                                                     item.id,
                                                   ])
                                                 : field.onChange(
@@ -448,7 +522,7 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                                             onCheckedChange={(checked) => {
                                               return checked
                                                 ? field.onChange([
-                                                    ...field.value!,
+                                                    ...(field.value ?? []),
                                                     item.id,
                                                   ])
                                                 : field.onChange(
@@ -481,6 +555,19 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                     </CollapsibleTrigger>
                   )}
                 </Collapsible>
+                <footer className="fixed inset-x-0 bottom-0 flex w-full items-center justify-between border-t border-border bg-background/70 p-6 backdrop-blur">
+                  <Button
+                    type="button"
+                    onClick={onReset}
+                    size={"sm"}
+                    variant={"link"}
+                  >
+                    Clear All
+                  </Button>
+                  <Button type="submit" size={"sm"}>
+                    Save
+                  </Button>
+                </footer>
               </form>
             </Form>
           </div>
