@@ -11,7 +11,6 @@ import { cn } from "@/lib/utils"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 
 import { Icons } from "../icons"
-import { Button } from "../ui/button"
 import {
   CommandDialog,
   CommandEmpty,

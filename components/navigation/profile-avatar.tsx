@@ -38,6 +38,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
+import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
@@ -80,116 +85,113 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
         <div className="flex items-center gap-4">
           {session.user.organizations && session.user.organizations.length ? (
             <>
-              <NavigationMenu>
-                <NavigationMenuList>
-                  <NavigationMenuItem>
-                    <NavigationMenuTrigger>
-                      <Avatar size={"sm"}>
-                        <AvatarImage
-                          src={
-                            session.user.organizations?.[0].organization.logo
-                              ?.fileUrl
-                          }
-                          alt="Org image"
-                        />
-                      </Avatar>
-                    </NavigationMenuTrigger>
-                    <NavigationMenuContent>
-                      <Grid gap={"none"} className="md:w-[400px] lg:w-[500px]">
-                        <Command className="col-span-6 rounded-r-none border-r ">
-                          <CommandInput placeholder="Type a command or search..." />
-                          <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup heading="Personal Account">
-                              <CommandItem
-                                onSelect={() =>
-                                  runCommand(() => router.push("/profile"))
-                                }
-                                className="flex items-center gap-2"
-                              >
-                                <Avatar size={"xs"}>
-                                  <AvatarImage
-                                    src={session?.user?.image ?? undefined}
-                                  />
-                                  <AvatarFallback>
-                                    {session.user?.name?.[0]}
-                                  </AvatarFallback>
-                                </Avatar>
-                                <span>{session.user?.name}</span>
-                              </CommandItem>
-                            </CommandGroup>
-                            <CommandSeparator />
-                            <CommandGroup heading="Companies">
-                              {session.user?.organizations.map((org) => (
-                                <CommandItem
-                                  key={org.id}
-                                  onSelect={() =>
-                                    runCommand(() =>
-                                      router.push(
-                                        "/org/" +
-                                          org.organization.id +
-                                          "/properties"
-                                      )
-                                    )
-                                  }
-                                  className="flex items-center gap-2"
-                                >
-                                  <Avatar size={"xs"}>
-                                    <AvatarImage
-                                      src={org.organization.logo?.fileUrl}
-                                    />
-                                    <AvatarFallback>
-                                      {org.organization.name?.[0]}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span>{org.organization.name}</span>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                        <Command className="col-span-6">
-                          <CommandInput placeholder="Type a command or search..." />
-                          <CommandList>
-                            <CommandEmpty>No results found.</CommandEmpty>
-                            <CommandGroup heading="Properties">
-                              {properties.data?.map((prop) => (
-                                <CommandItem
-                                  key={prop.id}
-                                  onSelect={() =>
-                                    runCommand(() =>
-                                      router.push(
-                                        "/org/" +
-                                          prop.organization.id +
-                                          "/properties/" +
-                                          prop.id +
-                                          "/overview"
-                                      )
-                                    )
-                                  }
-                                  className="flex items-center gap-2"
-                                >
-                                  <Avatar size={"xs"}>
-                                    <AvatarImage src={prop.logo?.fileUrl} />
-                                    <AvatarFallback>
-                                      {prop.name?.[0]}
-                                    </AvatarFallback>
-                                  </Avatar>
-                                  <span>{prop.name}</span>
-                                </CommandItem>
-                              ))}
-                            </CommandGroup>
-                            <CommandSeparator />
-                            <CommandGroup heading="Favourites">
-                              <CommandItem className="flex items-center gap-2"></CommandItem>
-                            </CommandGroup>
-                          </CommandList>
-                        </Command>
-                      </Grid>
-                    </NavigationMenuContent>
-                  </NavigationMenuItem>
-                </NavigationMenuList>
-              </NavigationMenu>
+              <HoverCard>
+                <HoverCardTrigger>
+                  <Avatar size={"sm"}>
+                    <AvatarImage
+                      src={
+                        session.user.organizations?.[0].organization.logo
+                          ?.fileUrl
+                      }
+                      alt="Org image"
+                    />
+                  </Avatar>
+                </HoverCardTrigger>
+                <HoverCardContent align="end" className="p-0 w-screen max-w-lg">
+                  <Grid gap={"none"}>
+                    <Command className="col-span-6 rounded-r-none border-r ">
+                      <CommandInput placeholder="Type a command or search..." />
+                      <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup heading="Personal Account">
+                          <CommandItem
+                            onSelect={() =>
+                              runCommand(() => router.push("/profile"))
+                            }
+                            className="flex items-center gap-2"
+                          >
+                            <Avatar size={"xs"}>
+                              <AvatarImage
+                                src={session?.user?.image ?? undefined}
+                              />
+                              <AvatarFallback>
+                                {session.user?.name?.[0]}
+                              </AvatarFallback>
+                            </Avatar>
+                            <span>{session.user?.name}</span>
+                          </CommandItem>
+                        </CommandGroup>
+                        <CommandSeparator />
+                        <CommandGroup heading="Companies">
+                          {session.user?.organizations.map((org) => (
+                            <CommandItem
+                              key={org.id}
+                              onSelect={() =>
+                                runCommand(() =>
+                                  router.push(
+                                    "/org/" +
+                                      org.organization.id +
+                                      "/properties"
+                                  )
+                                )
+                              }
+                              className="flex items-center gap-2"
+                            >
+                              <Avatar size={"xs"}>
+                                <AvatarImage
+                                  src={org.organization.logo?.fileUrl}
+                                />
+                                <AvatarFallback>
+                                  {org.organization.name?.[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{org.organization.name}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                    <Command className="col-span-6">
+                      <CommandInput placeholder="Type a command or search..." />
+                      <CommandList>
+                        <CommandEmpty>No results found.</CommandEmpty>
+                        <CommandGroup heading="Properties">
+                          {properties.data?.map((prop) => (
+                            <CommandItem
+                              key={prop.id}
+                              onSelect={() =>
+                                runCommand(() =>
+                                  router.push(
+                                    "/org/" +
+                                      prop.organization.id +
+                                      "/properties/" +
+                                      prop.id +
+                                      "/overview"
+                                  )
+                                )
+                              }
+                              className="flex items-center gap-2"
+                            >
+                              <Avatar size={"xs"}>
+                                <AvatarImage src={prop.logo?.fileUrl} />
+                                <AvatarFallback>
+                                  {prop.name?.[0]}
+                                </AvatarFallback>
+                              </Avatar>
+                              <span>{prop.name}</span>
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                        <CommandSeparator />
+                        <CommandGroup heading="Favourites">
+                          <CommandItem className="flex items-center gap-2"></CommandItem>
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </Grid>
+                </HoverCardContent>
+              </HoverCard>
+
               <div className="h-6 w-0.5 rotate-[-25deg] bg-muted-foreground/20"></div>
             </>
           ) : null}
