@@ -1,21 +1,15 @@
 "use client"
 
-import { Dispatch, SetStateAction, useState } from "react"
-import Link from "next/link"
-import { useSearchParams } from "next/navigation"
-import { Sliders } from "lucide-react"
+import { useState } from "react"
 
-import { Button, buttonVariants } from "@/components/ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
-  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "@/components/ui/navigation-menu"
-import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"
 
 import { Filters } from "./_filters"

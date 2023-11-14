@@ -229,6 +229,7 @@ const Apply: React.FC<Props> = ({}) => {
           />
           <FormField
             control={form.control}
+            // @ts-ignore
             name="documents"
             render={({ field }) => (
               <FormItem>
