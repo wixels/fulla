@@ -1,6 +1,5 @@
 "use client"
 
-import { on } from "events"
 import { useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
@@ -11,6 +10,7 @@ import { Drawer } from "vaul"
 import * as z from "zod"
 
 import { trpc } from "@/lib/trpc/client"
+import { serverClient } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -38,6 +38,10 @@ import { Grid, gridVariants } from "@/components/grid"
 
 type Props = {
   defaultValues?: {}
+  types: Awaited<ReturnType<typeof serverClient["types"]>>
+  amenities: Awaited<ReturnType<typeof serverClient["amenities"]>>
+  highlights: Awaited<ReturnType<typeof serverClient["highlights"]>>
+  offerings: Awaited<ReturnType<typeof serverClient["offerings"]>>
 }
 
 const FormSchema = z.object({
@@ -51,14 +55,15 @@ const FormSchema = z.object({
   highlights: z.array(z.string()).optional(),
   amenities: z.array(z.string()).optional(),
 })
-export const Filters: React.FC<Props> = ({ defaultValues }) => {
-  const urlSearchParams = useSearchParams()
+export const FiltersModal: React.FC<Props> = ({
+  defaultValues,
+  types,
+  amenities,
+  highlights,
+  offerings,
+}) => {
   const router = useRouter()
   const [open, setOpen] = useState(false)
-  const { data: types, isLoading: typesLoading } = trpc.types.useQuery()
-  const { data: amenities } = trpc.amenities.useQuery()
-  const { data: offerings } = trpc.offerings.useQuery()
-  const { data: highlights } = trpc.highlights.useQuery()
 
   const [collapsibleOpen, setCollapsibleOpen] = useState(false)
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -205,30 +210,28 @@ export const Filters: React.FC<Props> = ({ defaultValues }) => {
                           onValueChange={field.onChange}
                           value={field.value}
                         >
-                          {types &&
-                            !typesLoading &&
-                            types.map((opt) => (
-                              <FormItem className="col-span-4" key={opt.key}>
-                                <FormControl>
-                                  <RadioGroupItem
-                                    className="peer hidden"
-                                    value={opt.key!}
-                                  />
-                                </FormControl>
-                                <FormLabel className={cn(formLabelClassName)}>
-                                  <CircleDot />
-                                  <div>
-                                    <Paragraph size="sm">{opt.label}</Paragraph>
-                                    <Paragraph
-                                      className="text-muted-foreground/50"
-                                      size="xs"
-                                    >
-                                      {opt.description}
-                                    </Paragraph>
-                                  </div>
-                                </FormLabel>
-                              </FormItem>
-                            ))}
+                          {types.map((opt) => (
+                            <FormItem className="col-span-4" key={opt.key}>
+                              <FormControl>
+                                <RadioGroupItem
+                                  className="peer hidden"
+                                  value={opt.key!}
+                                />
+                              </FormControl>
+                              <FormLabel className={cn(formLabelClassName)}>
+                                <CircleDot />
+                                <div>
+                                  <Paragraph size="sm">{opt.label}</Paragraph>
+                                  <Paragraph
+                                    className="text-muted-foreground/50"
+                                    size="xs"
+                                  >
+                                    {opt.description}
+                                  </Paragraph>
+                                </div>
+                              </FormLabel>
+                            </FormItem>
+                          ))}
                         </RadioGroup>
                       </FormControl>
                       <FormMessage />

@@ -1,80 +1,56 @@
-"use client"
+import { Suspense } from "react"
 
-import { useState } from "react"
-
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "@/components/ui/navigation-menu"
+import { serverClient } from "@/lib/trpc/server"
+import { Button } from "@/components/ui/button"
 import { Title } from "@/components/ui/title"
+import { Await } from "@/components/await"
+import { FiltersHoverable } from "@/components/space-filters/filters-hoverable"
+import { FiltersModal } from "@/components/space-filters/filters-modal"
+import { Spin } from "@/components/spin"
 
-import { Filters } from "./_filters"
-
-export default function Page({ searchParams }: { searchParams: QueryParams }) {
-  const [offset, setOffset] = useState<number | undefined>()
-  const [list, setList] = useState<HTMLUListElement | null>(null)
-  const [value, setValue] = useState<string>("")
-  const onNodeUpdate = (
-    trigger: HTMLButtonElement | null,
-    itemValue: string | undefined
-  ) => {
-    if (trigger && list && value === itemValue) {
-      const listWidth = list.offsetWidth
-      const listCenter = listWidth / 2
-
-      const triggerOffsetRight =
-        listWidth -
-        trigger.offsetLeft -
-        trigger.offsetWidth +
-        trigger.offsetWidth / 2
-
-      setOffset(Math.round(listCenter - triggerOffsetRight))
-    } else if (value === "" || !value) {
-      setOffset(undefined)
-    }
-    return trigger
-  }
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: QueryParams
+}) {
   return (
     <div className="gutter section">
       <Title className="font-mono font-semibold" level={1} showAs={2}>
         Browse
       </Title>
       <div className="flex items-center gap-5">
-        <Filters defaultValues={searchParams} />
+        <Suspense
+          fallback={
+            <Button
+              size={"xs"}
+              variant={"outline"}
+              className="flex items-center gap-2 border-dashed"
+            >
+              <Spin /> Filters
+            </Button>
+          }
+        >
+          <Await
+            promise={Promise.all([
+              await serverClient.types(),
+              await serverClient.amenities(),
+              await serverClient.highlights(),
+              await serverClient.offerings(),
+            ])}
+          >
+            {([types, amenities, highlights, offerings]) => (
+              <FiltersModal
+                types={types}
+                amenities={amenities}
+                highlights={highlights}
+                offerings={offerings}
+                defaultValues={searchParams}
+              />
+            )}
+          </Await>
+        </Suspense>
         <div className="h-5 w-[1px] bg-border"></div>
-        <NavigationMenu hideViewport onValueChange={setValue}>
-          <NavigationMenuList ref={setList}>
-            {["All", "two", "three"].map((value, i) => (
-              <NavigationMenuItem key={value} value={value}>
-                <NavigationMenuTrigger
-                  ref={(node) => onNodeUpdate(node, value)}
-                >
-                  {value}
-                </NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="w-72 p-6">
-                    Lorem ipsum, dolor sit amet consectetur adipisicing elit. At
-                    iure quasi assumenda. Quaerat, eligendi! Adipisci alias,
-                    soluta libero saepe distinctio placeat molestias laborum
-                    dolorem doloremque.
-                  </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            ))}
-          </NavigationMenuList>
-
-          <NavigationMenuViewport
-            offset={offset}
-            style={{
-              display: !offset ? "none" : undefined,
-              transform: `translateX(${offset}px)`,
-            }}
-          />
-        </NavigationMenu>
+        <FiltersHoverable />
       </div>
     </div>
   )

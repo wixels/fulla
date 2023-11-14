@@ -5,7 +5,6 @@ import Link from "next/link"
 import { useRouter } from "next/navigation"
 import {
   Bookmark,
-  CreditCard,
   LogOut,
   Moon,
   PlusCircle,
@@ -42,13 +41,6 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
 import { Icons } from "@/components/icons"
 
 import { Grid } from "../grid"
@@ -97,7 +89,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                     />
                   </Avatar>
                 </HoverCardTrigger>
-                <HoverCardContent align="end" className="p-0 w-screen max-w-lg">
+                <HoverCardContent align="end" className="w-screen max-w-lg p-0">
                   <Grid gap={"none"}>
                     <Command className="col-span-6 rounded-r-none border-r ">
                       <CommandInput placeholder="Type a command or search..." />
