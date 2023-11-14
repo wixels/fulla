@@ -65,9 +65,6 @@ const FormSchema = z.object({
   date: z.date({
     required_error: "A date is required",
   }),
-  documents: z
-    .instanceof(FileList)
-    .refine((val) => val.length > 0, "File is required"),
   letter: z.string(),
 })
 
@@ -91,6 +88,7 @@ const Apply: React.FC<Props> = ({}) => {
   })
   const { toast } = useToast()
   const onDropAndOnChange = useCallback(async (files: FileWithPath[]) => {
+    // log the files
     // if (files && files.length) {
     //   const data = await Promise.all(
     //     files.map(async (file) => {

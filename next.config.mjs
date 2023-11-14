@@ -2,20 +2,13 @@
 const nextConfig = {
   reactStrictMode: false,
   experimental: {
-    appDir: true,
-    serverActions: true,
-    // serverActions: true,
+    ppr: true,
   },
   async redirects() {
     return [
       {
-        source: "/",
-        destination: "/browse/desks/agile",
-        permanent: true,
-      },
-      {
-        source: "/desks/:path*",
-        destination: "/browse/desks/agile",
+        source: "/browse/desks/agile",
+        destination: "/",
         permanent: true,
       },
     ]

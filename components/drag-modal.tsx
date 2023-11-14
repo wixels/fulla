@@ -4,18 +4,15 @@ import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Drawer } from "vaul"
 
-import { cn } from "@/lib/utils"
-
-import { ScrollArea } from "./ui/scroll-area"
-
 type Props = {
   children: React.ReactNode
   hideHandle?: boolean
   className?: string
+  onClose?: () => void // Add this prop
 }
 const DragModal: React.FC<Props> = ({
   children,
-  className = "overflow-hidden absolute inset-x-0 bottom-0 top-6 z-10 mx-auto h-full w-screen max-w-2xl rounded-t-[10px] bg-background",
+  onClose,
   hideHandle = false,
 }) => {
   const router = useRouter()
@@ -27,7 +24,11 @@ const DragModal: React.FC<Props> = ({
       onOpenChange={(e) => {
         setOpen(e)
         if (!e) {
-          setTimeout(() => router.back(), 500)
+          if (onClose) {
+            onClose() // Call onClose if provided
+          } else {
+            setTimeout(() => router.back(), 500)
+          }
         }
       }}
     >
