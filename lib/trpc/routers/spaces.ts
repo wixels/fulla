@@ -44,19 +44,19 @@ export const spacesRouter = router({
         }
         case "rooms": {
           where.rooms = {
-            gte: opts.input.rooms,
+            gte: parseInt(opts.input.rooms!),
           }
           break
         }
         case "desks": {
           where.desks = {
-            gte: opts.input.desks,
+            gte: parseInt(opts.input.desks!),
           }
           break
         }
         case "floors": {
           where.floors = {
-            gte: opts.input.floors,
+            gte: parseInt(opts.input.floors!),
           }
           break
         }
