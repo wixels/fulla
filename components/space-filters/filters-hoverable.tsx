@@ -91,6 +91,7 @@ export const FiltersHoverable: React.FC<Props> = ({ orgs }) => {
                 </Button>
               </HoverCardTrigger>
               <HoverCardContent className="p-2">
+                {/* @ts-ignore */}
                 <PublishedSpaceCard space={org.spaces[0]} />
               </HoverCardContent>
             </HoverCard>

@@ -71,8 +71,6 @@ export default async function Page({
                 .map((_, i) => (
                   <div className="col-span-12 flex w-full flex-col gap-4 md:col-span-6 xl:col-span-4 2xl:col-span-3">
                     <Skeleton className="aspect-[16/11] object-cover" />
-
-                    {/* <Skeleton className="w-full h-12" /> */}
                     <div className="flex items-center justify-between gap-x-3">
                       <div className="flex w-full items-center gap-3">
                         <Skeleton className="h-8 w-8 rounded-full" />
