@@ -48,6 +48,49 @@ export const spacesRouter = router({
           }
           break
         }
+        case "desks": {
+          where.desks = {
+            gte: opts.input.desks,
+          }
+          break
+        }
+        case "floors": {
+          where.floors = {
+            gte: opts.input.floors,
+          }
+          break
+        }
+        case "offerings": {
+          where.offerings = {
+            some: {
+              id: {
+                in: opts.input.offerings as string[],
+              },
+            },
+          }
+          break
+        }
+        case "highlights": {
+          where.highlights = {
+            some: {
+              id: {
+                in: opts.input.highlights as string[],
+              },
+            },
+          }
+          break
+        }
+        case "amenities": {
+          where.amenities = {
+            some: {
+              id: {
+                in: opts.input.amenities as string[],
+              },
+            },
+          }
+          break
+        }
+
         default:
           break
       }

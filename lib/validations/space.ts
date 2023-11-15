@@ -23,7 +23,6 @@ export const spaceQuerySchema = z.object({
   rooms: z.string().optional(),
   desks: z.string().optional(),
   floors: z.string().optional(),
-  items: z.array(z.string()).optional(),
   offerings: queryStringArray.optional(),
   highlights: queryStringArray.optional(),
   amenities: queryStringArray.optional(),

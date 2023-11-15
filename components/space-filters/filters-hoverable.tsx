@@ -71,7 +71,7 @@ export const FiltersHoverable: React.FC<Props> = ({ orgs }) => {
       {orgs.map((org) => (
         <>
           {org.spaces.length > 0 ? (
-            <HoverCard openDelay={20} closeDelay={0} key={org.id}>
+            <HoverCard key={org.id}>
               <HoverCardTrigger asChild>
                 <Button
                   size="xs"

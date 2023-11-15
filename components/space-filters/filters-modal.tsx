@@ -97,6 +97,7 @@ export const FiltersModal: React.FC<Props> = ({
     if (data?.offerings?.length === 0) delete data.offerings
     if (data?.amenities?.length === 0) delete data.amenities
     if (data?.highlights?.length === 0) delete data.highlights
+    if (data?.type === "") delete data.type
 
     setMultipleQueries(data)
     setOpen(false)
