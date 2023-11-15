@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { CircleDot, Sliders, X } from "lucide-react"
 import { useForm } from "react-hook-form"
@@ -9,9 +9,9 @@ import Balancer from "react-wrap-balancer"
 import { Drawer } from "vaul"
 import * as z from "zod"
 
-import { trpc } from "@/lib/trpc/client"
 import { serverClient } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
+import { spaceQuerySchema } from "@/lib/validations/space"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -44,16 +44,16 @@ type Props = {
   offerings: Awaited<ReturnType<typeof serverClient["offerings"]>>
 }
 
-const FormSchema = z.object({
-  type: z.string().optional(),
-  price: z.array(z.number()).optional(),
-  rooms: z.string().optional(),
-  desks: z.string().optional(),
-  floors: z.string().optional(),
-  items: z.array(z.string()).optional(),
-  offerings: z.array(z.string()).optional(),
-  highlights: z.array(z.string()).optional(),
-  amenities: z.array(z.string()).optional(),
+const FormSchema = spaceQuerySchema.pick({
+  type: true,
+  price: true,
+  rooms: true,
+  desks: true,
+  floors: true,
+  items: true,
+  offerings: true,
+  highlights: true,
+  amenities: true,
 })
 export const FiltersModal: React.FC<Props> = ({
   defaultValues,
@@ -130,6 +130,9 @@ export const FiltersModal: React.FC<Props> = ({
 
   const numbersFormLabelClassName =
     "inline-flex h-9 px-5 items-center justify-center text-sm rounded-full border border-input hover:bg-accent hover:text-accent-foreground peer-aria-checked:bg-primary peer-aria-checked:text-primary-foreground peer-aria-checked:hover:bg-primary/90"
+
+  const searchParamsEntries = Object.entries(defaultValues ?? {})
+  console.log("searchParamsEntries::: ", searchParamsEntries)
   return (
     <Drawer.Root shouldScaleBackground open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-1">
@@ -142,12 +145,12 @@ export const FiltersModal: React.FC<Props> = ({
           >
             <Sliders className="h-4 w-4" />
             Filters
-            {Object.entries(defaultValues ?? {}).length ? (
+            {searchParamsEntries.length ? (
               <>
                 <Separator orientation="vertical" className="mx-2 h-4" />
-                {Object.entries(defaultValues ?? {}).length < 2 ? (
+                {searchParamsEntries.length < 2 ? (
                   <div className="hidden space-x-2 lg:flex">
-                    {Object.entries(defaultValues ?? {}).map(([key, value]) => (
+                    {searchParamsEntries.map(([key, value]) => (
                       <Badge
                         key={key}
                         className="rounded-sm px-1 font-normal capitalize"
@@ -158,14 +161,14 @@ export const FiltersModal: React.FC<Props> = ({
                   </div>
                 ) : (
                   <Badge className="rounded-sm px-1 font-normal capitalize">
-                    {Object.entries(defaultValues ?? {}).length} Filters
+                    {searchParamsEntries.length} Filters
                   </Badge>
                 )}
               </>
             ) : null}
           </Button>
         </Drawer.Trigger>
-        {Object.entries(defaultValues ?? {}).length > 0 ? (
+        {searchParamsEntries.length > 0 ? (
           <Button
             onClick={(e) => {
               setOpen(false)

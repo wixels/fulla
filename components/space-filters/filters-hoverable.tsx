@@ -1,18 +1,28 @@
 "use client"
 
 import { useState } from "react"
+import Link from "next/link"
 
+import { serverClient } from "@/lib/trpc/server"
+import { spaceQuerySchema } from "@/lib/validations/space"
+import { useTypedQuery } from "@/hooks/use-typed-query"
+
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
+import { buttonVariants } from "../ui/button"
 import {
   NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
+  NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
   NavigationMenuViewport,
 } from "../ui/navigation-menu"
 
-type Props = {}
-export const FiltersHoverable: React.FC<Props> = ({}) => {
+type Props = {
+  orgs: Awaited<ReturnType<typeof serverClient.org.all>>
+}
+export const FiltersHoverable: React.FC<Props> = ({ orgs }) => {
   const [offset, setOffset] = useState<number | undefined>()
   const [list, setList] = useState<HTMLUListElement | null>(null)
   const [value, setValue] = useState<string>("")
@@ -36,13 +46,43 @@ export const FiltersHoverable: React.FC<Props> = ({}) => {
     }
     return trigger
   }
+
+  const { data, setQuery, removeByKey } = useTypedQuery(spaceQuerySchema)
+
   return (
-    <NavigationMenu hideViewport onValueChange={setValue}>
+    <NavigationMenu hideViewport={orgs.length > 1} onValueChange={setValue}>
       <NavigationMenuList ref={setList}>
-        {["All", "two", "three"].map((value, i) => (
-          <NavigationMenuItem key={value} value={value}>
-            <NavigationMenuTrigger ref={(node) => onNodeUpdate(node, value)}>
-              {value}
+        <NavigationMenuItem>
+          {/* <Link href="/" legacyBehavior passHref> */}
+          <NavigationMenuLink
+            onClick={() => {
+              removeByKey("orgId")
+            }}
+            className={buttonVariants({
+              rounded: "full",
+              variant: data.orgId ? "outline" : "default",
+              size: "sm",
+              className: "cursor-pointer",
+            })}
+          >
+            All
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+        {orgs.map((org, i) => (
+          <NavigationMenuItem key={org.id} value={org.id}>
+            <NavigationMenuTrigger
+              variant={data.orgId === org.id ? "default" : "outline"}
+              onClick={() => {
+                setQuery("orgId", org.id)
+              }}
+              className="flex items-center gap-2"
+              ref={(node) => onNodeUpdate(node, org.id)}
+            >
+              <Avatar size={"xs"}>
+                <AvatarFallback>{org.name[0]}</AvatarFallback>
+                <AvatarImage src={org.logo?.fileUrl} alt={org.name} />
+              </Avatar>
+              {org.name}
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <div className="w-72 p-6">
@@ -56,13 +96,15 @@ export const FiltersHoverable: React.FC<Props> = ({}) => {
         ))}
       </NavigationMenuList>
 
-      <NavigationMenuViewport
-        offset={offset}
-        style={{
-          display: !offset ? "none" : undefined,
-          transform: `translateX(${offset}px)`,
-        }}
-      />
+      {orgs.length > 1 ? (
+        <NavigationMenuViewport
+          offset={offset}
+          style={{
+            display: !offset ? "none" : undefined,
+            transform: `translateX(${offset}px)`,
+          }}
+        />
+      ) : null}
     </NavigationMenu>
   )
 }

@@ -50,7 +50,11 @@ export default async function Page({
           </Await>
         </Suspense>
         <div className="h-5 w-[1px] bg-border"></div>
-        <FiltersHoverable />
+        <Suspense fallback="fetching orgs">
+          <Await promise={serverClient.org.all()}>
+            {(orgs) => <FiltersHoverable orgs={orgs} />}
+          </Await>
+        </Suspense>
       </div>
     </div>
   )

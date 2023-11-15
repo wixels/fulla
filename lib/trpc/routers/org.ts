@@ -6,6 +6,19 @@ import { db } from "@/lib/db"
 import { privateProcedure, publicProcedure, router } from "../trpc"
 
 export const orgRouter = router({
+  all: publicProcedure.query(async (opts) => {
+    return await db.organization.findMany({
+      include: {
+        logo: true,
+        spaces: {
+          where: {
+            status: "published",
+          },
+          take: 1,
+        },
+      },
+    })
+  }),
   property: privateProcedure
     .input(z.object({ id: z.string() }))
     .query(async (opts) => {
