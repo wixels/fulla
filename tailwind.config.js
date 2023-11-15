@@ -76,6 +76,13 @@ module.exports = {
       const lg = theme("screens.lg", {})
       const xl = theme("screens.xl", {})
       addComponents({
+        ".no-scrollbar": {
+          scrollbarWidth: "none",
+          "-ms-overflow-style": "none",
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+        },
         ".gutter": {
           paddingLeft: theme("spacing.6"),
           paddingRight: theme("spacing.6"),

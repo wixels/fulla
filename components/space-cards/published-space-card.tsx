@@ -132,7 +132,7 @@ export const PublishedSpaceCard: React.FC<Props> = ({ space }) => {
     <MotionConfig transition={{ duration: 0.7, ease: [0.32, 0.72, 0, 1] }}>
       <motion.div
         ref={ref}
-        className="group flex w-full grid-cols-1 flex-col gap-4"
+        className="group col-span-12 flex w-full flex-col gap-4 md:col-span-6 xl:col-span-4 2xl:col-span-3"
       >
         <div className="relative aspect-[16/11] overflow-hidden rounded-lg bg-muted">
           <motion.div animate={{ x: `-${index * 100}%` }} className="flex">

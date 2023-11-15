@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { CircleDot, Sliders, X } from "lucide-react"
+import { CircleDot, Sliders, Trash, X } from "lucide-react"
 import { useForm } from "react-hook-form"
 import Balancer from "react-wrap-balancer"
 import { Drawer } from "vaul"
@@ -12,6 +12,7 @@ import * as z from "zod"
 import { serverClient } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
 import { spaceQuerySchema } from "@/lib/validations/space"
+import { useTypedQuery } from "@/hooks/use-typed-query"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -37,31 +38,34 @@ import { Title } from "@/components/ui/title"
 import { Grid, gridVariants } from "@/components/grid"
 
 type Props = {
-  defaultValues?: {}
   types: Awaited<ReturnType<typeof serverClient["types"]>>
   amenities: Awaited<ReturnType<typeof serverClient["amenities"]>>
   highlights: Awaited<ReturnType<typeof serverClient["highlights"]>>
   offerings: Awaited<ReturnType<typeof serverClient["offerings"]>>
 }
 
-const FormSchema = spaceQuerySchema.pick({
-  type: true,
-  price: true,
-  rooms: true,
-  desks: true,
-  floors: true,
-  items: true,
-  offerings: true,
-  highlights: true,
-  amenities: true,
-})
+const FormSchema = spaceQuerySchema
+  .pick({
+    type: true,
+    rooms: true,
+    desks: true,
+    floors: true,
+    items: true,
+  })
+  .extend({
+    offerings: z.array(z.string()).optional(),
+    highlights: z.array(z.string()).optional(),
+    amenities: z.array(z.string()).optional(),
+    price: z.array(z.number()).optional(),
+  })
 export const FiltersModal: React.FC<Props> = ({
-  defaultValues,
   types,
   amenities,
   highlights,
   offerings,
 }) => {
+  const { data, removeAllQueryParams, setMultipleQueries } =
+    useTypedQuery(spaceQuerySchema)
   const router = useRouter()
   const [open, setOpen] = useState(false)
 
@@ -77,41 +81,28 @@ export const FiltersModal: React.FC<Props> = ({
       offerings: [],
       highlights: [],
       amenities: [],
-      ...defaultValues,
+      ...data,
+      // ...defaultValues,
     },
   })
 
   const watchPrice = form.watch("price")
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    const params = new URLSearchParams()
-    for (const [key, value] of Object.entries(data)) {
-      if (Array.isArray(value)) {
-        if (key === "price") {
-          if (value[0] === 1500 && value[1] === 8000) {
-          } else {
-            for (const item of value) {
-              if (item !== "") {
-                params.append(key, item.toString())
-              }
-            }
-          }
-        } else {
-          for (const item of value) {
-            if (item !== "") {
-              params.append(key, item.toString())
-            }
-          }
-        }
-      } else {
-        if (value && value !== "" && value !== "0") params.set(key, value)
-      }
-    }
+    if (data?.price?.[0] === 1500 && data?.price?.[1] === 8000)
+      delete data.price
+    if (data?.rooms === "0") delete data.rooms
+    if (data?.floors === "0") delete data.floors
+    if (data?.desks === "0") delete data.desks
+    if (data?.offerings?.length === 0) delete data.offerings
+    if (data?.amenities?.length === 0) delete data.amenities
+    if (data?.highlights?.length === 0) delete data.highlights
+
+    setMultipleQueries(data)
     setOpen(false)
-    const queryString = params.toString()
-    router.replace(`/${queryString ? `?${queryString}` : ""}`)
   }
   function onReset() {
+    removeAllQueryParams()
     form.reset({
       price: [1500, 8000],
       rooms: "0",
@@ -123,7 +114,6 @@ export const FiltersModal: React.FC<Props> = ({
       type: "",
     })
     setOpen(false)
-    router.replace("/")
   }
   const formLabelClassName =
     "flex aspect-square cursor-pointer flex-col justify-between gap-2 rounded-lg border bg-background p-4 transition-all hover:border-zinc-600 hover:shadow peer-aria-checked:border-blue-500 peer-aria-checked:text-blue-600 peer-aria-checked:ring-1 peer-aria-checked:ring-blue-500"
@@ -131,14 +121,16 @@ export const FiltersModal: React.FC<Props> = ({
   const numbersFormLabelClassName =
     "inline-flex h-9 px-5 items-center justify-center text-sm rounded-full border border-input hover:bg-accent hover:text-accent-foreground peer-aria-checked:bg-primary peer-aria-checked:text-primary-foreground peer-aria-checked:hover:bg-primary/90"
 
-  const searchParamsEntries = Object.entries(defaultValues ?? {})
-  console.log("searchParamsEntries::: ", searchParamsEntries)
+  const searchParamsEntries = Object.entries(data).filter(
+    ([key]) => key !== "orgId"
+  )
+
   return (
     <Drawer.Root shouldScaleBackground open={open} onOpenChange={setOpen}>
       <div className="flex items-center gap-1">
         <Drawer.Trigger asChild>
           <Button
-            size={"xs"}
+            size="xs"
             variant={"outline"}
             className="flex items-center gap-2 border-dashed"
             onClick={() => setOpen(true)}
@@ -147,17 +139,22 @@ export const FiltersModal: React.FC<Props> = ({
             Filters
             {searchParamsEntries.length ? (
               <>
-                <Separator orientation="vertical" className="mx-2 h-4" />
+                <Separator
+                  orientation="vertical"
+                  className="mx-2 hidden h-4 lg:flex"
+                />
                 {searchParamsEntries.length < 2 ? (
                   <div className="hidden space-x-2 lg:flex">
-                    {searchParamsEntries.map(([key, value]) => (
-                      <Badge
-                        key={key}
-                        className="rounded-sm px-1 font-normal capitalize"
-                      >
-                        {key}
-                      </Badge>
-                    ))}
+                    {searchParamsEntries.map(([key, value]) => {
+                      return (
+                        <Badge
+                          key={key}
+                          className="rounded-sm px-1 font-normal capitalize"
+                        >
+                          {key}
+                        </Badge>
+                      )
+                    })}
                   </div>
                 ) : (
                   <Badge className="rounded-sm px-1 font-normal capitalize">
@@ -174,12 +171,11 @@ export const FiltersModal: React.FC<Props> = ({
               setOpen(false)
               onReset()
             }}
-            className="flex items-center gap-2 border border-dashed border-red-300 hover:bg-destructive/90 hover:text-destructive-foreground"
+            className="text-destructive"
             variant={"ghost"}
-            size="xs"
+            size="icon"
           >
-            Clear
-            <X size={12} className="ml-2" />
+            <Trash size={12} />
           </Button>
         ) : null}
       </div>

@@ -11,6 +11,14 @@ export const orgRouter = router({
       include: {
         logo: true,
         spaces: {
+          include: {
+            organization: {
+              include: {
+                logo: true,
+              },
+            },
+            images: true,
+          },
           where: {
             status: "published",
           },

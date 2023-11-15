@@ -67,6 +67,14 @@ export function useTypedQuery<T extends z.AnyZodObject>(schema: T) {
     [parsedQuery, router]
   )
 
+  function setMultipleQueries<J extends Partial<Output>>(newValues: J) {
+    const newQuery = { ...parsedQuery, ...newValues }
+    const search = new URLSearchParams(
+      newQuery as Record<string, string>
+    ).toString()
+    router.replace(`${path}${search ? `?${search}` : ""}`)
+  }
+
   // Delete a key from the query
   function removeByKey(key: OutputOptionalKeys) {
     const { [key]: _, ...newQuery } = parsedQuery
@@ -120,5 +128,6 @@ export function useTypedQuery<T extends z.AnyZodObject>(schema: T) {
     pushItemToKey,
     removeItemByKeyAndValue,
     removeAllQueryParams,
+    setMultipleQueries,
   }
 }
