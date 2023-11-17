@@ -27,7 +27,7 @@ export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
           <div className="relative h-4 w-4 overflow-hidden rounded-full bg-gradient-to-tl from-red-500 to-green-300">
             <Image
               src={space.organization.logo?.fileUrl ?? ""}
-              layout="fill"
+              fill
               className="object-cover"
               alt={"logo for " + space.organization.name}
             />

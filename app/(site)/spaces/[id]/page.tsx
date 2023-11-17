@@ -5,6 +5,7 @@ import { serverClient } from "@/lib/trpc/server"
 import { badgeVariants } from "@/components/ui/badge"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
+import { PlaiceholderImage } from "@/components/plaiceholder-image"
 
 import { Gallery } from "./_gallery"
 import { SpaceActions } from "./_space-actions"
@@ -19,11 +20,10 @@ const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
     <div>
       <div className="relative">
         <div className="relative aspect-video max-h-[50vh] w-screen overflow-hidden">
-          <Image
-            fill
+          <PlaiceholderImage
+            hasParent
             src={space?.featureImageUrl!}
             alt={space?.title! + "feature image"}
-            className="object-cover"
           />
         </div>
         <div className="absolute inset-x-0 bottom-0 z-10 h-3/4 bg-gradient-to-t from-background to-transparent"></div>
