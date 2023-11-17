@@ -1,12 +1,16 @@
 import { Suspense } from "react"
+import { Building, Home, MapPin, Pin, Table } from "lucide-react"
 
 import { db } from "@/lib/db"
 import { serverClient } from "@/lib/trpc/server"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { Paragraph } from "@/components/ui/paragraph"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Title } from "@/components/ui/title"
+import { Title, titleVariants } from "@/components/ui/title"
 import { Await } from "@/components/await"
 import { Grid } from "@/components/grid"
+import { BrowseSpaceCard } from "@/components/space-cards/browse-space-card"
 import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
 import { FiltersHoverable } from "@/components/space-filters/filters-hoverable"
 import { FiltersModal } from "@/components/space-filters/filters-modal"
@@ -20,11 +24,11 @@ export default async function Page({
   searchParams: QueryParams
 }) {
   return (
-    <div className="gutter section">
+    <div className="gutter section relative">
       <Title className="font-mono font-semibold" level={1} showAs={2}>
         Browse
       </Title>
-      <div className="flex items-center gap-5">
+      <div className="sticky top-[3.6rem] bg-background/70 backdrop-blur flex items-center gap-5">
         <Suspense
           fallback={
             <Button
@@ -55,7 +59,29 @@ export default async function Page({
           </Await>
         </Suspense>
         <div className="h-5 w-[1px] bg-border"></div>
-        <Suspense fallback="fetching orgs">
+        <Suspense
+          fallback={
+            <div className="flex items-center gap-4">
+              <Button variant="outline" rounded={"full"} size="xs">
+                <Skeleton className="h-5 w-12" />
+              </Button>
+              {Array(4)
+                .fill(null)
+                .map((_, i) => (
+                  <Button
+                    key={i}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                    rounded={"full"}
+                    size="xs"
+                  >
+                    <Skeleton className="h-6 w-6 rounded-full" />
+                    <Skeleton className="h-5 w-16 rounded-md" />
+                  </Button>
+                ))}
+            </div>
+          }
+        >
           <Await promise={serverClient.org.all()}>
             {(orgs) => <FiltersHoverable orgs={orgs} />}
           </Await>
@@ -100,7 +126,7 @@ export default async function Page({
                     className="mt-1 w-full md:mt-2 lg:mt-4 xl:mt-6"
                   >
                     {spaces.map((space) => (
-                      <PublishedSpaceCard key={space.id} space={space} />
+                      <BrowseSpaceCard key={space.id} space={space} />
                     ))}
                   </Grid>
                 ) : (
