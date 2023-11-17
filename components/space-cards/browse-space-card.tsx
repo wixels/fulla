@@ -4,6 +4,7 @@ import { Home, MapPin, Table } from "lucide-react"
 
 import { serverClient } from "@/lib/trpc/server"
 
+import { PlaiceholderImage } from "../plaiceholder-image"
 import { Badge } from "../ui/badge"
 import { Paragraph } from "../ui/paragraph"
 import { titleVariants } from "../ui/title"
@@ -14,11 +15,10 @@ type Props = {
 export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
   return (
     <div className="group col-span-12 flex w-full flex-col gap-3 md:col-span-6 xl:col-span-4 2xl:col-span-3">
-      <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-gradient-to-br from-purple-300 to-slate-500">
-        <Image
+      <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+        <PlaiceholderImage
+          hasParent
           src={space.featureImageUrl ?? ""}
-          fill
-          className="object-cover"
           alt={"cover image for " + space.title}
         />
       </div>

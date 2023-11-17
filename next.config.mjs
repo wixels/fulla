@@ -1,17 +1,10 @@
+import withPlaiceholder from "@plaiceholder/next"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
   experimental: {
     ppr: true,
-  },
-  async redirects() {
-    return [
-      {
-        source: "/browse/desks/agile",
-        destination: "/",
-        permanent: true,
-      },
-    ]
   },
   images: {
     domains: [
@@ -24,4 +17,4 @@ const nextConfig = {
   },
 }
 
-export default nextConfig
+export default withPlaiceholder(nextConfig)
