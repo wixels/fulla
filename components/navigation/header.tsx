@@ -37,7 +37,7 @@ export function Header() {
         "gutter sticky top-0 z-50 grid grid-cols-3 items-center gap-3 py-2 transition duration-300 ease-in-out",
         {
           hidden: hidden,
-          "bg-background/90 backdrop-blur": background,
+          "bg-background": background,
           "bg-background/10 backdrop-blur": blur,
         }
       )}

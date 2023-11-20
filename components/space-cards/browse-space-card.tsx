@@ -15,11 +15,11 @@ type Props = {
 }
 export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
   return (
-    <div className="group col-span-12 flex w-full flex-col gap-3 md:col-span-6 xl:col-span-4 2xl:col-span-3">
+    <div className="group col-span-12 flex w-full flex-col gap-3 md:col-span-6 xl:col-span-4">
       <div className="relative aspect-[16/11] w-full overflow-hidden rounded-lg">
         <AddToCollection
           id={space.id}
-          className="absolute right-4 top-4 z-10 hidden group-hover:flex"
+          className="absolute right-4 top-4 z-[8] hidden group-hover:flex"
         />
         <PlaiceholderImage
           hasParent

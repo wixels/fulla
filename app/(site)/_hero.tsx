@@ -12,7 +12,7 @@ import { useNav } from "@/components/providers/nav-provider"
 
 type Props = {}
 export const Hero: React.FC<Props> = ({}) => {
-  const { state, dispatch } = useNav()
+  const { dispatch } = useNav()
   const [hasTriggeredHeroScroller, setHasTriggeredHeroScroller] =
     useState(false)
 
@@ -61,7 +61,7 @@ export const Hero: React.FC<Props> = ({}) => {
   return (
     <div
       style={{ width: "100vw" }}
-      className="card relative mt-[-3.7rem] h-[40vh] 2xl:h-[47vh] w-screen bg-stone-900"
+      className="card relative mt-[-3.7rem] h-[40vh] w-screen bg-stone-900"
     >
       <div
         ref={heroRef}
