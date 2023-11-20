@@ -31,9 +31,9 @@ export function SiteHeader() {
   const router = useRouter()
   const path = usePathname()
   const [open, setOpen] = useState(false)
-  const [activeTab, setActiveTab] = useState(siteConfig.mainNav[0].href)
+  const [activeTab, setActiveTab] = useState(path ?? siteConfig.mainNav[0].href)
   const [hoveredTab, setHoveredTab] = useState<string | null>(
-    siteConfig.mainNav[0].href
+    path ?? siteConfig.mainNav[0].href
   )
 
   const [activeCommandTab, setActiveCommandTab] = useState(commandTabs[0].value)

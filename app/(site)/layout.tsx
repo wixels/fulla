@@ -1,14 +1,9 @@
-import { SiteHeader } from "@/components/navigation/site-header"
-import { SiteSpaceFilters } from "@/components/site-space-filters"
+import { Header } from "@/components/navigation/header"
 
-export default async function Layout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader />
+      <Header />
       {children}
     </div>
   )

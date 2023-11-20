@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import React, { useState } from "react"
 import Link from "next/link"
 
 import { serverClient } from "@/lib/trpc/server"
@@ -69,9 +69,9 @@ export const FiltersHoverable: React.FC<Props> = ({ orgs }) => {
         All
       </Button>
       {orgs.map((org) => (
-        <>
+        <React.Fragment key={org.id}>
           {org.spaces.length > 0 ? (
-            <HoverCard key={org.id}>
+            <HoverCard>
               <HoverCardTrigger asChild>
                 <Button
                   size="xs"
@@ -113,7 +113,7 @@ export const FiltersHoverable: React.FC<Props> = ({ orgs }) => {
               <span className="line-clamp-1">{org.name}</span>
             </Button>
           )}
-        </>
+        </React.Fragment>
       ))}
     </div>
   )
