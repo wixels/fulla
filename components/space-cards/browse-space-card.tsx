@@ -32,7 +32,7 @@ export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
               alt={"logo for " + space.organization.name}
             />
           </div>
-          <Paragraph className="font-mono font-semibold group-hover:underline">
+          <Paragraph className="line-clamp-1 font-mono font-semibold group-hover:underline">
             {space.title}
           </Paragraph>
           <Badge size="xs" variant="blue">
@@ -41,9 +41,7 @@ export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
         </Link>
         <div className="flex items-center gap-2 text-muted-foreground/50">
           <MapPin size={12} />
-          <Paragraph size="xs">
-            {space.suburb} / {space.province}
-          </Paragraph>
+          <Paragraph size="xs">{space.suburb}</Paragraph>
         </div>
       </div>
       <p style={{ margin: 0 }} className={titleVariants({ level: 5 })}>

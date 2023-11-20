@@ -1,19 +1,16 @@
-// @ts-nocheck
-import React, { ComponentProps, ComponentType, FC } from "react"
+export type ProviderConfig = {
+  Provider: React.JSXElementConstructor<React.PropsWithChildren<unknown>>
+  props?: Record<string, any>
+}
 
-type Providers = [ComponentType<any>, ComponentProps<any>?][]
+type Props = {
+  children: React.ReactNode
+  providers: ProviderConfig[]
+}
 
-export const combineProviders = (providers: Providers): FC =>
-  providers.reduce(
-    (AccumulatedProviders, [Provider, props = {}]) =>
-      // eslint-disable-next-line react/display-name
-      ({ children }) =>
-        (
-          <AccumulatedProviders>
-            <Provider {...props}>
-              <>{children}</>
-            </Provider>
-          </AccumulatedProviders>
-        ),
-    ({ children }) => <>{children}</>
+export const combineProviders: React.FC<Props> = ({ children, providers }) => {
+  return providers.reduceRight(
+    (acc, { Provider, props }) => <Provider {...props}>{acc}</Provider>,
+    children
   )
+}

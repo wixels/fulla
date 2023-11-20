@@ -28,7 +28,7 @@ export default async function Page({
       <Title className="font-mono font-semibold" level={1} showAs={2}>
         Browse
       </Title>
-      <div className="sticky top-[3.6rem] bg-background/70 backdrop-blur flex items-center gap-5">
+      <div className="sticky top-[3.6rem] flex items-center gap-5 bg-background/70 backdrop-blur">
         <Suspense
           fallback={
             <Button
@@ -69,7 +69,7 @@ export default async function Page({
                 .fill(null)
                 .map((_, i) => (
                   <Button
-                    key={i}
+                    key={Math.floor(Math.random() * 100) + 1}
                     variant="outline"
                     className="flex items-center gap-2"
                     rounded={"full"}
@@ -95,7 +95,10 @@ export default async function Page({
               {Array(6)
                 .fill(Math.random())
                 .map((_, i) => (
-                  <div className="col-span-12 flex w-full flex-col gap-4 md:col-span-6 xl:col-span-4 2xl:col-span-3">
+                  <div
+                    key={Math.floor(Math.random() * 100) + 1}
+                    className="col-span-12 flex w-full flex-col gap-4 lg:col-span-6 2xl:col-span-3"
+                  >
                     <Skeleton className="aspect-[16/11] object-cover" />
                     <div className="flex items-center justify-between gap-x-3">
                       <div className="flex w-full items-center gap-3">

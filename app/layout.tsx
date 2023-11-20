@@ -46,7 +46,6 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
       >
         <head />
         <body>
-          {/* @ts-ignore */}
           <Providers>
             {children}
             {modal}

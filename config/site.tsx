@@ -9,7 +9,7 @@ export const siteConfig = {
   mainNav: [
     {
       title: "Home",
-      href: "/browse/desks/agile",
+      href: "/",
     },
     {
       title: "Collections",

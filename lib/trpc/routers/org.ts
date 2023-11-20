@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server"
 import * as z from "zod"
 
 import { db } from "@/lib/db"

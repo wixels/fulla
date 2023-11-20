@@ -95,7 +95,6 @@ export const spacesRouter = router({
           break
       }
     })
-    console.log("input::: ", opts.input)
     return await db.space.findMany({
       where,
       include: {
