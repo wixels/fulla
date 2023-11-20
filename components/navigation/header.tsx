@@ -9,18 +9,21 @@ import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
 import { Icons } from "../icons"
+import { useNav } from "../providers/nav-provider"
 import { ProfileAvatar } from "./profile-avatar"
 import { Search } from "./search"
 
 export function Header() {
+  const {
+    state: { background, blur },
+    dispatch,
+  } = useNav()
   const { scrollY } = useScroll()
   const path = usePathname()
   const [activeTab, setActiveTab] = useState(path ?? siteConfig.mainNav[0].href)
   const [hoveredTab, setHoveredTab] = useState<string | null>(
     path ?? siteConfig.mainNav[0].href
   )
-
-  const [blurHeader, setBlurHeader] = useState(false)
 
   const hideMe = useMemo(() => {
     if (path?.includes("/create/space")) return true
@@ -29,10 +32,10 @@ export function Header() {
   }, [path])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
-    if (latest > 50) {
-      setBlurHeader(true)
+    if (latest > 50 && !background) {
+      dispatch({ type: "field", payload: true, field: "blur" })
     } else if (latest < 50) {
-      setBlurHeader(false)
+      dispatch({ type: "field", payload: false, field: "blur" })
     }
   })
 
@@ -42,8 +45,8 @@ export function Header() {
         "gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 py-2 transition-all",
         {
           hidden: hideMe,
-          "bg-background": path !== "/",
-          "bg-background/70 backdrop-blur": blurHeader && path === "/",
+          "bg-background": background,
+          "bg-background/10 backdrop-blur": blur,
         }
       )}
     >

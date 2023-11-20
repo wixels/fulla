@@ -12,6 +12,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { Title, titleVariants } from "@/components/ui/title"
 import { Await } from "@/components/await"
 import { Grid } from "@/components/grid"
+import { useNav } from "@/components/providers/nav-provider"
 import { BrowseSpaceCard } from "@/components/space-cards/browse-space-card"
 import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
 import { FiltersHoverable } from "@/components/space-filters/filters-hoverable"
@@ -19,6 +20,7 @@ import { FiltersModal } from "@/components/space-filters/filters-modal"
 import { Spin } from "@/components/spin"
 
 import Empty from "./_empty"
+import { Hero } from "./_hero"
 
 export default async function Page({
   searchParams,
@@ -27,38 +29,12 @@ export default async function Page({
 }) {
   return (
     <>
-      <div
-        style={{ width: "100vw" }}
-        className="card 2xl:aspect-[16:4] relative mt-[-3.7rem] aspect-video w-screen bg-stone-900 md:aspect-[16/5]"
-      >
-        <div className="card-content gutter flex h-full w-full items-center justify-normal">
-          <div className="mx-auto flex w-full max-w-3xl flex-col items-center justify-center text-center">
-            <Title
-              className="font-mono font-bold text-white"
-              level={2}
-              showAs={3}
-            >
-              <Balancer>Work Smarter, Not Harder – Go Pro!</Balancer>
-            </Title>
-            <Paragraph className="text-white">
-              <Balancer>
-                Stand Out, Sign Up. Pro Members Get Noticed First!
-              </Balancer>
-            </Paragraph>
-            <Link
-              href={"/profile"}
-              className={buttonVariants({ className: "mt-4" })}
-            >
-              Go Pro!
-            </Link>
-          </div>
-        </div>
-      </div>
-      <div className="gutter relative">
+      <Hero />
+      <div className="z-0 gutter relative">
         <Title className="font-mono font-semibold" level={1} showAs={2}>
           Browse
         </Title>
-        <div className="sticky top-[3.6rem] flex items-center gap-5 bg-background/70 backdrop-blur">
+        <div className="sticky z-10 top-[3.6rem] flex items-center gap-5 bg-background/70 backdrop-blur">
           <Suspense
             fallback={
               <Button
@@ -172,7 +148,6 @@ export default async function Page({
             </Await>
           </Suspense>
         </div>
-        <div className="w-full bg-red-200 h-96"></div>
       </div>
     </>
   )
