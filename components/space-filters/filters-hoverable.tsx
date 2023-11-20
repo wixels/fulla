@@ -14,16 +14,7 @@ import {
 
 import { PublishedSpaceCard } from "../space-cards/published-space-card"
 import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar"
-import { Button, buttonVariants } from "../ui/button"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
-} from "../ui/navigation-menu"
+import { Button } from "../ui/button"
 
 type Props = {
   orgs: Awaited<ReturnType<typeof serverClient.org.all>>

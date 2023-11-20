@@ -30,11 +30,11 @@ export default async function Page({
   return (
     <>
       <Hero />
-      <div className="z-0 gutter relative">
+      <div className="gutter relative z-0">
         <Title className="font-mono font-semibold" level={1} showAs={2}>
           Browse
         </Title>
-        <div className="sticky z-10 top-[3.6rem] flex items-center gap-5 bg-background/70 backdrop-blur">
+        <div className="sticky top-[3.6rem] z-10 flex items-center gap-5 bg-background/70 backdrop-blur">
           <Suspense
             fallback={
               <Button

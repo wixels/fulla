@@ -94,6 +94,11 @@ export default function NewUserPage() {
       data: {
         name: data.name,
         image: upload?.[0]?.fileUrl ?? null,
+        organizations: {
+          connect: {
+            id: "clnn4qfq30003lside006jl4a",
+          },
+        },
       },
     })
   }
