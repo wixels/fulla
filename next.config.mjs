@@ -3,9 +3,9 @@ import withPlaiceholder from "@plaiceholder/next"
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  experimental: {
-    ppr: true,
-  },
+  // experimental: {
+  //   ppr: true,
+  // },
   images: {
     domains: [
       "images.unsplash.com",
