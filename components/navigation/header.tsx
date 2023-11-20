@@ -1,9 +1,5 @@
-"use client"
-
 import Link from "next/link"
-import { usePathname } from "next/navigation"
 
-import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
 
 import { Icons } from "../icons"
@@ -11,9 +7,10 @@ import { buttonVariants } from "../ui/button"
 import { ProfileAvatar } from "./profile-avatar"
 import { Search } from "./search"
 
-type Props = {}
-export const Header: React.FC<Props> = ({}) => {
-  const active = usePathname()
+type Props = {
+  active?: string
+}
+export const Header: React.FC<Props> = ({ active }) => {
   return (
     <header
       className={cn(
