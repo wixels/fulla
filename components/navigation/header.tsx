@@ -32,6 +32,10 @@ export function Header() {
   }, [path])
 
   useMotionValueEvent(scrollY, "change", (latest) => {
+    if (path === "/" && latest === 0) {
+      dispatch({ type: "field", payload: false, field: "background" })
+      dispatch({ type: "field", payload: false, field: "blur" })
+    }
     if (latest > 50 && !background) {
       dispatch({ type: "field", payload: true, field: "blur" })
     } else if (latest < 50) {
@@ -42,7 +46,7 @@ export function Header() {
   return (
     <header
       className={cn(
-        "gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 py-2 transition-all",
+        "gutter sticky top-0 z-50 grid grid-cols-3 items-center gap-3 py-2 transition-all",
         {
           hidden: hideMe,
           "bg-background": background,

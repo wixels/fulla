@@ -8,7 +8,7 @@ import { trpc } from "@/lib/trpc/client"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
 
-import { buttonVariants } from "../ui/button"
+import { Button, buttonVariants } from "../ui/button"
 import {
   Command,
   CommandEmpty,
@@ -70,14 +70,9 @@ export const AddToCollection: React.FC<Props> = ({ id, className }) => {
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
-          className={buttonVariants({
-            size: "icon",
-            className: cn("h-9 w-9 rounded-xl", className),
-          })}
-        >
+        <Button size={"icon"} rounded={"xl"} className={className}>
           <Bookmark size={12} />
-        </button>
+        </Button>
       </PopoverTrigger>
       <PopoverContent align="end" className="h-52 p-0">
         <Command>
