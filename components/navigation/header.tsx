@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { motion } from "framer-motion"
+import { motion, useMotionValueEvent, useScroll } from "framer-motion"
 
 import { siteConfig } from "@/config/site"
 import { cn } from "@/lib/utils"
@@ -13,11 +13,14 @@ import { ProfileAvatar } from "./profile-avatar"
 import { Search } from "./search"
 
 export function Header() {
+  const { scrollY } = useScroll()
   const path = usePathname()
   const [activeTab, setActiveTab] = useState(path ?? siteConfig.mainNav[0].href)
   const [hoveredTab, setHoveredTab] = useState<string | null>(
     path ?? siteConfig.mainNav[0].href
   )
+
+  const [blurHeader, setBlurHeader] = useState(false)
 
   const hideMe = useMemo(() => {
     if (path?.includes("/create/space")) return true
@@ -25,12 +28,22 @@ export function Header() {
     return false
   }, [path])
 
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    if (latest > 50) {
+      setBlurHeader(true)
+    } else if (latest < 50) {
+      setBlurHeader(false)
+    }
+  })
+
   return (
     <header
       className={cn(
-        "gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 bg-background py-2",
+        "gutter sticky top-0 z-10 grid grid-cols-3 items-center gap-3 py-2 transition-all",
         {
           hidden: hideMe,
+          "bg-background": path !== "/",
+          "bg-background/10 backdrop-blur": blurHeader,
         }
       )}
     >

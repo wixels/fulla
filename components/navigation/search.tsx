@@ -4,6 +4,7 @@ import { useCallback, useState } from "react"
 import { usePathname, useRouter } from "next/navigation"
 import { Plus, Search as SearchIcon } from "lucide-react"
 
+import { cn } from "@/lib/utils"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 
 import {
@@ -18,6 +19,7 @@ import { Input } from "../ui/input"
 
 type Props = {}
 export const Search: React.FC<Props> = ({}) => {
+  const path = usePathname()
   const router = useRouter()
   const [open, setOpen] = useState(false)
   const runCommand = useCallback((command: () => unknown) => {
@@ -57,7 +59,15 @@ export const Search: React.FC<Props> = ({}) => {
           </CommandGroup>
         </CommandList>
       </CommandDialog>
-      <div className="flex items-center justify-between gap-3 rounded-full border border-input bg-muted-foreground/10 px-4">
+
+      <div
+        className={cn(
+          "flex items-center justify-between gap-3 rounded-full border border-input bg-background px-4",
+          {
+            "bg-muted-foreground/10": path !== "/",
+          }
+        )}
+      >
         <SearchIcon size={14} className="text-muted-foreground/50" />
         <Input
           onFocus={() => setOpen(true)}
