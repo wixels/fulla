@@ -8,6 +8,7 @@ import { PlaiceholderImage } from "../plaiceholder-image"
 import { Badge } from "../ui/badge"
 import { Paragraph } from "../ui/paragraph"
 import { titleVariants } from "../ui/title"
+import { AddToCollection } from "./add-to-collection"
 
 type Props = {
   space: Awaited<ReturnType<typeof serverClient.spaces.published>>[0]
@@ -16,6 +17,10 @@ export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
   return (
     <div className="group col-span-12 flex w-full flex-col gap-3 md:col-span-6 xl:col-span-4 2xl:col-span-3">
       <div className="relative aspect-video w-full overflow-hidden rounded-lg">
+        <AddToCollection
+          id={space.id}
+          className="absolute z-10 right-4 top-4 hidden group-hover:flex"
+        />
         <PlaiceholderImage
           hasParent
           src={space.featureImageUrl ?? ""}
