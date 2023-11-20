@@ -172,6 +172,7 @@ export default async function Page({
             </Await>
           </Suspense>
         </div>
+        <div className="w-full bg-red-200 h-96"></div>
       </div>
     </>
   )

@@ -43,7 +43,7 @@ export function Header() {
         {
           hidden: hideMe,
           "bg-background": path !== "/",
-          "bg-background/10 backdrop-blur": blurHeader && path === "/",
+          "bg-background/70 backdrop-blur": blurHeader && path === "/",
         }
       )}
     >
