@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion, useMotionValueEvent, useScroll } from "framer-motion"
@@ -15,41 +15,29 @@ import { Search } from "./search"
 
 export function Header() {
   const {
-    state: { background, blur },
+    state: { background, blur, hidden },
     dispatch,
   } = useNav()
-  const { scrollY } = useScroll()
   const path = usePathname()
   const [activeTab, setActiveTab] = useState(path ?? siteConfig.mainNav[0].href)
   const [hoveredTab, setHoveredTab] = useState<string | null>(
     path ?? siteConfig.mainNav[0].href
   )
 
-  const hideMe = useMemo(() => {
-    if (path?.includes("/create/space")) return true
-    if (path?.includes("/apply")) return true
-    return false
+  useEffect(() => {
+    if (path?.includes("/create/space"))
+      dispatch({ type: "field", payload: true, field: "hidden" })
+    if (path?.includes("/apply"))
+      dispatch({ type: "field", payload: true, field: "hidden" })
   }, [path])
-
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    if (path === "/" && latest === 0) {
-      dispatch({ type: "field", payload: false, field: "background" })
-      dispatch({ type: "field", payload: false, field: "blur" })
-    }
-    if (latest > 50 && !background) {
-      dispatch({ type: "field", payload: true, field: "blur" })
-    } else if (latest < 50) {
-      dispatch({ type: "field", payload: false, field: "blur" })
-    }
-  })
 
   return (
     <header
       className={cn(
-        "gutter sticky top-0 z-50 grid grid-cols-3 items-center gap-3 py-2 transition-all",
+        "gutter sticky top-0 z-50 grid grid-cols-3 items-center gap-3 py-2 transition duration-300 ease-in-out",
         {
-          hidden: hideMe,
-          "bg-background": background,
+          hidden: hidden,
+          "bg-background/90 backdrop-blur": background,
           "bg-background/10 backdrop-blur": blur,
         }
       )}

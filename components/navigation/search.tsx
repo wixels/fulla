@@ -7,6 +7,7 @@ import { Plus, Search as SearchIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useHotkeys } from "@/hooks/use-hotkeys"
 
+import { useNav } from "../providers/nav-provider"
 import {
   CommandDialog,
   CommandEmpty,
@@ -19,6 +20,7 @@ import { Input } from "../ui/input"
 
 type Props = {}
 export const Search: React.FC<Props> = ({}) => {
+  const { state } = useNav()
   const path = usePathname()
   const router = useRouter()
   const [open, setOpen] = useState(false)
@@ -62,9 +64,9 @@ export const Search: React.FC<Props> = ({}) => {
 
       <div
         className={cn(
-          "flex items-center justify-between gap-3 rounded-full border border-input bg-background px-4",
+          "flex items-center justify-between gap-3 rounded-full border border-input bg-background px-4 transition duration-300 ease-in-out",
           {
-            "bg-muted-foreground/10": path !== "/",
+            "bg-muted-foreground/10": state.background,
           }
         )}
       >

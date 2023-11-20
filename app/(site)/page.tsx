@@ -34,7 +34,7 @@ export default async function Page({
         <Title className="font-mono font-semibold" level={1} showAs={2}>
           Browse
         </Title>
-        <div className="sticky top-[3.6rem] z-10 flex items-center gap-5 bg-background/70 backdrop-blur">
+        <div className="sticky top-[3.6rem] z-10 flex items-center gap-5 bg-background">
           <Suspense
             fallback={
               <Button
@@ -147,6 +147,11 @@ export default async function Page({
               )}
             </Await>
           </Suspense>
+          {process.env.NODE_ENV === "development" ? (
+            <div className="section flex h-96 w-full items-center justify-center">
+              I am a dev only spacer to test scrolling
+            </div>
+          ) : null}
         </div>
       </div>
     </>

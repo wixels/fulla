@@ -57,10 +57,7 @@ const NavProvider: React.FC<Props> = ({ children }) => {
   const path = usePathname()
 
   useEffect(() => {
-    if (path === "/") {
-      dispatch({ type: "field", payload: false, field: "blur" })
-      dispatch({ type: "field", payload: false, field: "background" })
-    } else {
+    if (path !== "/" && path !== "/login") {
       dispatch({ type: "field", payload: false, field: "blur" })
       dispatch({ type: "field", payload: true, field: "background" })
     }
