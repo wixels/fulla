@@ -14,12 +14,12 @@ export const Footer: React.FC<Props> = ({}) => {
             <div className="col-span-2">
               <div>
                 <Title style={{ marginTop: 0 }} level={3}>
-                  Get a Fulla home
+                  Fulla Spaces
                 </Title>
 
                 <Paragraph size={"lg"} className="text-muted-foreground">
-                  Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse
-                  non cupiditate quae nam molestias.
+                  Empowering flexible workspaces – where innovation meets
+                  convenience. Join us in shaping the future of work!
                 </Paragraph>
               </div>
             </div>

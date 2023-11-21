@@ -9,7 +9,7 @@ import { Grid } from "@/components/grid"
 type Props = { images: ImageType[] }
 export const Gallery: React.FC<Props> = ({ images }) => {
   return (
-    <section className="gutter section mx-auto flex max-w-screen-xl flex-col gap-6">
+    <section className="gutter section mx-auto flex w-full max-w-screen-xl flex-col gap-6">
       <div className="flex items-center gap-6">
         <Title level={2} showAs={3} style={{ margin: 0 }}>
           Gallery

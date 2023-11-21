@@ -4,6 +4,7 @@ import { db } from "../db"
 import { activityRouter } from "./routers/activity"
 import { orgRouter } from "./routers/org"
 import { pageRouter } from "./routers/pages"
+import { reviewRouter } from "./routers/review"
 import { spaceRouter } from "./routers/space"
 import { spacesRouter } from "./routers/spaces"
 import { taskRouter } from "./routers/tasks"
@@ -18,6 +19,7 @@ export const appRouter = router({
   activity: activityRouter,
   user: userRouter,
   page: pageRouter,
+  reviews: reviewRouter,
   randomImage: publicProcedure.query(async () => {
     const image = await fetch(
       "https://api.unsplash.com/photos/random?query=abstract&client_id=" +
