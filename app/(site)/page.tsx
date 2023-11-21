@@ -147,11 +147,6 @@ export default async function Page({
               )}
             </Await>
           </Suspense>
-          {process.env.NODE_ENV === "development" ? (
-            <div className="section flex h-96 w-full items-center justify-center">
-              I am a dev only spacer to test scrolling
-            </div>
-          ) : null}
         </div>
       </div>
     </>
