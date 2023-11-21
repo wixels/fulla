@@ -81,11 +81,14 @@ model User {
 
   collections          Collection[]
 
+  reviews              Review[]
+  
   @@map("users")
 }
 
 model VerificationToken {
   identifier String
+
   token      String   @unique
   expires    DateTime
 
@@ -342,6 +345,8 @@ model Space {
 
   collections     Collection[] 
 
+  reviews         Review[]
+
   createdAt       DateTime? @default(now()) @map("created_at")
   updatedAt       DateTime? @default(now()) @map("updated_at")
 
@@ -353,6 +358,21 @@ model Space {
   @@index([organizationId])
 }
 
+model Review {
+  id          String    @id @default(cuid())
+  body        String
+  rating      Int
+  space       Space?    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
+  spaceId     String?
+  author      User?     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  authorId    String?
+  createdAt   DateTime? @default(now()) @map("created_at")
+  updatedAt   DateTime? @default(now()) @map("updated_at")
+
+  @@index([spaceId])
+  @@index([authorId])
+  @@map("reviews")
+}
 model Collection {
   id          String    @id @default(cuid())
 
