@@ -50,7 +50,7 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
           <Providers>
             {children}
             {modal}
-            <Footer />
+
             <Toaster />
             <TailwindIndicator />
           </Providers>
