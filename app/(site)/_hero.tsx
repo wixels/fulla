@@ -61,7 +61,7 @@ export const Hero: React.FC<Props> = ({}) => {
   return (
     <div
       style={{ width: "100vw" }}
-      className="card relative mt-[-3.7rem] h-[40vh] w-screen bg-stone-900"
+      className="card relative mt-[-3.7rem] h-[480px] w-screen bg-stone-900"
     >
       <div
         ref={heroRef}
