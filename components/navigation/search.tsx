@@ -42,7 +42,6 @@ export const Search: React.FC<Props> = ({}) => {
         />
         <CommandList>
           <CommandEmpty>No results found.</CommandEmpty>
-
           <CommandGroup heading="Navigation">
             <CommandItem
               onSelect={() => runCommand(() => router.push("/create/space"))}
@@ -50,11 +49,7 @@ export const Search: React.FC<Props> = ({}) => {
               <Plus className="mr-2 h-4 w-4" />
               <span>Create A New Space</span>
             </CommandItem>
-            <CommandItem
-              onSelect={() =>
-                runCommand(() => router.push("/browse/desks/agile"))
-              }
-            >
+            <CommandItem onSelect={() => runCommand(() => router.push("/"))}>
               <Plus className="mr-2 h-4 w-4" />
               <span>Browse Spaces</span>
             </CommandItem>
