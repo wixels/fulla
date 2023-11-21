@@ -19,7 +19,7 @@ export const BrowseSpaceCard: React.FC<Props> = ({ space }) => {
       <div className="relative aspect-[16/11] w-full overflow-hidden rounded-lg">
         <AddToCollection
           id={space.id}
-          className="absolute right-4 top-4 z-[8] hidden group-hover:flex"
+          className="absolute right-4 top-4 z-[8] opacity-0 group-hover:opacity-100"
         />
         <PlaiceholderImage
           hasParent

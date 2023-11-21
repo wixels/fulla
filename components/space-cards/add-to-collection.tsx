@@ -74,7 +74,7 @@ export const AddToCollection: React.FC<Props> = ({ id, className }) => {
           <Bookmark size={12} />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" className="h-52 z-10 p-0">
+      <PopoverContent align="end" className="z-10 h-52 p-0">
         <Command>
           <CommandInput
             value={search}
