@@ -1,17 +1,15 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { Check, Loader2, UserPlus } from "lucide-react"
 
 import { trpc } from "@/lib/trpc/client"
 import { serverClient } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import {
   Command,
-  CommandDialog,
   CommandEmpty,
   CommandGroup,
   CommandInput,

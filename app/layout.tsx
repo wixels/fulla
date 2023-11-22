@@ -3,10 +3,8 @@ import { Metadata } from "next"
 import { GeistMono, GeistSans } from "geist/font"
 
 import { siteConfig } from "@/config/site"
-// import { fontSans } from "@/lib/fonts"
 import { cn } from "@/lib/utils"
 import { Toaster } from "@/components/ui/toaster"
-import { Footer } from "@/components/navigation/footer"
 import { Providers } from "@/components/providers"
 import { TailwindIndicator } from "@/components/tailwind-indicator"
 
@@ -50,7 +48,6 @@ export default async function RootLayout({ children, modal }: RootLayoutProps) {
           <Providers>
             {children}
             {modal}
-
             <Toaster />
             <TailwindIndicator />
           </Providers>

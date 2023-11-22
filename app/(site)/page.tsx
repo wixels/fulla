@@ -1,20 +1,12 @@
 import { Suspense } from "react"
-import Link from "next/link"
-import { Building, Home, MapPin, Pin, Table } from "lucide-react"
-import Balancer from "react-wrap-balancer"
 
-import { db } from "@/lib/db"
 import { serverClient } from "@/lib/trpc/server"
-import { Badge } from "@/components/ui/badge"
-import { Button, buttonVariants } from "@/components/ui/button"
-import { Paragraph } from "@/components/ui/paragraph"
+import { Button } from "@/components/ui/button"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Title, titleVariants } from "@/components/ui/title"
+import { Title } from "@/components/ui/title"
 import { Await } from "@/components/await"
 import { Grid } from "@/components/grid"
-import { useNav } from "@/components/providers/nav-provider"
 import { BrowseSpaceCard } from "@/components/space-cards/browse-space-card"
-import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
 import { FiltersHoverable } from "@/components/space-filters/filters-hoverable"
 import { FiltersModal } from "@/components/space-filters/filters-modal"
 import { Spin } from "@/components/spin"
@@ -34,7 +26,7 @@ export default async function Page({
         <Title className="font-mono font-semibold" level={1} showAs={2}>
           Browse
         </Title>
-        <div className="sticky top-[3.6rem] z-10 flex items-center gap-5 bg-background">
+        <div className="sticky top-[3.6rem] z-10 flex items-center gap-5 bg-background pb-1 md:pb-2 lg:pb-4 xl:pb-6">
           <Suspense
             fallback={
               <Button
@@ -97,7 +89,7 @@ export default async function Page({
           <Suspense
             key={JSON.stringify(searchParams ?? {})}
             fallback={
-              <Grid className="mt-1 w-full md:mt-2 lg:mt-4 xl:mt-6" gap="xs">
+              <Grid className="w-full" gap="xs">
                 {Array(6)
                   .fill(Math.random())
                   .map((_, i) => (
@@ -132,10 +124,7 @@ export default async function Page({
               {(spaces) => (
                 <>
                   {spaces.length ? (
-                    <Grid
-                      gap={"xs"}
-                      className="mt-1 w-full md:mt-2 lg:mt-4 xl:mt-6"
-                    >
+                    <Grid gap={"xs"} className="w-full">
                       {spaces.map((space) => (
                         <BrowseSpaceCard key={space.id} space={space} />
                       ))}

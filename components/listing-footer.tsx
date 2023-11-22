@@ -7,7 +7,7 @@ type Props = {
   progress?: number
 }
 
-export const ListingFooter = ({ children, progress }: Props) => {
+export const ListingFooter = ({ children }: Props) => {
   return (
     <footer className="fixed inset-x-0 bottom-0  z-10 w-screen bg-background/80 backdrop-blur">
       <div className="relative h-1 w-full bg-zinc-200">
