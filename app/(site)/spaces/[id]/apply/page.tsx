@@ -1,15 +1,15 @@
 "use client"
 
-import { useCallback } from "react"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { format } from "date-fns"
-import { CalendarIcon, CircleDot, FormInput, ImageIcon } from "lucide-react"
-import { FileWithPath, useDropzone } from "react-dropzone"
+import { CalendarIcon, CircleDot } from "lucide-react"
 import { useForm } from "react-hook-form"
 import Balancer from "react-wrap-balancer"
-import { generateClientDropzoneAccept } from "uploadthing/client"
 import * as z from "zod"
 
+import { trpc } from "@/lib/trpc/client"
 import { useUploadThing } from "@/lib/uploadthing"
 import { cn } from "@/lib/utils"
 import { useToast } from "@/hooks/use-toast"
@@ -23,7 +23,6 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
-import { Label } from "@/components/ui/label"
 import { Paragraph } from "@/components/ui/paragraph"
 import {
   Popover,
@@ -35,31 +34,36 @@ import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 import { Title } from "@/components/ui/title"
 import { gridVariants } from "@/components/grid"
-import { Icons } from "@/components/icons"
+import { LoaderButton } from "@/components/loader-button"
+import { Uploader } from "@/components/uploader"
 
 const formLabelClassName =
   "flex aspect-square cursor-pointer flex-col justify-between gap-2 rounded-lg border bg-background p-4 transition-all hover:border-zinc-600 hover:shadow peer-aria-checked:border-blue-500 peer-aria-checked:text-blue-600 peer-aria-checked:ring-1 peer-aria-checked:ring-blue-500"
 
 const leaseOptions = [
   {
-    label: "Long",
-    key: "long",
-    description: "more than a year",
+    label: "Fixed Term",
+    key: "fixed_term",
+    description: "1 year or more",
   },
   {
-    label: "Mid",
-    key: "mid",
-    description: "6 months to a year",
+    label: "Month to Month",
+    key: "month_to_month",
+    description: "Pay for the month you stay",
   },
   {
-    label: "Short",
-    key: "short",
-    description: "less than 6 months",
+    label: "Daily",
+    key: "daily",
+    description: "Stay free. Come and go as you please",
   },
 ]
-type Props = {}
+type Props = {
+  params: {
+    id: string
+  }
+}
 const FormSchema = z.object({
-  term: z.enum(["long", "mid", "short"], {
+  term: z.enum(["daily", "fixed_term", "month_to_month"], {
     required_error: "Please select a leasing term",
   }),
   date: z.date({
@@ -68,67 +72,65 @@ const FormSchema = z.object({
   letter: z.string(),
 })
 
-const readFileAsync = (file: File) => {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-
-    reader.onload = () => {
-      resolve(reader.result)
-    }
-
-    reader.onerror = reject
-
-    reader.readAsDataURL(file)
+const Apply: React.FC<Props> = ({ params: { id } }) => {
+  const { toast } = useToast()
+  const utils = trpc.useContext()
+  const router = useRouter()
+  const submitProposal = trpc.space.submitProposal.useMutation({
+    onMutate: async (values) => {
+      await utils.space.published.cancel({ id })
+    },
+    onSuccess: () => {
+      toast({
+        description: "Proposal submitted",
+      })
+      router.push(`/spaces/${id}/apply/completion`)
+    },
+    onSettled: () => {
+      void utils.space.published.invalidate({ id })
+    },
   })
-}
-
-const Apply: React.FC<Props> = ({}) => {
+  const [files, setFiles] = useState<File[]>([])
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
+    defaultValues: {},
   })
-  const { toast } = useToast()
-  const onDropAndOnChange = useCallback(async (files: FileWithPath[]) => {
-    // log the files
-    // if (files && files.length) {
-    //   const data = await Promise.all(
-    //     files.map(async (file) => {
-    //       const content = await readFileAsync(file)
-    //       return {
-    //         name: file.name,
-    //         url: URL.createObjectURL(file),
-    //         type: file.type,
-    //         size: file.size,
-    //         content: content as string,
-    //       }
-    //     })
-    //   )
-    //   form.setValue("documents", data)
-    // }
-  }, [])
   const { startUpload, isUploading, permittedFileInfo } = useUploadThing(
     "imageUploader",
     {
       onClientUploadComplete: () => {
         toast({
-          description: "Successfully uploaded image",
+          description: "uploaded successfully!",
         })
       },
       onUploadError: () => {
-        toast({
-          variant: "destructive",
-          title: "An upload error occurred",
-          description: "Please try again later",
-        })
+        toast({ description: "error occurred while uploading" })
       },
     }
   )
-
-  const fileTypes = permittedFileInfo?.config
-    ? Object.keys(permittedFileInfo?.config)
-    : []
-
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log("values::: ", data)
+  async function onSubmit(data: z.infer<typeof FormSchema>) {
+    if (files.length === 0) {
+      toast({
+        description: "Please upload at least one file",
+      })
+      return
+    } else {
+      const filesToUpload = await startUpload(files)
+      if (!filesToUpload?.length) {
+        toast({
+          variant: "destructive",
+          description: "Error occurred while uploading your documents",
+        })
+        return
+      }
+      await submitProposal.mutateAsync({
+        spaceId: id,
+        docs: filesToUpload,
+        letter: data.letter,
+        startDate: data.date,
+        term: data.term,
+      })
+    }
   }
 
   return (
@@ -227,29 +229,14 @@ const Apply: React.FC<Props> = ({}) => {
               </FormItem>
             )}
           />
-          <FormField
-            control={form.control}
-            // @ts-ignore
-            name="documents"
-            render={({ field }) => (
-              <FormItem>
-                <Label>Relevant Documents</Label>
-                <FormLabel className="flex w-full flex-col items-center justify-center rounded-xl border-2 border-dotted border-muted-foreground/50 p-4">
-                  <ImageIcon size={64} />
-                  <Title className="font-semibold" level={6}>
-                    Click here to add photos
-                  </Title>
-                  <Paragraph size="xs" className="text-muted-foreground/50">
-                    Choose at least 5 photos
-                  </Paragraph>
-                </FormLabel>
-                <FormControl>
-                  {/* @ts-ignore */}
-                  <input type="file" {...field} className="peer hidden" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+          <Uploader
+            fileTypes={
+              permittedFileInfo?.config
+                ? Object.keys(permittedFileInfo?.config)
+                : []
+            }
+            files={files}
+            setFiles={setFiles}
           />
           <FormField
             control={form.control}
@@ -268,7 +255,19 @@ const Apply: React.FC<Props> = ({}) => {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <LoaderButton
+            disabled={isUploading || submitProposal.isLoading}
+            type="submit"
+            pending={isUploading || submitProposal.isLoading}
+            icon="ArrowRight"
+          >
+            {submitProposal.isLoading
+              ? "Saving..."
+              : isUploading
+              ? "Uploading..."
+              : "Submit"}
+          </LoaderButton>
+          {/* <Button type="submit">Submit</Button> */}
         </form>
       </Form>
     </div>

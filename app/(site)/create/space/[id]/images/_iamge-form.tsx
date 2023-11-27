@@ -1,22 +1,13 @@
 "use client"
 
-import React, {
-  ChangeEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useTransition,
-} from "react"
+import { useCallback, useEffect, useRef, useState, useTransition } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { Image as ImageType, Prisma } from "@prisma/client"
+import { Image as ImageType } from "@prisma/client"
 import { Image as ImageIcon, MoreHorizontal, Plus } from "lucide-react"
 import { FileWithPath, useDropzone } from "react-dropzone"
 import { generateClientDropzoneAccept } from "uploadthing/client"
 
-import { forceDelay } from "@/lib/forceDelay"
 import { trpc } from "@/lib/trpc/client"
 import { useUploadThing } from "@/lib/uploadthing"
 import { useSpaceCreationStep } from "@/hooks/use-space-creation-step"
@@ -34,14 +25,6 @@ import {
 import { Paragraph } from "@/components/ui/paragraph"
 import { Title } from "@/components/ui/title"
 import { ToastAction } from "@/components/ui/toast"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-import { ListingFooter } from "@/components/listing-footer"
-import { Spin } from "@/components/spin"
 
 import { SpaceCreateFooter } from "../space-create-footer"
 

@@ -11,16 +11,12 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Avatar } from "@/components/ui/avatar"
 import { badgeVariants } from "@/components/ui/badge"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Title } from "@/components/ui/title"
 import { Await } from "@/components/await"
 import { ClientAvatar } from "@/components/client-avatar"
-import { Grid } from "@/components/grid"
-import { Icons } from "@/components/icons"
-import { PublishedSpaceCard } from "@/components/space-cards/published-space-card"
 import { Spin } from "@/components/spin"
 
 type Props = {
@@ -30,15 +26,7 @@ type Props = {
 const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
   return (
     <div className="relative flex min-h-screen flex-col">
-      <header className="gutter sticky inset-x-0 top-0 z-20 mx-auto flex w-full max-w-7xl items-center justify-between bg-background/70 py-8 backdrop-blur">
-        <Icons.logo className="h-6 w-6" />
-        <div className="flex gap-2">
-          <div className="h-2 w-2 rounded-full bg-foreground/25"></div>
-          <div className="h-2 w-2 rounded-full bg-foreground/25"></div>
-          <div className="h-2 w-2 rounded-full bg-foreground/25"></div>
-        </div>
-      </header>
-      <div className="gutter section-padding relative z-10 mx-auto flex w-full max-w-7xl grow">
+      <div className="gutter section-padding relative z-10 mx-auto flex w-full max-w-7xl grow gap-4 md:gap-6 lg:gap-8 xl:gap-10">
         <div className="flex h-full w-3/5">{children}</div>
         <div className="sticky top-40 flex h-fit w-2/5 flex-col overflow-hidden rounded-xl border shadow-md">
           <Suspense
@@ -153,15 +141,18 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
                                   >
                                     <Suspense
                                       fallback={
-                                        <span>
-                                          <Loader2 className="mr-2 h-3 w-3" />
+                                        <span className="flex items-center gap-2">
+                                          <Loader2 className="h-3 w-3" />
                                           Spaces
                                         </span>
                                       }
                                     >
                                       <Await
                                         promise={db.space.count({
-                                          where: { organizationId: org?.id },
+                                          where: {
+                                            organizationId: org?.id,
+                                            status: "published",
+                                          },
                                         })}
                                       >
                                         {(count) => {

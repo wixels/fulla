@@ -1,3 +1,4 @@
+import { ProposalTerm } from "@prisma/client"
 import * as z from "zod"
 
 import { db } from "@/lib/db"
@@ -99,4 +100,35 @@ export const spaceRouter = router({
       },
     })
   }),
+  submitProposal: privateProcedure
+    .input(
+      z.object({
+        spaceId: z.string(),
+        term: z.string(),
+        letter: z.string(),
+        startDate: z.string(),
+        docs: z.array(
+          z.object({
+            fileUrl: z.string(),
+            fileKey: z.string(),
+          })
+        ),
+      })
+    )
+    .mutation(async (opts) => {
+      const { user } = opts.ctx
+      return await db.proposal.create({
+        data: {
+          spaceId: opts.input.spaceId,
+          status: "in_progress",
+          applicantId: user.id,
+          startDate: opts.input.startDate,
+          term: opts.input.term as ProposalTerm,
+          letter: opts.input.letter,
+          docs: {
+            create: opts.input.docs,
+          },
+        },
+      })
+    }),
 })

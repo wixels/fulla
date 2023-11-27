@@ -27,8 +27,8 @@ export function Header() {
   useEffect(() => {
     if (path?.includes("/create/space"))
       dispatch({ type: "field", payload: true, field: "hidden" })
-    if (path?.includes("/apply"))
-      dispatch({ type: "field", payload: true, field: "hidden" })
+    // if (path?.includes("/apply"))
+    //   dispatch({ type: "field", payload: true, field: "hidden" })
   }, [path])
 
   return (

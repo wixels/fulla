@@ -257,6 +257,7 @@ model Image {
   property      Property[]
   organization  Organization[]
   space         Space[]
+  proposal      Proposal[]
 
   createdAt   DateTime?  @default(now())
   updatedAt   DateTime?  @updatedAt
@@ -275,6 +276,11 @@ enum ProposalStatus {
   in_progress  // The proposal is in the process of being reviewed or negotiated.
   completed    // The proposal has been successfully completed (e.g., lease signed).
 }
+enum ProposalTerm {
+  month_to_month
+  fixed_term
+  daily
+}
 model Proposal {
   id          String    @id @default(cuid())
 
@@ -283,16 +289,21 @@ model Proposal {
   spaceId     String?
   space       Space?    @relation(fields: [spaceId], references: [id], onDelete: Cascade)
   
-  // applicants   User[]
   applicantId String?
   applicant  User?     @relation(fields: [applicantId], references: [id], onDelete: Cascade)
 
+  term        ProposalTerm
+  docs        Image[]
+  letter      String? @db.Text
+
+  startDate   String
+ 
   createdAt   DateTime?  @default(now())
   updatedAt   DateTime?  @updatedAt
 
   @@index([spaceId])
-  @@map("proposals")
   @@index([applicantId])
+  @@map("proposals")
 }
 enum ListingStatus {
   draft
