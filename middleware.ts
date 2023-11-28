@@ -45,6 +45,8 @@ export const config = {
   matcher: [
     "/create/:path*",
     "/profile",
+    "/profile/:path*",
+    "/spaces/:path/apply/:path*",
     "/collections/:path*",
     "/org/:path*",
     "/login",

@@ -1,7 +1,7 @@
 import { Suspense } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Check, Loader2, Paperclip, Pencil } from "lucide-react"
+import { Check, ChevronLeft, Loader2, Paperclip, Pencil } from "lucide-react"
 import Balancer from "react-wrap-balancer"
 
 import { db } from "@/lib/db"
@@ -26,15 +26,6 @@ type Props = {
   params: { id: string }
 }
 const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
-  // const rev = await db.review.update({
-  //   where: {
-  //     id: "clp86drmn0001ls7gvz8k6j9b",
-  //   },
-  //   data: {
-  //     authorId: "clnn4lybk0000lsid4lphzxho",
-  //   },
-  // })
-  // console.log("rev::: ", rev)
   return (
     <>
       <Suspense fallback={<SpaceSkeleton />}>
@@ -53,7 +44,17 @@ const SpacePage: React.FC<Props> = async ({ params: { id } }) => {
               </div>
               <div className="gutter relative z-10 mx-auto -mt-16 flex max-w-screen-xl flex-col">
                 <div className="flex gap-4">
-                  <div className="w-2/3 grow">
+                  <div className="relative w-2/3 grow">
+                    <Link
+                      href={"/"}
+                      style={{ padding: 0 }}
+                      className={buttonVariants({
+                        variant: "link",
+                        className: "flex items-center gap-2 left-0 top-[-1rem]",
+                      })}
+                    >
+                      <ChevronLeft className="h-3 w-3" /> Browse
+                    </Link>
                     <Title
                       style={{ margin: 0 }}
                       className="font-semibold"

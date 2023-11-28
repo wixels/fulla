@@ -29,6 +29,8 @@ export function Header() {
       dispatch({ type: "field", payload: true, field: "hidden" })
     // if (path?.includes("/apply"))
     //   dispatch({ type: "field", payload: true, field: "hidden" })
+    setActiveTab(path ?? siteConfig.mainNav[0].href)
+    setHoveredTab(path ?? siteConfig.mainNav[0].href)
   }, [path])
 
   return (
@@ -38,7 +40,7 @@ export function Header() {
         {
           hidden: hidden,
           "bg-background": background,
-          "bg-background/10 backdrop-blur border-b border-border/20": blur,
+          "bg-background/10 backdrop-blur": blur,
         }
       )}
     >
