@@ -127,7 +127,7 @@ const Apply: React.FC<Props> = ({ params: { id } }) => {
         spaceId: id,
         docs: filesToUpload,
         letter: data.letter,
-        startDate: data.date,
+        startDate: data.date.toString(),
         term: data.term,
       })
     }

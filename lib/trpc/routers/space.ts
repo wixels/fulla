@@ -3,10 +3,15 @@ import * as z from "zod"
 
 import { db } from "@/lib/db"
 
-import { privateProcedure, publicProcedure, router } from "../trpc"
+import {
+  hybridProcedure,
+  privateProcedure,
+  publicProcedure,
+  router,
+} from "../trpc"
 
 export const spaceRouter = router({
-  published: publicProcedure
+  published: hybridProcedure
     .input(
       z.object({
         id: z.string(),
@@ -20,6 +25,15 @@ export const spaceRouter = router({
           status: "published",
         },
         include: {
+          ...(opts.ctx.user
+            ? {
+                proposals: {
+                  where: {
+                    applicantId: opts.ctx.user.id,
+                  },
+                },
+              }
+            : {}),
           organization: {
             include: {
               logo: true,

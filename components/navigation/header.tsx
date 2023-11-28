@@ -38,7 +38,7 @@ export function Header() {
         {
           hidden: hidden,
           "bg-background": background,
-          "bg-background/10 backdrop-blur": blur,
+          "bg-background/10 backdrop-blur border-b border-border/20": blur,
         }
       )}
     >
