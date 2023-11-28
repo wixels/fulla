@@ -1,11 +1,38 @@
+"use client"
+
+import { useEffect } from "react"
+import { usePathname } from "next/navigation"
+
+import { cn } from "@/lib/utils"
+
 import { Icons } from "../icons"
+import { useFooter } from "../providers/footer-provider"
 import { Paragraph } from "../ui/paragraph"
 import { Title } from "../ui/title"
 
 type Props = {}
 export const Footer: React.FC<Props> = ({}) => {
+  const path = usePathname()
+  const {
+    state: { hidden },
+    dispatch,
+  } = useFooter()
+
+  useEffect(() => {
+    if (path.includes("apply")) {
+      dispatch({ type: "field", payload: true, field: "hidden" })
+    } else {
+      dispatch({ type: "field", payload: false, field: "hidden" })
+    }
+  }, [path])
+
   return (
-    <footer aria-label="Site Footer">
+    <footer
+      className={cn({
+        hidden: hidden,
+      })}
+      aria-label="Site Footer"
+    >
       <div className="gutter section-padding border-t border-border">
         <div className="lg:flex lg:items-start lg:gap-8">
           <Icons.logo className="h-16 w-16" />

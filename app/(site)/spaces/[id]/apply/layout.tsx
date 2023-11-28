@@ -273,7 +273,7 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
                             >
                               {(spaces) => {
                                 return (
-                                  <ul>
+                                  <ul className="flex flex-col gap-2">
                                     {spaces.length === 0 ? (
                                       <li className="flex w-full items-center justify-center p-4 text-muted-foreground/50">
                                         No other spaces
@@ -292,7 +292,7 @@ const ApplicationLayout: React.FC<Props> = ({ children, params: { id } }) => {
                                           size="xs"
                                         />
                                         <Link
-                                          className="hover:text-blue-500 hover:underline"
+                                          className="line-clamp-1 hover:text-blue-500 hover:underline"
                                           href={`/spaces/${space.id}`}
                                         >
                                           {space.title}

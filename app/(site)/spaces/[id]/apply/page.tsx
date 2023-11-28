@@ -84,7 +84,7 @@ const Apply: React.FC<Props> = ({ params: { id } }) => {
       toast({
         description: "Proposal submitted",
       })
-      router.push(`/spaces/${id}/apply/completion`)
+      router.push(`/spaces/${id}/apply-complete`)
     },
     onSettled: () => {
       void utils.space.published.invalidate({ id })
