@@ -3,12 +3,7 @@ import * as z from "zod"
 
 import { db } from "@/lib/db"
 
-import {
-  hybridProcedure,
-  privateProcedure,
-  publicProcedure,
-  router,
-} from "../trpc"
+import { hybridProcedure, privateProcedure, router } from "../trpc"
 
 export const spaceRouter = router({
   published: hybridProcedure

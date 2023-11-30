@@ -120,11 +120,7 @@ export const ProfileAvatar: React.FC<Props> = ({}) => {
                               key={org.id}
                               onSelect={() =>
                                 runCommand(() =>
-                                  router.push(
-                                    "/org/" +
-                                      org.organization.id +
-                                      "/properties"
-                                  )
+                                  router.push("/org/" + org.organization.id)
                                 )
                               }
                               className="flex items-center gap-2"
