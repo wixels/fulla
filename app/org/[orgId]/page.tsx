@@ -19,9 +19,7 @@ type Props = {
 
 const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
   const user = await getCurrentUser()
-  const properties = await serverClient.org.properties({
-    organizationId: orgId,
-  })
+
   return (
     <div className="gutter section-padding-top mx-auto w-full  max-w-[1400px]">
       <header className="mx-auto flex w-full flex-col items-center justify-between border-b border-border pb-6  md:pb-8 lg:flex-row lg:pb-10 xl:pb-12">
