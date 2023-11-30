@@ -10,6 +10,7 @@ const badgeVariants = cva(
     variants: {
       rounded,
       variant: {
+        blur: "border-transparent bg-background/70 backdrop-blur",
         blue: "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
         red: "border-transparent bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 border-red-400",
         green:
@@ -33,6 +34,7 @@ const badgeVariants = cva(
         xs: "text-[10px] px-1.5 py-0.5",
         sm: "text-xs px-2 py-0.5",
         md: "text-xs px-2.5 py-0.5",
+        lg: "text-sm px-3 py-1",
       },
     },
     defaultVariants: {
