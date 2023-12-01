@@ -12,9 +12,9 @@ const badgeVariants = cva(
       variant: {
         blur: "border-transparent bg-background/70 backdrop-blur",
         blue: "border-transparent bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300",
-        red: "border-transparent bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300 border-red-400",
+        red: "bg-red-100 text-red-800 dark:bg-red-900/40 dark:text-red-400/60 border-red-400/40",
         green:
-          "bg-green-100 border-transparent text-green-800 dark:bg-green-900 dark:text-green-300 border-green-400",
+          "bg-green-100 text-green-800 dark:bg-green-900/40 dark:text-green-400/60 border-green-400/50",
         yellow:
           "bg-yellow-100 border-transparent  text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300 border-yellow-400",
         indigo:

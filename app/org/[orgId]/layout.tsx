@@ -18,7 +18,7 @@ const Layout: React.FC<Props> = async ({
   const org = await serverClient.org.byId({ id: orgId })
   return (
     <div id="drag-modal-portal-element" className="relative">
-      <div className="fixed inset-y-0 left-0 flex h-screen w-20 flex-col items-center justify-between bg-accent-foreground py-6">
+      <div className="fixed inset-y-0 left-0 flex h-screen w-20 flex-col items-center justify-between bg-primary-foreground py-6">
         <div className="flex flex-col items-center gap-1">
           <Link href={"/org/" + org?.id} className="mb-6">
             {org?.logo?.fileUrl ? (

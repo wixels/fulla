@@ -1,15 +1,29 @@
+import { Suspense } from "react"
 import { Table } from "lucide-react"
 import Balancer from "react-wrap-balancer"
 
 import { getCurrentUser } from "@/lib/session"
 import { serverClient } from "@/lib/trpc/server"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Title } from "@/components/ui/title"
-import { Grid, gridVariants } from "@/components/grid"
+import { Await } from "@/components/await"
+import { Grid } from "@/components/grid"
+import { PlaiceholderImage } from "@/components/plaiceholder-image"
 import { Section, sectionVariants } from "@/components/section"
+import { BrowseSpaceCard } from "@/components/space-cards/browse-space-card"
+import Empty from "@/app/(site)/_empty"
+
+import { Graph } from "./_graph"
 
 type Props = {
   params: {
@@ -19,6 +33,56 @@ type Props = {
 
 const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
   const user = await getCurrentUser()
+
+  function generateSinWaveArray(
+    numBars: number,
+    minValue: number = 15,
+    variability: number = 5
+  ): number[] {
+    const amplitude = 35
+    const frequency = (2 * Math.PI) / numBars
+    const sinWaveArray: number[] = []
+
+    for (let i = 0; i < numBars; i++) {
+      const sinValue = Math.sin(i * frequency)
+      const randomVariation = (Math.random() * 2 - 1) * variability // Random value between -variability and variability
+      const barHeight =
+        Math.round((sinValue + 1) * 0.5 * amplitude) +
+        minValue +
+        randomVariation
+      sinWaveArray.push(barHeight)
+    }
+
+    return sinWaveArray
+  }
+  function generateRandomArray(): number[] {
+    const outputArray: number[] = []
+    let remainingTotal = 100
+
+    const numValues = Math.floor(Math.random() * 3) + 1 // Randomly choose 1 to 3 numbers
+
+    for (let i = 0; i < numValues - 1; i++) {
+      const minValue = 20
+      const randomValue =
+        Math.floor(
+          Math.random() * (remainingTotal - minValue * (numValues - i - 1))
+        ) + minValue
+      outputArray.push(randomValue)
+      remainingTotal -= randomValue
+    }
+
+    // Ensure the last value meets the minimum requirement
+    const lastValue = Math.max(remainingTotal, 20)
+    outputArray.push(lastValue)
+
+    // Shuffle the array for randomness
+    for (let i = outputArray.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[outputArray[i], outputArray[j]] = [outputArray[j], outputArray[i]]
+    }
+
+    return outputArray
+  }
 
   return (
     <div className="gutter section-padding-top mx-auto w-full  max-w-[1400px]">
@@ -46,8 +110,8 @@ const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
           </Button>
         </div>
       </header>
-
       <Grid className={sectionVariants({ size: "sm" })}>
+        {/* DAILY AI INSIGHTS */}
         <div className="relative col-span-5 flex min-h-[20rem] flex-col justify-between overflow-hidden rounded-xl border border-border p-8">
           <div className="absolute left-[-20%] top-0 h-full w-full dark:[mask-image:linear-gradient(white,transparent)]">
             <div className="absolute inset-0 bg-gradient-to-r from-[#36b49f] to-[#DBFF75] opacity-40 [mask-image:radial-gradient(farthest-side_at_top,white,transparent)] dark:from-[#36b49f]/30 dark:to-[#DBFF75]/30 dark:opacity-100">
@@ -135,46 +199,211 @@ const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
             </Paragraph>
           </div>
         </div>
+        {/* OCCUPANCY RATE */}
         <div className="col-span-7 flex flex-col gap-3 rounded-xl bg-primary-foreground p-8">
           <div className="flex items-center justify-between">
-            <Paragraph className="font-bold">Space Performance</Paragraph>
+            <Paragraph className="font-bold">Property Performance</Paragraph>
             <Paragraph className="text-muted-foreground/50" size={"xs"}>
               % occupied
             </Paragraph>
           </div>
-          <ul
-            className="grid w-full grid-cols-12 gap-x-4 gap-y-[2px] md:gap-x-6 lg:gap-x-8 xl:gap-x-10"
-            // className={gridVariants({
-            //   className: "w-full space-y-[1px]",
-            // })}
-          >
+          <ul className="grid w-full grid-cols-12 gap-x-4 gap-y-[2px] md:gap-x-6 lg:gap-x-8 xl:gap-x-10">
             <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
-              <span>The Buzz</span>
-              <span className="text-green-800 font-semibold text-xs">
-                +1.40%
+              <span>Open Window</span>
+              <span className="text-xs font-semibold text-green-800">
+                +5.40%
               </span>
               <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
-              <div className="absolute inset-y-0 right-0 h-full w-1/5 bg-gradient-to-r from-transparent via-[#36b49f]/25 to-[#DBFF75]/25"></div>
-            </li>
-            <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
-              <span>Poplar Park</span>
-              <span className="text-green-800 font-semibold text-xs">
-                +1.40%
-              </span>
-              <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
-              <div className="absolute inset-y-0 right-0 h-full w-1/5 bg-gradient-to-r from-transparent via-[#36b49f]/25 to-[#DBFF75]/25"></div>
+              <div className="absolute inset-y-0 right-0 h-full w-2/5 bg-gradient-to-r from-transparent via-[#36b49f]/25 to-[#DBFF75]/25"></div>
             </li>
             <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
               <span>SOHO - Beverley</span>
-              <span className="text-green-800 font-semibold text-xs">
+              <span className="text-xs font-semibold text-red-800">-0.07%</span>
+              <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
+              <div className="absolute inset-y-0 right-0 h-full w-[10%] bg-gradient-to-r from-transparent via-[#FF6B6B]/25 to-[#FFB347]/25"></div>
+            </li>
+
+            <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
+              <span>The Buzz</span>
+              <span className="text-xs font-semibold text-green-800">
                 +1.40%
               </span>
               <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
               <div className="absolute inset-y-0 right-0 h-full w-1/5 bg-gradient-to-r from-transparent via-[#36b49f]/25 to-[#DBFF75]/25"></div>
+            </li>
+            <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
+              <span>The Junction</span>
+              <span className="text-xs font-semibold text-red-800">-0.07%</span>
+              <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
+              <div className="absolute inset-y-0 right-0 h-full w-[10%] bg-gradient-to-r from-transparent via-[#FF6B6B]/25 to-[#FFB347]/25"></div>
+            </li>
+
+            <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
+              <span>Poplar Park</span>
+              <span className="text-xs font-semibold text-green-800">
+                +1.40%
+              </span>
+              <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
+              <div className="absolute inset-y-0 right-0 h-full w-1/5 bg-gradient-to-r from-transparent via-[#36b49f]/25 to-[#DBFF75]/25"></div>
+            </li>
+            <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
+              <span>The Junction</span>
+              <span className="text-xs font-semibold text-red-800">-0.07%</span>
+              <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
+              <div className="absolute inset-y-0 right-0 h-full w-[10%] bg-gradient-to-r from-transparent via-[#FF6B6B]/25 to-[#FFB347]/25"></div>
+            </li>
+
+            <li className="relative col-span-6 flex w-full items-center justify-between overflow-hidden rounded-md py-[5px] pr-3 text-sm text-muted-foreground/70">
+              <span>Open Window</span>
+              <span className="text-xs font-semibold text-green-800">
+                +0.02%
+              </span>
+              <div className="absolute inset-x-0 bottom-0 h-[1px] w-3/4 bg-gradient-to-r from-border to-transparent"></div>
+              <div className="absolute inset-y-0 right-0 h-full w-[5%] bg-gradient-to-r from-transparent via-[#36b49f]/25 to-[#DBFF75]/25"></div>
             </li>
           </ul>
         </div>
       </Grid>
+
+      {/* REVENUE */}
+      <Section size={"sm"}>
+        <Title style={{ marginTop: 0 }} level={2} showAs={5}>
+          <span className="font-mono font-bold">Revenue</span>
+          <span className="text-xs text-muted-foreground/50"> / month</span>
+        </Title>
+        <Grid gap={"xs"} className="rounded-xl bg-primary-foreground">
+          <ul className="relative col-span-5 w-full py-8 pl-8">
+            {[
+              "Poplar Park - Riverclub",
+              "The Buzz",
+              "Open Window",
+              "The Junction",
+              "SOHO Beverly",
+            ].map((property, i) => {
+              const positive = Math.random() < 0.5
+              return (
+                <li
+                  key={i}
+                  className="group rounded-[10px] p-0.5 transition-all hover:bg-foreground/5"
+                >
+                  <div
+                    className={cn(
+                      "flex h-8 items-center justify-between rounded-[8px] bg-primary-foreground px-3 text-xs",
+                      {
+                        "bg-foreground/5": i === 0,
+                      }
+                    )}
+                  >
+                    <span className="font-bold">{property}</span>
+                    <div className="flex items-center gap-3">
+                      <span>5 Spaces</span>
+                      <Badge variant={positive ? "green" : "red"}>
+                        {positive ? "+" : "-"}0.37%
+                      </Badge>
+                    </div>
+                  </div>
+                </li>
+              )
+            })}
+          </ul>
+          <div className="col-span-7 w-full py-8 pr-8">
+            <Paragraph size={"sm"} className="font-mono font-bold">
+              Poplar Park - Riverclub
+            </Paragraph>
+            <div className="flex items-center justify-between text-xs text-muted-foreground/50">
+              <span>456.70</span>
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-1.5">
+                  <span className=" h-2 w-2 rounded-full bg-red-400"></span>
+                  <p>Below Average</p>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className=" h-2 w-2 rounded-full bg-green-400"></span>
+                  <p>Avg: R {new Intl.NumberFormat().format(21566)}</p>
+                </div>
+              </div>
+            </div>
+
+            <Tabs defaultValue="1M">
+              <TabsContent value="1D">
+                <Graph total={24} />
+              </TabsContent>
+              <TabsContent value="1W">
+                <Graph total={7} />
+              </TabsContent>
+              <TabsContent value="1M">
+                <Graph total={31} />
+              </TabsContent>
+              <TabsContent value="3M">
+                <Graph total={13} />
+              </TabsContent>
+              <TabsContent value="1Y">
+                <Graph total={12} />
+              </TabsContent>
+              <TabsList className="mt-1">
+                <TabsTrigger value="1D">1D</TabsTrigger>
+                <TabsTrigger value="1W">1W</TabsTrigger>
+                <TabsTrigger value="1M">1M</TabsTrigger>
+                <TabsTrigger value="3M">3M</TabsTrigger>
+                <TabsTrigger value="1Y">1Y</TabsTrigger>
+              </TabsList>
+            </Tabs>
+          </div>
+        </Grid>
+      </Section>
+
+      {/* POPULAR */}
+      <Section size={"sm"}>
+        <Title style={{ marginTop: 0 }} level={2} showAs={5}>
+          <span className="font-mono font-bold">Popular</span>
+          <span className="text-xs text-muted-foreground/50">
+            {" "}
+            / this month
+          </span>
+        </Title>
+        <Suspense fallback="fetching popular spaces...">
+          <Await promise={serverClient.spaces.published({})}>
+            {(spaces) => (
+              <>
+                {spaces.length ? (
+                  <Grid gap={"xs"} className="w-full">
+                    {spaces.map((space) => (
+                      <div
+                        key={space.id}
+                        className="col-span-3 group flex flex-col items-center gap-5 rounded-lg bg-primary-foreground p-5"
+                      >
+                        <div className="relative mx-auto aspect-square w-1/2 overflow-hidden rounded-full">
+                          <PlaiceholderImage
+                            src={space?.featureImageUrl ?? ""}
+                            hasParent
+                            alt={space.title as string}
+                          />
+                        </div>
+                        <div className="flex w-full flex-col items-center gap-1">
+                          <p className="w-3/4 text-center cursor-pointer group-hover:underline font-mono font-bold">
+                            <Balancer>{space.title}</Balancer>
+                          </p>
+                          <Badge className="w-fit hover:underline">
+                            @The Buzz
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground/50">
+                          {new Intl.NumberFormat().format(
+                            (Math.floor(Math.random() * 91) + 10) * 100
+                          )}{" "}
+                          Views
+                        </p>
+                      </div>
+                    ))}
+                  </Grid>
+                ) : (
+                  <Empty />
+                )}
+              </>
+            )}
+          </Await>
+        </Suspense>
+      </Section>
     </div>
   )
 }
