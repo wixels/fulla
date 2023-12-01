@@ -28,56 +28,6 @@ type Props = {
 const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
   const user = await getCurrentUser()
 
-  function generateSinWaveArray(
-    numBars: number,
-    minValue: number = 15,
-    variability: number = 5
-  ): number[] {
-    const amplitude = 35
-    const frequency = (2 * Math.PI) / numBars
-    const sinWaveArray: number[] = []
-
-    for (let i = 0; i < numBars; i++) {
-      const sinValue = Math.sin(i * frequency)
-      const randomVariation = (Math.random() * 2 - 1) * variability // Random value between -variability and variability
-      const barHeight =
-        Math.round((sinValue + 1) * 0.5 * amplitude) +
-        minValue +
-        randomVariation
-      sinWaveArray.push(barHeight)
-    }
-
-    return sinWaveArray
-  }
-  function generateRandomArray(): number[] {
-    const outputArray: number[] = []
-    let remainingTotal = 100
-
-    const numValues = Math.floor(Math.random() * 3) + 1 // Randomly choose 1 to 3 numbers
-
-    for (let i = 0; i < numValues - 1; i++) {
-      const minValue = 20
-      const randomValue =
-        Math.floor(
-          Math.random() * (remainingTotal - minValue * (numValues - i - 1))
-        ) + minValue
-      outputArray.push(randomValue)
-      remainingTotal -= randomValue
-    }
-
-    // Ensure the last value meets the minimum requirement
-    const lastValue = Math.max(remainingTotal, 20)
-    outputArray.push(lastValue)
-
-    // Shuffle the array for randomness
-    for (let i = outputArray.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1))
-      ;[outputArray[i], outputArray[j]] = [outputArray[j], outputArray[i]]
-    }
-
-    return outputArray
-  }
-
   return (
     <div className="gutter section-padding-top mx-auto w-full  max-w-[1400px]">
       <header className="mx-auto flex w-full flex-col items-center justify-between border-b border-border pb-6  md:pb-8 lg:flex-row lg:pb-10 xl:pb-12">

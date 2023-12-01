@@ -59,6 +59,7 @@ const sectionVariants = cva("", {
       lg: "",
     },
   },
+  // @ts-ignore
   compoundVariants: inputList.map((item) => {
     const sizeMap = {
       "5": "sm",
