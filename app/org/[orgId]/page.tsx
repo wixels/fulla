@@ -7,11 +7,6 @@ import { serverClient } from "@/lib/trpc/server"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card"
 import { Input } from "@/components/ui/input"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -20,7 +15,6 @@ import { Await } from "@/components/await"
 import { Grid } from "@/components/grid"
 import { PlaiceholderImage } from "@/components/plaiceholder-image"
 import { Section, sectionVariants } from "@/components/section"
-import { BrowseSpaceCard } from "@/components/space-cards/browse-space-card"
 import Empty from "@/app/(site)/_empty"
 
 import { Graph } from "./_graph"
@@ -370,7 +364,7 @@ const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
                     {spaces.map((space) => (
                       <div
                         key={space.id}
-                        className="col-span-3 group flex flex-col items-center gap-5 rounded-lg bg-primary-foreground p-5"
+                        className="group col-span-3 flex flex-col items-center gap-5 rounded-lg bg-primary-foreground p-5"
                       >
                         <div className="relative mx-auto aspect-square w-1/2 overflow-hidden rounded-full">
                           <PlaiceholderImage
@@ -380,7 +374,7 @@ const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
                           />
                         </div>
                         <div className="flex w-full flex-col items-center gap-1">
-                          <p className="w-3/4 text-center cursor-pointer group-hover:underline font-mono font-bold">
+                          <p className="w-3/4 cursor-pointer text-center font-mono font-bold group-hover:underline">
                             <Balancer>{space.title}</Balancer>
                           </p>
                           <Badge className="w-fit hover:underline">
