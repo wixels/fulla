@@ -209,7 +209,6 @@ const OrgPage: React.FC<Props> = async ({ params: { orgId } }) => {
         </div>
       </Grid>
 
-      {/* REVENUE */}
       <Section size={"sm"}>
         <Title style={{ marginTop: 0 }} level={2} showAs={5}>
           <span className="font-mono font-bold">Revenue</span>
