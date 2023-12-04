@@ -48,6 +48,7 @@ export const config = {
     "/profile/:path*",
     "/spaces/:path/apply/:path*",
     "/collections/:path*",
+    "/collections",
     "/org/:path*",
     "/login",
     "/register",
