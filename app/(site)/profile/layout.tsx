@@ -1,7 +1,3 @@
-import { headers } from "next/headers"
-import Link from "next/link"
-
-import { cn } from "@/lib/utils"
 import { Paragraph } from "@/components/ui/paragraph"
 import { Separator } from "@/components/ui/separator"
 import { Title } from "@/components/ui/title"

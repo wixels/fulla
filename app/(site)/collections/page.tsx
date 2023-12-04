@@ -11,6 +11,8 @@ import { Await } from "@/components/await"
 
 import { SearchCollections } from "./_search"
 
+export const dynamic = "force-dynamic"
+
 export default async function Page({
   searchParams,
 }: {
@@ -35,7 +37,7 @@ export default async function Page({
       </div>
 
       <Suspense
-        key={(searchParams["q"] as string) ?? ""}
+        key={(searchParams["q"]?.toString() as string) ?? ""}
         fallback={
           <ul className="mt-4 w-full lg:mt-8">
             <li className="gutter mb-1">
@@ -50,7 +52,7 @@ export default async function Page({
           </ul>
         }
       >
-        <Await promise={serverClient.collections(searchParams)}>
+        <Await promise={serverClient.collections({ ...(searchParams ?? {}) })}>
           {(collections) => (
             <>
               {collections.length ? (

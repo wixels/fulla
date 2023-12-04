@@ -1,4 +1,3 @@
-import { cookies } from "next/headers"
 import { TRPCError, initTRPC } from "@trpc/server"
 
 import { getCurrentUser } from "../session"

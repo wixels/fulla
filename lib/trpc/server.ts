@@ -1,4 +1,3 @@
-import { cookies } from "next/headers"
 import { httpBatchLink } from "@trpc/client"
 
 import { appRouter } from "."
